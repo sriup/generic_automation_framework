@@ -2,8 +2,6 @@ package framework.logs;
 
 import org.apache.log4j.Logger;
 
-import com.sparky.helper.ams.LogAccess;
-
 import framework.enums.LogVerbose;
 
 public class LogAccess {
