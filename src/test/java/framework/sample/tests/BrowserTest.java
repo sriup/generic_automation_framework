@@ -2,7 +2,7 @@ package framework.sample.tests;
 
 import org.testng.annotations.Test;
 
-import framework.abstracts.BaseClass;
+import framework.abstracts.FwBaseClass;
 import framework.commonfunctions.BrowserFunctions;
 
 public class BrowserTest {

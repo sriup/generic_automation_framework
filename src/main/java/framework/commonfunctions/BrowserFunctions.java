@@ -9,7 +9,6 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import framework.enums.BrowserEnums;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 // TODO: Auto-generated Javadoc
@@ -83,17 +82,18 @@ public class BrowserFunctions {
 	 * @return the {@link org.openqa.selenium.WebDriver WebDriver} for the specified
 	 *         browser
 	 */
-	public WebDriver launch(BrowserEnums browserName, String downloadPath) {
+	public WebDriver launch(String browserName, String downloadPath) {
 		setDownloadFolderPath(downloadPath);
 
-		switch (browserName) {
-		case Chrome:
+		switch (browserName.trim().toLowerCase()) {
+		case "chrome":
 			return launchChrome();
-		case Firefox:
+		case "firefox":
 			return launchFirefox();
-		case Edge:
+		case "edge":
 			return launchEdge();
-		case IE:
+		case "ie":
+		case "internetexplorer":
 			return launchInternetExplorer();
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + browserName
