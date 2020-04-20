@@ -4,7 +4,8 @@ import framework.commonfunctions.BrowserFunctions;
 
 public abstract class FwBaseClass {
 	
-	BrowserFunctions browserFunctions = new BrowserFunctions();
+	private BrowserFunctions browserFunctions = new BrowserFunctions();
+	private String screenshotPath;
 	
 	public void init(String logFilename, String downloadPath, String browserType) throws Exception {
 		// TODO Auto-generated constructor stub
@@ -24,6 +25,16 @@ public abstract class FwBaseClass {
 		this.browserFunctions = browserFunctions;
 	}
 	
+	
+	
+	public String getScreenshotPath() {
+		return screenshotPath;
+	}
+
+	public void setScreenshotPath(String screenshotPath) {
+		this.screenshotPath = screenshotPath;
+	}
+
 	//Initialize Logger
 	public void setLogAccessFilename(String filename) {
 		
