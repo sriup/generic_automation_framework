@@ -6,10 +6,29 @@ package framework.constants;
 public class CommonVariables {
 
 	public static String BROWSER_SELECT = System.getProperty("browserType");
-	public static String VERBOSE = "info"; //info, errors, warnings
 	public static int MAX_TIMEOUT = 120;
 	public static int MED_TIMEOUT = 30;
 	public static int MIN_TIMEOUT = 5;
+
+	/**
+	 * List of available time formats.
+	 * <table border=1>
+	 * <tr>
+	 * <th>Index</th>
+	 * <th>Format</th>
+	 * </tr>
+	 * 
+	 * <tr>
+	 * <td>0</td>
+	 * <td>yyyy:mm:dd_hh_MM_ss</td>
+	 * </tr>
+	 * <tr>
+	 * * <td>1</td>
+	 * <td>mm:dd:yy</td>
+	 * </tr>
+	 * </table>
+	 */
+	public String[] TIME_FORMATS = { "yyyy:mm:dd_hh_MM_ss", "mm:dd:yy" };
 
 }
 
