@@ -59,6 +59,7 @@ public class CommonFunctions {
 	 */
 
 	public boolean findElement() {
+		
 		return false;
 	}
 
@@ -97,8 +98,8 @@ public class CommonFunctions {
 	 * @param expectedCondition the expected condition
 	 * @return the web element
 	 */
-	public WebElement waitForElement(WebDriver driver, By by, ExpectedConditionsEnums expectedCondition) {
-		return waitUntilElement(driver, by, expectedCondition, CommonVariables.MAX_TIMEOUT);
+	public WebElement waitForElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition) {
+		return waitUntilElement(driver, byLocator, expectedCondition, CommonVariables.MAX_TIMEOUT);
 	}
 
 	/**
@@ -110,9 +111,9 @@ public class CommonFunctions {
 	 * @param maxTimeout        the max timeout
 	 * @return the web element
 	 */
-	public WebElement waitForElement(WebDriver driver, By by, ExpectedConditionsEnums expectedCondition,
+	public WebElement waitForElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition,
 			int maxTimeout) {
-		return waitUntilElement(driver, by, expectedCondition, maxTimeout);
+		return waitUntilElement(driver, byLocator, expectedCondition, maxTimeout);
 	}
 
 	/**
@@ -138,10 +139,10 @@ public class CommonFunctions {
 	 * @param maxTimeout        the max timeout
 	 */
 	@SuppressWarnings("unlikely-arg-type")
-	public void waitForInvisibilityOfElement(WebDriver driver, By by, ExpectedConditions expectedCondition,
+	public void waitForInvisibilityOfElement(WebDriver driver, By byLocator, ExpectedConditions expectedCondition,
 			int maxTimeout) {
 		WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
-		wait.equals(ExpectedConditions.invisibilityOfElementLocated(by));
+		wait.equals(ExpectedConditions.invisibilityOfElementLocated(byLocator));
 	}
 
 	/**
@@ -195,11 +196,11 @@ public class CommonFunctions {
 	 * @param maxTimeout the max timeout
 	 * @return true, if is element present by locator
 	 */
-	public boolean isElementPresent(WebDriver driver, By by, int maxTimeout) {
+	public boolean isElementPresent(WebDriver driver, By byLocator, int maxTimeout) {
 		// wait for the {@link org.openqa.selenium.WebElement element} to present for
 		// specified time
 		try {
-			waitForElement(driver, by, ExpectedConditionsEnums.VISIBLE, maxTimeout);
+			waitForElement(driver, byLocator, ExpectedConditionsEnums.VISIBLE, maxTimeout);
 			// return true if the {@link org.openqa.selenium.WebElement element} is visible
 			return true;
 		} catch (Exception e) {
@@ -217,11 +218,11 @@ public class CommonFunctions {
 	 * @param maxTimeout the max timeout
 	 * @return true, if is element displayed by locator
 	 */
-	public boolean isElementDisplayed(WebDriver driver, By by, int maxTimeout) {
+	public boolean isElementDisplayed(WebDriver driver, By byLocator, int maxTimeout) {
 		// wait for the {@link org.openqa.selenium.WebElement element} to present for
 		// specified time
 		try {
-			waitForElement(driver, by, ExpectedConditionsEnums.VISIBLE, maxTimeout);
+			waitForElement(driver, byLocator, ExpectedConditionsEnums.VISIBLE, maxTimeout);
 			// return true if the {@link org.openqa.selenium.WebElement element} is visible
 			return true;
 		} catch (Exception e) {
@@ -238,11 +239,11 @@ public class CommonFunctions {
 	 * @param by     the by
 	 * @return true, if is element displayed
 	 */
-	public boolean isElementDisplayed(WebDriver driver, By by) {
+	public boolean isElementDisplayed(WebDriver driver, By byLocator) {
 		// wait for the {@link org.openqa.selenium.WebElement element} to present for
 		// specified time
 		try {
-			waitForElement(driver, by, ExpectedConditionsEnums.VISIBLE, CommonVariables.MED_TIMEOUT);
+			waitForElement(driver, byLocator, ExpectedConditionsEnums.VISIBLE, CommonVariables.MED_TIMEOUT);
 			// return true if the {@link org.openqa.selenium.WebElement element} is visible
 			return true;
 		} catch (Exception e) {
@@ -295,7 +296,7 @@ public class CommonFunctions {
 	 * @param maxTimeout the max timeout
 	 * @return true, if is element enabled by locator
 	 */
-	public boolean isElementEnabled(WebDriver driver, By by, int maxTimeout) {
+	public boolean isElementEnabled(WebDriver driver, By byLocator, int maxTimeout) {
 		return false;
 	}
 
@@ -375,12 +376,13 @@ public class CommonFunctions {
 	 */
 	// click element
 	public void clickOnElement(WebDriver driver, WebElement element, boolean isCaptureScreenShot,
-			boolean captureBefore) {
+			boolean captureBefore, String screenShotName) {
 		// highlight element
 		String originalStyle = highlightElement(driver, element);
 		// capture before (private capture screenshot)
 		if (isCaptureScreenShot && captureBefore) {
 			// take screenshot
+			captureScreenShot(driver, screenShotName);
 		}
 		// click
 		element.click();
@@ -458,7 +460,7 @@ public class CommonFunctions {
 		listElement.selectByIndex(index);
 		// capture
 		if (isCaptureScreenshot) {
-			captureElementScreenShot(driver, screenShotName);
+			captureScreenShot(driver, screenShotName);
 		}
 		// un-highlihgt
 		unHighlightElement(driver, element, originalStyle);
@@ -491,7 +493,7 @@ public class CommonFunctions {
 		dropDown.selectByValue(value);
 		// capture (private capture screenshot)
 		if (isCaptureScreenshot) {
-			captureElementScreenShot(driver, screenShotName);
+			captureScreenShot(driver, screenShotName);
 		}
 		// un-highlihgt
 		unHighlightElement(driver, element, originalStyle);
@@ -524,7 +526,7 @@ public class CommonFunctions {
 		elementText = element.getText();
 		// capture screenshot
 		if (isCaptureScreenShot) {
-			captureElementScreenShot(driver, screenShotName);
+			captureScreenShot(driver, screenShotName);
 		}
 		// unhighlight the element
 		unHighlightElement(driver, element, originalStyle);
@@ -561,7 +563,7 @@ public class CommonFunctions {
 		attributeValue = element.getAttribute(attributeName);
 		// capture screenshot
 		if (isCaptureScreenShot) {
-			captureElementScreenShot(driver, screenShotName);
+			captureScreenShot(driver, screenShotName);
 		}
 		// un-highlight the element
 		unHighlightElement(driver, element, originalStyle);
@@ -595,7 +597,7 @@ public class CommonFunctions {
 		dropDown.selectByVisibleText(visibleText);
 		// capture (private capture screenshot)
 		if (isCaptureScreenshot) {
-			captureElementScreenShot(driver, screenShotName);
+			captureScreenShot(driver, screenShotName);
 		}
 		// un-highlihgt
 		unHighlightElement(driver, element, originalStyle);
@@ -675,7 +677,7 @@ public class CommonFunctions {
 		// highlight
 		String originalStyle = highlightElement(driver, element);
 		// capture screenshot
-		captureElementScreenShot(driver, screenshotName);
+		captureScreenShot(driver, screenshotName);
 		// un-highlight
 		setOriginalStyle(driver, element, originalStyle);
 	}
@@ -696,7 +698,17 @@ public class CommonFunctions {
 	// screenshots
 	public void captureScreenShot(WebDriver driver, String screenshotName) {
 		// capture screenshot
-		captureElementScreenShot(driver, screenshotName);
+		// Get TimeStamp
+				DateFormat dateFormat = new SimpleDateFormat(screenShotTimeStamp);
+				Date timeStamp = new Date();
+				String screenShotTime = dateFormat.format(timeStamp);
+				File scrrenShot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+				try {
+					FileUtils.copyFile(scrrenShot,
+							new File(this.screenShotsPath + "\\" + screenShotTime + "_" + screenshotName + ".png"));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 	}
 
 	/**
@@ -794,45 +806,24 @@ public class CommonFunctions {
 	 * Wait until element by locator.
 	 *
 	 * @param driver            the driver
-	 * @param by                the by
+	 * @param byLocator                the by locator
 	 * @param expectedCondition the expected condition
 	 * @param maxTimeout        the max timeout
 	 * @return the web element
 	 */
-	private WebElement waitUntilElement(WebDriver driver, By by, ExpectedConditionsEnums expectedCondition,
+	private WebElement waitUntilElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition,
 			int maxTimeout) {
 		WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
 		switch (expectedCondition) {
 		case CLICKABLE:
-			return wait.until(ExpectedConditions.elementToBeClickable(by));
+			return wait.until(ExpectedConditions.elementToBeClickable(byLocator));
 		case PRESENCE:
-			return wait.until(ExpectedConditions.presenceOfElementLocated(by));
+			return wait.until(ExpectedConditions.presenceOfElementLocated(byLocator));
 		case VISIBLE:
-			return (WebElement) wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(by));
+			return (WebElement) wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(byLocator));
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + expectedCondition
 					+ ".\n Please refer to  ExpectedConditionsEnums for the available optoins.");
-		}
-	}
-
-	/**
-	 * Capture screen shot.
-	 *
-	 * @param driver         the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param screenshotName the screenshot name
-	 */
-	private void captureElementScreenShot(WebDriver driver, String screenshotName) {
-
-		// Get TimeStamp
-		DateFormat dateFormat = new SimpleDateFormat(screenShotTimeStamp);
-		Date timeStamp = new Date();
-		String screenShotTime = dateFormat.format(timeStamp);
-		File scrrenShot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-		try {
-			FileUtils.copyFile(scrrenShot,
-					new File(this.screenShotsPath + "\\" + screenShotTime + "_" + screenshotName + ".png"));
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 
