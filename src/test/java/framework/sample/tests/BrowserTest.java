@@ -1,12 +1,14 @@
 package framework.sample.tests;
 
 import org.testng.annotations.Test;
-
-import framework.abstracts.FwBaseClass;
-import framework.commonfunctions.BrowserFunctions;
-
+/**
+ * The Class BrowserTest.
+ */
 public class BrowserTest {
 
+	/**
+	 * Sample test.
+	 */
 	@Test
 	public void sampleTest() {
 //		BaseClass baseClass = new BaseClass(browser, downloadPath);
