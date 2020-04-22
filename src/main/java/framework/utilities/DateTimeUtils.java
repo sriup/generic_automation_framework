@@ -1,5 +1,8 @@
 package framework.utilities;
 
+/**
+ * The Class DateTimeUtils.
+ */
 public class DateTimeUtils {
 
 	// current date

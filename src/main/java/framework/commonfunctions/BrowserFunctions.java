@@ -11,7 +11,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
-// TODO: Auto-generated Javadoc
 /**
  * 
  * All the methods related to the browser operations will be handled in this
@@ -69,9 +68,9 @@ public class BrowserFunctions {
 	/**
 	 * Launches the specified browser.
 	 *
-	 * @param browserName  select the browser from {@link BrowserEnums} <br>
+	 * @param browserName  provide the browser name as per the below list.<br>
 	 *                     Note: Below is the list of currently supported
-	 *                     browsers</br>
+	 *                     browsers
 	 *                     <ul>
 	 *                     <li>Chrome</li>
 	 *                     <li>Firefox</li>
@@ -103,7 +102,7 @@ public class BrowserFunctions {
 	}
 
 	/**
-	 * Navigates to the URL and maximizes the browser
+	 * Navigates to the URL and maximizes the browser.
 	 *
 	 * @param URL to load
 	 * @see org.openqa.selenium.remote.RemoteWebDriver#get(String) get

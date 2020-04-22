@@ -10,19 +10,18 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 
 /**
- * All methods related to the {@link File} and {@link Folder}
+ * All methods related to the file and folder.
  */
 public class FolderFileUtils {
 
 	/**
 	 * It creates the folder if folder is not present or else it will return the
-	 * existing Absolute path
-	 * 
-	 * @param folderPath
-	 *            Provide the Absolute Folder path
-	 * @param folderName
+	 * existing Absolute path.
+	 *
+	 * @param folderPath            Provide the Absolute Folder path
+	 * @param folderName the folder name
 	 * @return The File object
-	 * @throws Exception
+	 * @throws Exception the exception
 	 */
 	public File createFolder(String folderPath, String folderName) throws Exception {
 
@@ -38,12 +37,10 @@ public class FolderFileUtils {
 
 	/**
 	 * It deletes the file or folder if it exists.
-	 * 
-	 * @param folderPath
-	 *            Provide the Absolute Folder path
+	 *
+	 * @param folderPath            Provide the Absolute Folder path
 	 * @param fileOrFolderName Provide the Filename or the Foldername
-	 * @return
-	 * @throws Exception
+	 * @throws Exception the exception
 	 */
 	public void deleteFileOrFolder(String folderPath, String fileOrFolderName) throws Exception {
 
@@ -59,11 +56,9 @@ public class FolderFileUtils {
 	
 	/**
 	 * It deletes the file or folder if it exists.
-	 * 
-	 * @param folderPath
-	 *            Provide the Absolute Folder path
-	 * @return
-	 * @throws Exception
+	 *
+	 * @param folderPath            Provide the Absolute Folder path
+	 * @throws Exception the exception
 	 */
 	public void deleteFileOrFolder(String folderPath) throws Exception {
 
@@ -79,12 +74,12 @@ public class FolderFileUtils {
 
 	// create file
 	/**
-	 * It will create the file if it is not present
-	 * 
+	 * It will create the file if it is not present.
+	 *
 	 * @param filePath Provide the Absolute File path
-	 * @param filename
+	 * @param filename the filename
 	 * @return The File object
-	 * @throws IOException
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public File createFile(String filePath, String filename) throws IOException {
 
@@ -102,11 +97,12 @@ public class FolderFileUtils {
 	// Write file
 	/**
 	 * Writing the single inputed line to the specified File.
+	 *
 	 * @param filePath Provide the Absolute File path
-	 * @param filename
-	 * @param inputLine
+	 * @param filename the filename
+	 * @param inputLine the input line
 	 * @return The File object
-	 * @throws IOException
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public File writeToTextFile(String filePath, String filename, String inputLine) throws IOException {
 
@@ -122,11 +118,12 @@ public class FolderFileUtils {
 
 	/**
 	 * Writing Multiple lines to the file.
+	 *
 	 * @param filePath Provide the Absolute File path
-	 * @param filename
-	 * @param inputLinesList
+	 * @param filename the filename
+	 * @param inputLinesList the input lines list
 	 * @return The File object
-	 * @throws IOException
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public File writeMultiLinesToTextFile(String filePath, String filename, List<String> inputLinesList) throws IOException {
 
@@ -146,11 +143,12 @@ public class FolderFileUtils {
 
 	// read file
 	/**
-	 * Fetching all the lines from the file
+	 * Fetching all the lines from the file.
+	 *
 	 * @param filePath Provide the Absolute File path
-	 * @param filename
+	 * @param filename the filename
 	 * @return List of lines in String format
-	 * @throws IOException
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public List<String> readTextFile(String filePath, String filename) throws IOException {
 		
@@ -160,12 +158,13 @@ public class FolderFileUtils {
 	}
 	
 	/**
-	 * Fetching the single line by specified line number from the file 
+	 * Fetching the single line by specified line number from the file .
+	 *
 	 * @param filePath Provide the Absolute File path
-	 * @param filename
+	 * @param filename the filename
 	 * @param lineNumber The line number which needs to be returned
 	 * @return The line by the line number
-	 * @throws IOException
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public String readTextFile(String filePath, String filename, int lineNumber) throws IOException {
 		
@@ -176,11 +175,12 @@ public class FolderFileUtils {
 	
 	/**
 	 * Moving the File from one location to the other location.
-	 * @param oldFilePath Provide the Old Absolute source File path 
+	 *
+	 * @param oldFilePath Provide the Old Absolute source File path
 	 * @param newFilePath Provide the New Absolute target File path
-	 * @param filename
+	 * @param filename the filename
 	 * @return It will return the New File object
-	 * @throws IOException
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public File moveFile(String oldFilePath, String newFilePath, String filename) throws IOException {
 		
@@ -196,11 +196,12 @@ public class FolderFileUtils {
 	
 	/**
 	 * Copying the File from one location to the other location.
-	 * @param oldFilePath Provide the Old Absolute source File path 
+	 *
+	 * @param oldFilePath Provide the Old Absolute source File path
 	 * @param newFilePath Provide the New Absolute target File path
-	 * @param filename
+	 * @param filename the filename
 	 * @return It will return the New File object
-	 * @throws IOException
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public File copyFile(String oldFilePath, String newFilePath, String filename) throws IOException {
 		
@@ -217,11 +218,12 @@ public class FolderFileUtils {
 	//Rename File
 	/**
 	 * Renaming the current filename to the new filename.
-	 * @param filePath Provide the Absolute File path 
+	 *
+	 * @param filePath Provide the Absolute File path
 	 * @param oldFilename Provide the old filename
 	 * @param newFilename Provide the new filename to be changed
 	 * @return Whether it is renamed successfully of not in boolean.
-	 * @throws IOException
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public boolean renameFilename(String filePath, String oldFilename, String newFilename) throws IOException {
 

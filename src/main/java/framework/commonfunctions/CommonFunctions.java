@@ -27,10 +27,10 @@ import framework.enums.ExpectedConditionsEnums;
  */
 public class CommonFunctions {
 
-	/** Folder path where the captured screenshots should be stored */
+	/** Folder path where the captured screenshots should be stored. */
 	private String screenShotsPath;
 
-	/** Date time format to be prepended to the screenshot name */
+	/** Date time format to be prepended to the screenshot name. */
 	private String screenShotTimeStamp;
 
 	/**
@@ -97,8 +97,8 @@ public class CommonFunctions {
 	 * @param expectedCondition the expected condition
 	 * @return the web element
 	 */
-	public WebElement waitForElementByLocator(WebDriver driver, By by, ExpectedConditionsEnums expectedCondition) {
-		return waitUntilElementByLocator(driver, by, expectedCondition, CommonVariables.MAX_TIMEOUT);
+	public WebElement waitForElement(WebDriver driver, By by, ExpectedConditionsEnums expectedCondition) {
+		return waitUntilElement(driver, by, expectedCondition, CommonVariables.MAX_TIMEOUT);
 	}
 
 	/**
@@ -110,9 +110,9 @@ public class CommonFunctions {
 	 * @param maxTimeout        the max timeout
 	 * @return the web element
 	 */
-	public WebElement waitForElementByLocator(WebDriver driver, By by, ExpectedConditionsEnums expectedCondition,
+	public WebElement waitForElement(WebDriver driver, By by, ExpectedConditionsEnums expectedCondition,
 			int maxTimeout) {
-		return waitUntilElementByLocator(driver, by, expectedCondition, maxTimeout);
+		return waitUntilElement(driver, by, expectedCondition, maxTimeout);
 	}
 
 	/**
@@ -138,14 +138,14 @@ public class CommonFunctions {
 	 * @param maxTimeout        the max timeout
 	 */
 	@SuppressWarnings("unlikely-arg-type")
-	public void waitForInvisibilityOfElementByLocator(WebDriver driver, By by, ExpectedConditions expectedCondition,
+	public void waitForInvisibilityOfElement(WebDriver driver, By by, ExpectedConditions expectedCondition,
 			int maxTimeout) {
 		WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
 		wait.equals(ExpectedConditions.invisibilityOfElementLocated(by));
 	}
 
 	/**
-	 * Checks if is element present
+	 * Checks if is element present.
 	 *
 	 * @param driver  the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param element the {@link org.openqa.selenium.WebElement element}
@@ -195,11 +195,11 @@ public class CommonFunctions {
 	 * @param maxTimeout the max timeout
 	 * @return true, if is element present by locator
 	 */
-	public boolean isElementPresentByLocator(WebDriver driver, By by, int maxTimeout) {
+	public boolean isElementPresent(WebDriver driver, By by, int maxTimeout) {
 		// wait for the {@link org.openqa.selenium.WebElement element} to present for
 		// specified time
 		try {
-			waitForElementByLocator(driver, by, ExpectedConditionsEnums.VISIBLE, maxTimeout);
+			waitForElement(driver, by, ExpectedConditionsEnums.VISIBLE, maxTimeout);
 			// return true if the {@link org.openqa.selenium.WebElement element} is visible
 			return true;
 		} catch (Exception e) {
@@ -217,11 +217,11 @@ public class CommonFunctions {
 	 * @param maxTimeout the max timeout
 	 * @return true, if is element displayed by locator
 	 */
-	public boolean isElementDisplayedByLocator(WebDriver driver, By by, int maxTimeout) {
+	public boolean isElementDisplayed(WebDriver driver, By by, int maxTimeout) {
 		// wait for the {@link org.openqa.selenium.WebElement element} to present for
 		// specified time
 		try {
-			waitForElementByLocator(driver, by, ExpectedConditionsEnums.VISIBLE, maxTimeout);
+			waitForElement(driver, by, ExpectedConditionsEnums.VISIBLE, maxTimeout);
 			// return true if the {@link org.openqa.selenium.WebElement element} is visible
 			return true;
 		} catch (Exception e) {
@@ -238,11 +238,11 @@ public class CommonFunctions {
 	 * @param by     the by
 	 * @return true, if is element displayed
 	 */
-	public boolean isElementDisplayedByLocator(WebDriver driver, By by) {
+	public boolean isElementDisplayed(WebDriver driver, By by) {
 		// wait for the {@link org.openqa.selenium.WebElement element} to present for
 		// specified time
 		try {
-			waitForElementByLocator(driver, by, ExpectedConditionsEnums.VISIBLE, CommonVariables.MED_TIMEOUT);
+			waitForElement(driver, by, ExpectedConditionsEnums.VISIBLE, CommonVariables.MED_TIMEOUT);
 			// return true if the {@link org.openqa.selenium.WebElement element} is visible
 			return true;
 		} catch (Exception e) {
@@ -295,7 +295,7 @@ public class CommonFunctions {
 	 * @param maxTimeout the max timeout
 	 * @return true, if is element enabled by locator
 	 */
-	public boolean isElementEnabledByLocator(WebDriver driver, By by, int maxTimeout) {
+	public boolean isElementEnabled(WebDriver driver, By by, int maxTimeout) {
 		return false;
 	}
 
@@ -465,7 +465,7 @@ public class CommonFunctions {
 	}
 
 	/**
-	 * Select drop down list item based on value
+	 * Select drop down list item based on value.
 	 *
 	 * @param driver              the {@link org.openqa.selenium.WebDriver
 	 *                            WebDriver}
@@ -498,12 +498,83 @@ public class CommonFunctions {
 	}
 
 	/**
+	 * Get the visible (i.e. not hidden by CSS) text of this element, including
+	 * sub-elements.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param element             the {@link org.openqa.selenium.WebElement element}
+	 * @param isCaptureScreenShot the is capture screen shot
+	 * @param screenShotName      the screen shot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default. Make sure set the date
+	 *                            time format using
+	 *                            {@link #setScreenShotTimeStampFormat
+	 *                            setScreenShotTimeStampFormat} setter. <br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @return the visible text of this element.
+	 */
+	public String getText(WebDriver driver, WebElement element, boolean isCaptureScreenShot, String screenShotName) {
+		String elementText;
+		// highlight the element
+		String originalStyle = highlightElement(driver, element);
+		// get the element text
+		elementText = element.getText();
+		// capture screenshot
+		if (isCaptureScreenShot) {
+			captureElementScreenShot(driver, screenShotName);
+		}
+		// unhighlight the element
+		unHighlightElement(driver, element, originalStyle);
+		return elementText;
+	}
+
+	/**
+	 * Gets the attribute.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param element             the {@link org.openqa.selenium.WebElement element}
+	 * @param attributeName       the attribute name
+	 * @param isCaptureScreenShot the is capture screen shot
+	 * @param screenShotName      the screen shot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default. Make sure set the date
+	 *                            time format using
+	 *                            {@link #setScreenShotTimeStampFormat
+	 *                            setScreenShotTimeStampFormat} setter. <br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @return the attribute/property's current value or null if the value is not
+	 *         set.
+	 * @see org.openqa.selenium.WebElement#getAttribute getAttribute
+	 */
+	public String getAttribute(WebDriver driver, WebElement element, String attributeName, boolean isCaptureScreenShot,
+			String screenShotName) {
+		String attributeValue;
+		// highlight the element
+		String originalStyle = highlightElement(driver, element);
+		// get the element text
+		attributeValue = element.getAttribute(attributeName);
+		// capture screenshot
+		if (isCaptureScreenShot) {
+			captureElementScreenShot(driver, screenShotName);
+		}
+		// un-highlight the element
+		unHighlightElement(driver, element, originalStyle);
+		return attributeValue;
+	}
+
+	/**
 	 * Select list item based on the visible text.
 	 *
 	 * @param driver              the {@link org.openqa.selenium.WebDriver
 	 *                            WebDriver}
 	 * @param element             the {@link org.openqa.selenium.WebElement element}
-	 * @param partialText         the partial text
+	 * @param visibleText         the visible text of the list item
 	 * @param isCaptureScreenshot the is capture screenshot
 	 * @param screenShotName      the screenshot name <br>
 	 *                            Date time Stamp will be <i>prepended</i> to the
@@ -544,9 +615,8 @@ public class CommonFunctions {
 	 *      more information on the UIEvents.
 	 */
 	public void fireEventOnElement(WebDriver driver, WebElement element, String eventType, String eventName) {
-		String jsFunction = " var clickEvent = document.createEvent ('" + eventType + "');" 
-								 	+ "clickEvent.initEvent ('" + eventName + "', true, true); "
-									+ "arguments [0].dispatchEvent (clickEvent); ";
+		String jsFunction = " var clickEvent = document.createEvent ('" + eventType + "');" + "clickEvent.initEvent ('"
+				+ eventName + "', true, true); " + "arguments [0].dispatchEvent (clickEvent); ";
 		executeJs(driver, element, jsFunction);
 	}
 
@@ -729,7 +799,7 @@ public class CommonFunctions {
 	 * @param maxTimeout        the max timeout
 	 * @return the web element
 	 */
-	private WebElement waitUntilElementByLocator(WebDriver driver, By by, ExpectedConditionsEnums expectedCondition,
+	private WebElement waitUntilElement(WebDriver driver, By by, ExpectedConditionsEnums expectedCondition,
 			int maxTimeout) {
 		WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
 		switch (expectedCondition) {

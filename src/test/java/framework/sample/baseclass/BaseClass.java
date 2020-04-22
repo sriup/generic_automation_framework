@@ -6,11 +6,24 @@ import framework.abstracts.FwBaseClass;
 import framework.constants.CommonVariables;
 import framework.utilities.FolderFileUtils;
 
+
+/**
+ * The Class BaseClass.
+ */
 public class BaseClass extends FwBaseClass {
 
 
+	/** The file utils. */
 	private FolderFileUtils fileUtils;
 	
+	/**
+	 * Instantiates a new base class.
+	 *
+	 * @param role the role
+	 * @param methodName the method name
+	 * @param retryCount the retry count
+	 * @throws Exception the exception
+	 */
 	public BaseClass(String role, String methodName, int retryCount) throws Exception {
 		super();
 		// TODO Auto-generated constructor stub
@@ -26,6 +39,11 @@ public class BaseClass extends FwBaseClass {
 		
 	}
 
+	/**
+	 * Creates the screenshot path.
+	 *
+	 * @param screenshotFolderName the screenshot folder name
+	 */
 	@Override
 	public void createScreenshotPath(String screenshotFolderName) {
 		
