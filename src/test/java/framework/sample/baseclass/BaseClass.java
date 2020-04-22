@@ -27,10 +27,9 @@ public class BaseClass extends FwBaseClass {
 	public BaseClass(String role, String methodName, int retryCount) throws Exception {
 		super();
 		// TODO Auto-generated constructor stub
-		
-		fileUtils = new FolderFileUtils();
-		
 		String logFilename = role + methodName + "_" + retryCount;
+		
+		fileUtils = new FolderFileUtils(getLogAccess());
 		
 		//Create Screenshot folder path
 		createScreenshotPath(methodName);
@@ -38,6 +37,8 @@ public class BaseClass extends FwBaseClass {
 		init(logFilename, this.getScreenshotPath(), CommonVariables.BROWSER_SELECT);
 		
 	}
+	
+	
 
 	/**
 	 * Creates the screenshot path.

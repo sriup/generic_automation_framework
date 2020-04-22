@@ -1,5 +1,7 @@
 package framework.constants;
 
+import framework.enums.LogVerboseEnums;
+
 /**
  * All the common variables related to the framework.
  */
@@ -37,6 +39,9 @@ public class CommonVariables {
 	 * </table>
 	 */
 	public String[] TIME_FORMATS = { "yyyy:mm:dd_hh_MM_ss", "mm:dd:yy" };
+	
+	/** The Log Level **/
+	public static LogVerboseEnums logLevel;
 
 }
 

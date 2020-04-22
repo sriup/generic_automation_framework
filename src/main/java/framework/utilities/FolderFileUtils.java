@@ -9,10 +9,19 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
+import framework.logs.LogAccess;
+
 /**
  * All methods related to the file and folder.
  */
 public class FolderFileUtils {
+
+	private LogAccess logAccess;
+
+	public FolderFileUtils(LogAccess logAccess) {
+		// TODO Auto-generated constructor stub
+		this.logAccess = logAccess;
+	}
 
 	/**
 	 * It creates the folder if folder is not present or else it will return the
@@ -35,6 +44,26 @@ public class FolderFileUtils {
 		return folderFile;
 	}
 
+	/**
+	 * It creates the folder if folder is not present or else it will return the
+	 * existing Absolute path
+	 * 
+	 * @param folderPath Provide the Absolute Folder path
+	 * @return
+	 * @throws Exception
+	 */
+	public File createFolder(String folderPath) throws Exception {
+
+		File folderFile = new File(folderPath);
+		if (!folderFile.exists()) {
+			if (folderFile.mkdir()) {
+				//TODO
+				// LogAccess.getLogger().info("Folder is created!");
+			}
+		}
+		return folderFile;
+	}
+	
 	/**
 	 * It deletes the file or folder if it exists.
 	 *
@@ -79,16 +108,20 @@ public class FolderFileUtils {
 	 * @param filePath Provide the Absolute File path
 	 * @param filename the filename
 	 * @return The File object
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws Exception the exception
 	 */
-	public File createFile(String filePath, String filename) throws IOException {
+	public File createFile(String filePath, String filename) throws Exception {
 
-		File file = new File(filePath + filename, "UTF-8");
+		this.logAccess.getLogger().info("File name :- " + filePath + filename);
+		
+		createFolder(filePath);
+		
+		File file = new File(filePath + filename);
 
 		String logMessage = (file.createNewFile()) ? "File is created!" : "File already exists.";
 
 		//TODO
-		// LogAccess.getLogger().info(logMessage);
+		 this.logAccess.getLogger().info(logMessage);
 
 		return file;
 
@@ -102,9 +135,9 @@ public class FolderFileUtils {
 	 * @param filename the filename
 	 * @param inputLine the input line
 	 * @return The File object
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws Exception the exception
 	 */
-	public File writeToTextFile(String filePath, String filename, String inputLine) throws IOException {
+	public File writeToTextFile(String filePath, String filename, String inputLine) throws Exception {
 
 		File file = createFile(filePath, filename);
 
@@ -123,9 +156,9 @@ public class FolderFileUtils {
 	 * @param filename the filename
 	 * @param inputLinesList the input lines list
 	 * @return The File object
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws Exception the exception
 	 */
-	public File writeMultiLinesToTextFile(String filePath, String filename, List<String> inputLinesList) throws IOException {
+	public File writeMultiLinesToTextFile(String filePath, String filename, List<String> inputLinesList) throws Exception {
 
 		File file = createFile(filePath, filename);
 

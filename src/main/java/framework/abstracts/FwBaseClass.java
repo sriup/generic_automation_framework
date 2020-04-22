@@ -1,6 +1,9 @@
 package framework.abstracts;
 
+import org.apache.log4j.LogManager;
+
 import framework.commonfunctions.BrowserFunctions;
+import framework.logs.LogAccess;
 
 /**
  * The Class FwBaseClass.
@@ -8,10 +11,13 @@ import framework.commonfunctions.BrowserFunctions;
 public abstract class FwBaseClass {
 	
 	/** The browser functions. */
-	private BrowserFunctions browserFunctions = new BrowserFunctions();
+	private BrowserFunctions browserFunctions;
 	
 	/** The screenshot path. */
 	private String screenshotPath;
+	
+	/** Capturing all the log info in the LogAccess */
+	private LogAccess logAccess;
 	
 	/**
 	 * Initialization method
@@ -24,9 +30,9 @@ public abstract class FwBaseClass {
 	public void init(String logFilename, String downloadPath, String browserType) throws Exception {
 		// TODO Auto-generated constructor stub
 		
-		setLogAccessFilename(logFilename);
+		initializaLogger(logFilename);
 		
-		this.browserFunctions = new BrowserFunctions();
+		this.browserFunctions = new BrowserFunctions(this.logAccess);
 		browserFunctions.launch(browserType, downloadPath);
 		
 	}
@@ -69,14 +75,26 @@ public abstract class FwBaseClass {
 		this.screenshotPath = screenshotPath;
 	}
 
+	
+	public LogAccess getLogAccess() {
+		return logAccess;
+	}
+
+	public void setLogAccess(LogAccess logAccess) {
+		this.logAccess = logAccess;
+	}
+
 	/**
 	 * Sets the log access filename.
 	 *
 	 * @param filename the new log access filename
 	 */
-	//Initialize Logger
-	public void setLogAccessFilename(String filename) {
+	public void initializaLogger(String filename) {
+
+		LogManager.resetConfiguration();
 		
+		logAccess = new LogAccess(filename, false);
+
 	}
 	
 	/**

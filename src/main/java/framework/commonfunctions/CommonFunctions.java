@@ -19,6 +19,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import framework.constants.CommonVariables;
 import framework.enums.ExpectedConditionsEnums;
+import framework.logs.LogAccess;
 
 /**
  * 
@@ -33,12 +34,17 @@ public class CommonFunctions {
 	/** Date time format to be prepended to the screenshot name. */
 	private String screenShotTimeStamp;
 
+	/** Log info is written in LogAccess */
+	private LogAccess logAccess;
+
 	/**
 	 * Instantiates a new common functions.
 	 *
 	 * @param screenShotsPath the screen shots path
+	 * @param logAccess Log Access object
 	 */
-	public CommonFunctions(String screenShotsPath) {
+	public CommonFunctions(String screenShotsPath, LogAccess logAccess) {
+		this.logAccess = logAccess;
 		this.screenShotsPath = screenShotsPath;
 	}
 

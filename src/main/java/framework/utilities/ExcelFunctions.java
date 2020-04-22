@@ -19,6 +19,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import framework.logs.LogAccess;
+
 /**
  * All the methods related to the excel operations will be handled in this
  * class.
@@ -27,6 +29,7 @@ public class ExcelFunctions {
 
 	/** The workbook */
 	private Workbook wb;
+	private LogAccess logAccess;
 
 	/**
 	 * Instantiates a new excel functions.
@@ -35,14 +38,17 @@ public class ExcelFunctions {
 	 * @param fileName      the file name
 	 * @throws IOException 
 	 */
-	public ExcelFunctions(String excelFilePath, String fileName) throws IOException {
+	public ExcelFunctions(String excelFilePath, String fileName, LogAccess logAccess) throws IOException {
+			this.logAccess = logAccess;
 			this.wb = getWorkBook(excelFilePath, fileName);
 	}
 
 	/**
 	 * Instantiates a new excel functions.
 	 */
-	public ExcelFunctions() {
+	public ExcelFunctions(LogAccess logAccess) {
+		
+		this.logAccess = logAccess;
 
 	}
 
@@ -614,7 +620,7 @@ public class ExcelFunctions {
 	 */
 	// delete file
 	public void deleteFile(String excelFilePath, String excelFileName) throws Exception {
-		FolderFileUtils ffUtils = new FolderFileUtils();
+		FolderFileUtils ffUtils = new FolderFileUtils(this.logAccess);
 			ffUtils.deleteFileOrFolder(excelFilePath, excelFileName);
 	}
 
