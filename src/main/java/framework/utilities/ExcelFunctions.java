@@ -9,10 +9,14 @@ import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
@@ -29,13 +33,10 @@ public class ExcelFunctions {
 	 *
 	 * @param excelFilePath the excel file path
 	 * @param fileName      the file name
+	 * @throws IOException 
 	 */
-	public ExcelFunctions(String excelFilePath, String fileName) {
-		try {
+	public ExcelFunctions(String excelFilePath, String fileName) throws IOException {
 			this.wb = getWorkBook(excelFilePath, fileName);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -52,9 +53,9 @@ public class ExcelFunctions {
 	 * @param excelFileName the excel file name
 	 * @param sheetName     Name of the work sheet
 	 * @param excelData     the excel data
+	 * @throws IOException 
 	 */
-	public void createExcel(String excelFilePath, String excelFileName, String sheetName, Object[][] excelData) {
-		try {
+	public void createExcel(String excelFilePath, String excelFileName, String sheetName, Object[][] excelData) throws IOException {
 			this.wb = getWorkBook(excelFilePath, excelFileName);
 			Sheet ws = wb.createSheet(sheetName);
 			// row index
@@ -82,10 +83,9 @@ public class ExcelFunctions {
 			}
 			// save the excel file
 			saveWorkBook(excelFilePath, excelFileName);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
+
+	// add sheet
 
 	/**
 	 * Gets the sheet.
@@ -403,10 +403,11 @@ public class ExcelFunctions {
 	 * @param rowNumber     the row number (starts with 0)
 	 * @param columnNumber  the column number (starts with 0)
 	 * @param value         the value
+	 * @throws IOException 
 	 */
 	// write value in cell
 	public void writeCellData(String excelFilePath, String excelFileName, String sheetName, int rowNumber,
-			int columnNumber, Object value) {
+			int columnNumber, Object value, String style) throws IOException {
 		Cell cell;
 		if (rowNumber > getRowCount(sheetName)) {
 			// create a new row and append the data
@@ -434,9 +435,10 @@ public class ExcelFunctions {
 	 * @param rowNumber     the row number (starts with 0)
 	 * @param columnNumber  the column number (starts with 0)
 	 * @param value         the value
+	 * @throws IOException 
 	 */
 	public void writeCellData(String excelFilePath, String excelFileName, int sheetIndex, int rowNumber,
-			int columnNumber, Object value) {
+			int columnNumber, Object value, String color) throws IOException {
 		Cell cell;
 		if (rowNumber > getRowCount(sheetIndex)) {
 			// create a new row and append the data
@@ -451,6 +453,23 @@ public class ExcelFunctions {
 			// set value as String for anything other than Integer
 			cell.setCellValue((String) value);
 		}
+
+//		XSSFCellStyle iSatzCellStyle = wb.createCellStyle();
+//		iSatzCellStyle.setBorderTop(BorderStyle.THIN);
+//		iSatzCellStyle.setBorderBottom(BorderStyle.THIN);
+//		iSatzCellStyle.setBorderLeft(BorderStyle.THIN);
+//		iSatzCellStyle.setBorderRight(BorderStyle.THIN);
+//		if (color.equalsIgnoreCase("GREEN")) {
+//			iSatzCellStyle.setFillBackgroundColor(IndexedColors.GREEN.getIndex());
+//			iSatzCellStyle.setFillPattern(FillPatternType.LESS_DOTS);
+//		} else if (color.equalsIgnoreCase("RED")) {
+//			iSatzCellStyle.setFillBackgroundColor(IndexedColors.RED.getIndex());
+//			iSatzCellStyle.setFillPattern(FillPatternType.LESS_DOTS);
+//		} else if (color.equalsIgnoreCase("GOLD")) {
+//			iSatzCellStyle.setFillBackgroundColor(IndexedColors.GOLD.getIndex());
+//			iSatzCellStyle.setFillPattern(FillPatternType.LESS_DOTS);
+//		} else if (color.equalsIgnoreCase("NONE")) {
+//		}
 		saveWorkBook(excelFilePath, excelFileName);
 	}
 
@@ -463,9 +482,10 @@ public class ExcelFunctions {
 	 * @param rowNumber     the row number (starts with 0)
 	 * @param columnName    the column name
 	 * @param value         the value
+	 * @throws IOException 
 	 */
 	public void writeCellData(String excelFilePath, String excelFileName, String sheetName, int rowNumber,
-			String columnName, Object value) {
+			String columnName, Object value) throws IOException {
 		Cell cell;
 		if (rowNumber > getRowCount(sheetName)) {
 			// create a new row and append the data
@@ -493,9 +513,10 @@ public class ExcelFunctions {
 	 * @param rowNumber     the row number (starts with 0)
 	 * @param columnName    the column name
 	 * @param value         the value
+	 * @throws IOException 
 	 */
 	public void writeCellData(String excelFilePath, String excelFileName, int sheetIndex, int rowNumber,
-			String columnName, Object value) {
+			String columnName, Object value) throws IOException {
 		Cell cell;
 		if (rowNumber > getRowCount(sheetIndex)) {
 			// create a new row and append the data
@@ -589,15 +610,12 @@ public class ExcelFunctions {
 	 *
 	 * @param excelFilePath the excel file path
 	 * @param excelFileName the excel file name
+	 * @throws Exception 
 	 */
 	// delete file
-	public void deleteFile(String excelFilePath, String excelFileName) {
+	public void deleteFile(String excelFilePath, String excelFileName) throws Exception {
 		FolderFileUtils ffUtils = new FolderFileUtils();
-		try {
 			ffUtils.deleteFileOrFolder(excelFilePath, excelFileName);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -625,30 +643,25 @@ public class ExcelFunctions {
 	 *
 	 * @param excelFilePath the excel file path
 	 * @param excelFileName the excel file name
+	 * @throws IOException
 	 */
 	// save workbook
-	public void saveWorkBook(String excelFilePath, String excelFileName) {
+	public void saveWorkBook(String excelFilePath, String excelFileName) throws IOException {
 		FileOutputStream outputStream;
-		try {
-			outputStream = new FileOutputStream(excelFilePath + File.pathSeparator + excelFileName);
-			wb.write(outputStream);
-			// close the workbook
-			closeWorkBook();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		outputStream = new FileOutputStream(excelFilePath + File.pathSeparator + excelFileName);
+		wb.write(outputStream);
+		// close the workbook
+		closeWorkBook();
 	}
 
 	/**
 	 * Close work book.
+	 * @throws IOException 
 	 */
 	// close sheet
-	public void closeWorkBook() {
-		try {
+	public void closeWorkBook() throws IOException {
 			wb.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		
 	}
 
 	/*
