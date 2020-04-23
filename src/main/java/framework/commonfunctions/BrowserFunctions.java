@@ -9,6 +9,7 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import framework.logs.LogAccess;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 /**
@@ -20,9 +21,16 @@ import io.github.bonigarcia.wdm.WebDriverManager;
  */
 public class BrowserFunctions {
 
+	public BrowserFunctions(LogAccess logAccess) {
+		this.logAccess = logAccess;
+	}
+
 	/** The download folder path. */
 	private String downloadFolderpath = "";
 
+	/** Log info is written in LogAccess */
+	private LogAccess logAccess;
+	
 	/**
 	 * Sets the download folder path.
 	 *

@@ -12,5 +12,22 @@ public enum LogVerboseEnums {
 	ERROR,
 	
 	/** The info. */
-	INFO
+	INFO,
+	
+	/** ALL. */
+	ALL,
+	
+	/** FATAL */
+	FATAL,
+	
+	/** OFF */
+	OFF,
+	
+	/** TRACE */
+	TRACE,
+	
+	/** WARN */
+	WARN
+	
+	
 }

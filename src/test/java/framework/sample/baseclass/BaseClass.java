@@ -4,6 +4,7 @@ import java.io.File;
 
 import framework.abstracts.FwBaseClass;
 import framework.constants.CommonVariables;
+import framework.enums.LogVerboseEnums;
 import framework.utilities.FolderFileUtils;
 
 
@@ -27,17 +28,20 @@ public class BaseClass extends FwBaseClass {
 	public BaseClass(String role, String methodName, int retryCount) throws Exception {
 		super();
 		// TODO Auto-generated constructor stub
-		
-		fileUtils = new FolderFileUtils();
-		
 		String logFilename = role + methodName + "_" + retryCount;
+		
+		fileUtils = new FolderFileUtils(getLogAccess());
 		
 		//Create Screenshot folder path
 		createScreenshotPath(methodName);
 		
-		init(logFilename, this.getScreenshotPath(), CommonVariables.BROWSER_SELECT);
+		LogVerboseEnums logLevel = LogVerboseEnums.DEBUG;
+		
+		init(logFilename, logLevel, this.getScreenshotPath(), CommonVariables.BROWSER_SELECT);
 		
 	}
+	
+	
 
 	/**
 	 * Creates the screenshot path.
