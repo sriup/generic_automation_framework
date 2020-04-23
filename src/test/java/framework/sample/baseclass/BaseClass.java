@@ -4,6 +4,7 @@ import java.io.File;
 
 import framework.abstracts.FwBaseClass;
 import framework.constants.CommonVariables;
+import framework.enums.LogVerboseEnums;
 import framework.utilities.FolderFileUtils;
 
 
@@ -34,7 +35,9 @@ public class BaseClass extends FwBaseClass {
 		//Create Screenshot folder path
 		createScreenshotPath(methodName);
 		
-		init(logFilename, this.getScreenshotPath(), CommonVariables.BROWSER_SELECT);
+		LogVerboseEnums logLevel = LogVerboseEnums.DEBUG;
+		
+		init(logFilename, logLevel, this.getScreenshotPath(), CommonVariables.BROWSER_SELECT);
 		
 	}
 	

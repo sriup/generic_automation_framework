@@ -3,6 +3,7 @@ package framework.abstracts;
 import org.apache.log4j.LogManager;
 
 import framework.commonfunctions.BrowserFunctions;
+import framework.enums.LogVerboseEnums;
 import framework.logs.LogAccess;
 
 /**
@@ -20,17 +21,18 @@ public abstract class FwBaseClass {
 	private LogAccess logAccess;
 	
 	/**
-	 * Initialization method
+	 * Initialize method
 	 *
-	 * @param logFilename the log filename
-	 * @param downloadPath the download path
-	 * @param browserType the browser type
-	 * @throws Exception the exception
+	 * @param logFilename The log filename
+	 * @param logLevel The logger level
+	 * @param downloadPath The download path
+	 * @param browserType The browser type
+	 * @throws Exception The exception
 	 */
-	public void init(String logFilename, String downloadPath, String browserType) throws Exception {
+	public void init(String logFilename, LogVerboseEnums logLevel, String downloadPath, String browserType) throws Exception {
 		// TODO Auto-generated constructor stub
 		
-		initializaLogger(logFilename);
+		initializeLogger(logFilename, logLevel);
 		
 		this.browserFunctions = new BrowserFunctions(this.logAccess);
 		browserFunctions.launch(browserType, downloadPath);
@@ -89,11 +91,11 @@ public abstract class FwBaseClass {
 	 *
 	 * @param filename the new log access filename
 	 */
-	public void initializaLogger(String filename) {
+	public void initializeLogger(String filename, LogVerboseEnums logLevel) {
 
 		LogManager.resetConfiguration();
 		
-		logAccess = new LogAccess(filename, false);
+		logAccess = new LogAccess(filename, logLevel);
 
 	}
 	

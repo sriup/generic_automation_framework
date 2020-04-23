@@ -18,7 +18,6 @@ public class DateTimeUtils {
 	private LogAccess logAccess;
 
 	public DateTimeUtils(LogAccess logAccess) {
-		super();
 		this.logAccess = logAccess;
 	}
 
@@ -243,9 +242,9 @@ public class DateTimeUtils {
 	 * @return Timestamp
 	 * @throws ParseException The ParseException
 	 */
-	public long parseDateStringToTimestamp(String dateTimeStr) throws ParseException {
+	public long parseToTimestamp(String dateTimeStr) throws ParseException {
 
-		long timestamp = parseDateStringToTimestamp(dateTimeStr, "MM/dd/yyyy h:mma");
+		long timestamp = parseToTimestamp(dateTimeStr, "MM/dd/yyyy h:mma");
 
 		this.logAccess.getLogger().info("Timestamp :- " + timestamp);
 
@@ -259,7 +258,7 @@ public class DateTimeUtils {
 	 * @return Timestamp
 	 * @throws ParseException The ParseException
 	 */
-	public long parseDateStringToTimestamp(String dateTimeStr,  String dateFormat) throws ParseException {
+	public long parseToTimestamp(String dateTimeStr,  String dateFormat) throws ParseException {
 
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
 		Date parsedDate = simpleDateFormat.parse(dateTimeStr);
@@ -273,15 +272,15 @@ public class DateTimeUtils {
 
 	/**
 	 * Validating the string dateTime is matching with the expected "MM/dd/yyyy mm:ss a" format
-	 * @param inDate String dateTime
+	 * @param inputDate String dateTime
 	 * @return Is a valid date format or not
 	 */
-	public boolean isValidDate(String inDate) {
+	public boolean isValidDate(String inputDate) {
 		
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy mm:ss a");
 		dateFormat.setLenient(false);
 		try {
-			dateFormat.parse(inDate.trim());
+			dateFormat.parse(inputDate.trim());
 		} catch (ParseException pe) {
 			
 			this.logAccess.getLogger().info("ParseException :- " + pe);
@@ -289,7 +288,7 @@ public class DateTimeUtils {
 			return false;
 		}
 		
-		this.logAccess.getLogger().info("The parsed date is a valid date :- '" + inDate + "'");
+		this.logAccess.getLogger().info("The parsed date is a valid date :- '" + inputDate + "'");
 		
 		return true;
 	}
@@ -297,15 +296,15 @@ public class DateTimeUtils {
 	/**
 	 * Validating the string dateTime is matching with the expected custom date format
 	 * @param expectedDateFormat Custom date format
-	 * @param inDate String dateTime
+	 * @param inputDate String dateTime
 	 * @return Is a valid date format or not
 	 */
-	public boolean isValidDate(String inDate, String expectedDateFormat) {
+	public boolean isValidDate(String inputDate, String expectedDateFormat) {
 		
 		SimpleDateFormat dateFormat = new SimpleDateFormat(expectedDateFormat);
 		dateFormat.setLenient(false);
 		try {
-			dateFormat.parse(inDate.trim());
+			dateFormat.parse(inputDate.trim());
 		} catch (ParseException pe) {
 			
 			this.logAccess.getLogger().info("ParseException :- " + pe);
@@ -313,7 +312,7 @@ public class DateTimeUtils {
 			return false;
 		}
 		
-		this.logAccess.getLogger().info("The parsed date is a valid date :- '" + inDate + "' with the expectedDateFormate '" + expectedDateFormat + "'");
+		this.logAccess.getLogger().info("The parsed date is a valid date :- '" + inputDate + "' with the expectedDateFormate '" + expectedDateFormat + "'");
 		
 		return true;
 	}
@@ -325,15 +324,31 @@ public class DateTimeUtils {
 	 * @return Date, Year and Month
 	 */
 	public String getDateYearMonth(int min, int max) {
+		
+		String date = getDateYearMonth(min, max, "MM/dd/YYYY");
+		
+		this.logAccess.getLogger().info("Date, Year and Month in MM/dd/YYYY format :- " + date);
+		
+		return date;
+	}
+	
+	/**
+	 * Fetching the Date, Year and Month between the provided range of years and return it in the custom date format
+	 * @param min Minimum Year
+	 * @param max Maximum Year
+	 * @param dateFormat Custom Date format
+	 * @return Date, Year and Month
+	 */
+	public String getDateYearMonth(int min, int max, String dateFormat) {
 		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		int year = min + new Random().nextInt(max - min + 1);
 		calendar.set(Calendar.YEAR, year);
 		int day = 1 + new Random().nextInt(calendar.getActualMaximum(Calendar.DAY_OF_YEAR));
 		calendar.set(Calendar.DAY_OF_YEAR, day);
 		
-		String date = new SimpleDateFormat("MM/dd/YYYY").format(calendar.getTime());
+		String date = new SimpleDateFormat(dateFormat).format(calendar.getTime());
 		
-		this.logAccess.getLogger().info("Date, Year and Month in MM/dd/YYYY format :- " + date);
+		this.logAccess.getLogger().info("Date, Year and Month in custom date format :- " + date);
 		
 		return date;
 	}

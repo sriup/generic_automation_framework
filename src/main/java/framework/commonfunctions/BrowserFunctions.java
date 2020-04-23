@@ -22,7 +22,6 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 public class BrowserFunctions {
 
 	public BrowserFunctions(LogAccess logAccess) {
-		super();
 		this.logAccess = logAccess;
 	}
 

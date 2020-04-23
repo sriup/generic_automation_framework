@@ -19,9 +19,6 @@ public class CommonVariables {
 	/** The minimum timeout. */
 	public static int MIN_TIMEOUT = 5;
 
-	/** The Log Level **/
-	public static LogVerboseEnums logLevel;
-
 	/**
 	 * List of available time formats.
 	 * <table border=1>

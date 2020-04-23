@@ -304,6 +304,8 @@ public class FolderFileUtils {
 		// Rename file (or directory)
 		boolean success = oldFile.renameTo(newFile);
 		
+		this.logAccess.getLogger().info("newFilename '" + newFilename + "' is renamed in the filepath '" + filePath + "'");
+		
 		return success;
 
 	}

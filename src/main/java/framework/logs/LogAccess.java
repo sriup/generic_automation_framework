@@ -1,5 +1,6 @@
 package framework.logs;
 
+import java.io.File;
 /**
  * The Class LogAccess.
  */
@@ -12,22 +13,26 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
 import framework.constants.CommonVariables;
+import framework.enums.LogVerboseEnums;
 import framework.utilities.FolderFileUtils;
 
 public class LogAccess {
 
-	private boolean initializationFlag;
-	private String fileName;
+	private boolean isInitialized;
+	private String loggerFileName;
 	private Logger log;
+	private LogVerboseEnums logLevel;
 
-	public LogAccess(String filename, boolean initializationFlag) {
+	public LogAccess(String filename, LogVerboseEnums logLevel) {
 		// TODO Auto-generated constructor stub
-		this.setFileName(filename);
+		this.logLevel = logLevel;
+		
+		this.setLoggerFileName(filename);
 
-		this.setInitializationFlag(initializationFlag);
+		this.setIsInitialized(false);
 
 	}
-
+	
 	/**
 	 * Creating the Console Appender and File Appender
 	 */
@@ -41,13 +46,13 @@ public class LogAccess {
 		ca.activateOptions();
 		log.addAppender(ca);
 
-		log.info("appender filename in LogAccess class is: " + fileName);
+		log.info("appender filename in LogAccess class is: " + loggerFileName);
 
 		FileAppender appender = new FileAppender();
 
 		appender.setAppend(true);
 
-		String filePath = System.getProperty("user.dir") + "\\target\\logs\\";
+		String filePath = System.getProperty("user.dir") + File.separator + "target" + File.separator + "logs" ;
 
 		FolderFileUtils folderFileUtils = new FolderFileUtils(this);
 
@@ -58,7 +63,7 @@ public class LogAccess {
 			e.printStackTrace();
 		}
 
-		appender.setFile(filePath + fileName + ".log");
+		appender.setFile(filePath + File.separator + loggerFileName + ".log");
 
 		appender.setThreshold(getLogLevel());
 
@@ -76,16 +81,16 @@ public class LogAccess {
 	 */
 	public Logger getLogger() {
 
-		if (!initializationFlag) {
-			System.out.println("HERE TO INITIALIZE LOGGER AGAIN");
+		if (!isInitialized) {
+			System.out.println("Initializating the logger");
 
-			log = Logger.getLogger(fileName);
+			log = Logger.getLogger(loggerFileName);
 
 			Logger.getRootLogger().setAdditivity(false);
 			log.setLevel(getLogLevel());
 
 			intializeLogger();
-			initializationFlag = true;
+			isInitialized = true;
 			return this.log;
 		} else {
 			return this.log;
@@ -96,33 +101,33 @@ public class LogAccess {
 	 * Fetching the Initialization flag
 	 * @return
 	 */
-	public boolean isInitializationFlag() {
-		return initializationFlag;
+	public boolean isInitialized() {
+		return isInitialized;
 	}
 
 	/**
 	 * Setting the Initialization flag
-	 * @param initializationFlag
+	 * @param isInitialized
 	 */
-	public void setInitializationFlag(boolean initializationFlag) {
-		this.initializationFlag = initializationFlag;
+	public void setIsInitialized(boolean isInitialized) {
+		this.isInitialized = isInitialized;
 	}
 
 	/**
-	 * Fetching the Filename
+	 * Fetching the Logger Filename
 	 * @return The filename
 	 */
-	public String getFileName() {
-		return fileName;
+	public String getLoggerFileName() {
+		return loggerFileName;
 	}
 
 	/**
 	 * Setting the Filename
-	 * @param fileName The filename
+	 * @param loggerFileName The filename
 	 */
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-		System.out.println("Filename in LogAccess setFilename() is: " + this.fileName);
+	public void setLoggerFileName(String loggerFileName) {
+		this.loggerFileName = loggerFileName;
+		System.out.println("Filename in LogAccess setLoggerFileName() is: " + this.loggerFileName);
 
 	}
 	
@@ -132,7 +137,8 @@ public class LogAccess {
 	 */
 	public Level getLogLevel() {
 
-		switch (CommonVariables.logLevel) {
+		switch (this.logLevel) {
+		//We are getting ENUMS from LogVerboseEnums class
 		case DEBUG:
 			return Level.DEBUG;
 
