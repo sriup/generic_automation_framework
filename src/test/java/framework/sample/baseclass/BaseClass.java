@@ -27,17 +27,18 @@ public class BaseClass extends FwBaseClass {
 	 */
 	public BaseClass(String role, String methodName, int retryCount) throws Exception {
 		super();
-		// TODO Auto-generated constructor stub
 		String logFilename = role + methodName + "_" + retryCount;
+		
+		LogVerboseEnums logLevel = LogVerboseEnums.DEBUG;
+		
+		initializeLogger(logFilename, logLevel);
 		
 		fileUtils = new FolderFileUtils(getLogAccess());
 		
 		//Create Screenshot folder path
 		createScreenshotPath(methodName);
 		
-		LogVerboseEnums logLevel = LogVerboseEnums.DEBUG;
-		
-		init(logFilename, logLevel, this.getScreenshotPath(), CommonVariables.BROWSER_SELECT);
+		init(CommonVariables.BROWSER_SELECT, this.getScreenshotPath());
 		
 	}
 	
