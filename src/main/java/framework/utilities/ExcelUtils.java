@@ -25,7 +25,7 @@ import framework.logs.LogAccess;
  * All the methods related to the excel operations will be handled in this
  * class.
  */
-public class ExcelFunctions {
+public class ExcelUtils {
 
 	/** The workbook */
 	private Workbook wb;
@@ -38,7 +38,7 @@ public class ExcelFunctions {
 	 * @param fileName      the file name
 	 * @throws IOException 
 	 */
-	public ExcelFunctions(String excelFilePath, String fileName, LogAccess logAccess) throws IOException {
+	public ExcelUtils(String excelFilePath, String fileName, LogAccess logAccess) throws IOException {
 			this.logAccess = logAccess;
 			this.wb = getWorkBook(excelFilePath, fileName);
 	}
@@ -46,7 +46,7 @@ public class ExcelFunctions {
 	/**
 	 * Instantiates a new excel functions.
 	 */
-	public ExcelFunctions(LogAccess logAccess) {
+	public ExcelUtils(LogAccess logAccess) {
 		
 		this.logAccess = logAccess;
 

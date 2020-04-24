@@ -29,8 +29,7 @@ public abstract class FwBaseClass {
 	 * @throws Exception The exception
 	 */
 	public void init(String browserType, String downloadPath) throws Exception {
-		// TODO Auto-generated constructor stub
-		
+
 		this.browserFunctions = new BrowserFunctions(this.logAccess);
 		browserFunctions.launch(browserType, downloadPath);
 		
@@ -103,4 +102,8 @@ public abstract class FwBaseClass {
 	 */
 	public abstract void createScreenshotPath(String screenshotFolderName);
 	
+	
+	public abstract void setPositiveStatus();
+	
+	public abstract void setNegativeStatus();
 }

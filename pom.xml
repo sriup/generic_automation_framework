@@ -102,11 +102,11 @@
 			<version>2.10.0</version>
 		</dependency>
 
-		<dependency>
-			<groupId>ru.yandex.qatools.allure</groupId>
-			<artifactId>allure-testng-adaptor</artifactId>
-			<version>1.4.22</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>ru.yandex.qatools.allure</groupId> -->
+<!-- 			<artifactId>allure-testng-adaptor</artifactId> -->
+<!-- 			<version>1.4.22</version> -->
+<!-- 		</dependency> -->
 		<dependency>
 			<groupId>io.qameta.allure</groupId>
 			<artifactId>allure-testng</artifactId>

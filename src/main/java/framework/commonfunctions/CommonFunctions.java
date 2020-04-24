@@ -20,6 +20,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import framework.constants.CommonVariables;
 import framework.enums.ExpectedConditionsEnums;
 import framework.logs.LogAccess;
+import framework.utilities.DateTimeUtils;
+import framework.utilities.ExcelUtils;
+import framework.utilities.FolderFileUtils;
 
 /**
  * 
@@ -31,21 +34,51 @@ public class CommonFunctions {
 	/** Folder path where the captured screenshots should be stored. */
 	private String screenShotsPath;
 
-	/** Date time format to be prepended to the screenshot name. */
-	private String screenShotTimeStamp;
-
 	/** Log info is written in LogAccess */
 	private LogAccess logAccess;
+
+	private DateTimeUtils dtUtils;
+
+	private FolderFileUtils ffUtils;
+
+	private ExcelUtils xlUtils;
+
+	public DateTimeUtils getDtUtils() {
+		return dtUtils;
+	}
+
+	public void setDtUtils(DateTimeUtils dtUtils) {
+		this.dtUtils = dtUtils;
+	}
+
+	public FolderFileUtils getFfUtils() {
+		return ffUtils;
+	}
+
+	public void setFfUtils(FolderFileUtils ffUtils) {
+		this.ffUtils = ffUtils;
+	}
+
+	public ExcelUtils getXlUtils() {
+		return xlUtils;
+	}
+
+	public void setXlUtils(ExcelUtils xlUtils) {
+		this.xlUtils = xlUtils;
+	}
 
 	/**
 	 * Instantiates a new common functions.
 	 *
 	 * @param screenShotsPath the screen shots path
-	 * @param logAccess Log Access object
+	 * @param logAccess       Log Access object
 	 */
 	public CommonFunctions(String screenShotsPath, LogAccess logAccess) {
 		this.logAccess = logAccess;
 		this.screenShotsPath = screenShotsPath;
+		dtUtils = new DateTimeUtils(logAccess);
+		ffUtils = new FolderFileUtils(logAccess);
+		xlUtils = new ExcelUtils(logAccess);
 	}
 
 	/**
@@ -53,9 +86,10 @@ public class CommonFunctions {
 	 * Note:<i> This will be prepended to the screenshot name.</i>
 	 * 
 	 * @param timeStampFormat the new screen shot time stamp
+	 * @throws Exception
 	 */
-	public void setScreenShotTimeStampFormat(String timeStampFormat) {
-		this.screenShotTimeStamp = timeStampFormat;
+	public String getScreenShotTime() throws Exception {
+		return dtUtils.getCurrentDateTime(CommonVariables.TIME_FORMATS[7]);
 	}
 
 	/**
@@ -65,7 +99,7 @@ public class CommonFunctions {
 	 */
 
 	public boolean findElement() {
-		
+
 		return false;
 	}
 
@@ -379,10 +413,12 @@ public class CommonFunctions {
 	 * @param element             the {@link org.openqa.selenium.WebElement element}
 	 * @param isCaptureScreenShot the is capture screen shot
 	 * @param captureBefore       the capture before
+	 * @param screenShotName the screen shot name
+	 * @throws Exception the exception
 	 */
 	// click element
-	public void clickOnElement(WebDriver driver, WebElement element, boolean isCaptureScreenShot,
-			boolean captureBefore, String screenShotName) {
+	public void clickOnElement(WebDriver driver, WebElement element, boolean isCaptureScreenShot, boolean captureBefore,
+			String screenShotName) throws Exception {
 		// highlight element
 		String originalStyle = highlightElement(driver, element);
 		// capture before (private capture screenshot)
@@ -417,9 +453,12 @@ public class CommonFunctions {
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
+	 * @throws Exception 
 	 */
 	public void inputValue(WebDriver driver, WebElement element, String value, boolean isCaptureScreenshot,
-			String screenShotName) {
+			String screenShotName) throws Exception {
+		logAccess.getLogger().info("value : " + value);
+		logAccess.getLogger().info("WebElement " + element);
 		// highlight element
 		String originalStyle = highlightElement(driver, element);
 		// click in the field
@@ -433,7 +472,7 @@ public class CommonFunctions {
 		jsTriggerEventOnElement(driver, element, "onchange");
 		// capture (private capture screenshot)
 		if (isCaptureScreenshot) {
-			captureScreenShot(driver, element, screenShotName);
+			captureScreenShot(driver, screenShotName);
 		}
 		// un-highlihgt
 		unHighlightElement(driver, element, originalStyle);
@@ -456,9 +495,10 @@ public class CommonFunctions {
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
+	 * @throws Exception 
 	 */
 	public void selectItemByIndex(WebDriver driver, WebElement element, int index, boolean isCaptureScreenshot,
-			String screenShotName) {
+			String screenShotName) throws Exception {
 		// highlight element
 		String originalStyle = highlightElement(driver, element);
 		// select item by index
@@ -489,9 +529,10 @@ public class CommonFunctions {
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
+	 * @throws Exception 
 	 */
 	public void selectItemByValue(WebDriver driver, WebElement element, String value, boolean isCaptureScreenshot,
-			String screenShotName) {
+			String screenShotName) throws Exception {
 		// highlight element
 		String originalStyle = highlightElement(driver, element);
 		// select item by value
@@ -523,8 +564,9 @@ public class CommonFunctions {
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
 	 * @return the visible text of this element.
+	 * @throws Exception 
 	 */
-	public String getText(WebDriver driver, WebElement element, boolean isCaptureScreenShot, String screenShotName) {
+	public String getText(WebDriver driver, WebElement element, boolean isCaptureScreenShot, String screenShotName) throws Exception {
 		String elementText;
 		// highlight the element
 		String originalStyle = highlightElement(driver, element);
@@ -558,10 +600,11 @@ public class CommonFunctions {
 	 *                            screenshots.
 	 * @return the attribute/property's current value or null if the value is not
 	 *         set.
+	 * @throws Exception 
 	 * @see org.openqa.selenium.WebElement#getAttribute getAttribute
 	 */
 	public String getAttribute(WebDriver driver, WebElement element, String attributeName, boolean isCaptureScreenShot,
-			String screenShotName) {
+			String screenShotName) throws Exception {
 		String attributeValue;
 		// highlight the element
 		String originalStyle = highlightElement(driver, element);
@@ -593,9 +636,10 @@ public class CommonFunctions {
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
+	 * @throws Exception 
 	 */
 	public void selectItemByVisibleText(WebDriver driver, WebElement element, String visibleText,
-			boolean isCaptureScreenshot, String screenShotName) {
+			boolean isCaptureScreenshot, String screenShotName) throws Exception {
 		// highlight element
 		String originalStyle = highlightElement(driver, element);
 		// select item by partial text
@@ -677,9 +721,10 @@ public class CommonFunctions {
 	 *                       Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                       setter to set the path where you want to store the
 	 *                       screenshots.
+	 * @throws Exception 
 	 */
 	// screenshots
-	public void captureScreenShot(WebDriver driver, WebElement element, String screenshotName) {
+	public void captureScreenShotWithHighlight(WebDriver driver, WebElement element, String screenshotName) throws Exception {
 		// highlight
 		String originalStyle = highlightElement(driver, element);
 		// capture screenshot
@@ -700,21 +745,15 @@ public class CommonFunctions {
 	 *                       Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                       setter to set the path where you want to store the
 	 *                       screenshots.
+	 * @throws Exception
 	 */
 	// screenshots
-	public void captureScreenShot(WebDriver driver, String screenshotName) {
-		// capture screenshot
-		// Get TimeStamp
-				DateFormat dateFormat = new SimpleDateFormat(screenShotTimeStamp);
-				Date timeStamp = new Date();
-				String screenShotTime = dateFormat.format(timeStamp);
-				File scrrenShot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-				try {
-					FileUtils.copyFile(scrrenShot,
-							new File(this.screenShotsPath + "\\" + screenShotTime + "_" + screenshotName + ".png"));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+	public void captureScreenShot(WebDriver driver, String screenshotName) throws Exception {
+
+		File scrrenShot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+		FileUtils.copyFile(scrrenShot,
+				new File(this.screenShotsPath + "\\" + getScreenShotTime() + "_" + screenshotName + ".png"));
+
 	}
 
 	/**
@@ -780,7 +819,8 @@ public class CommonFunctions {
 	 * @param originalStyle the original style
 	 */
 	private void setOriginalStyle(WebDriver driver, WebElement element, String originalStyle) {
-		executeJs(driver, element, originalStyle);
+		String js = "arguments[0].setAttribute('style', '" + originalStyle+ "');";
+		executeJs(driver, element, js);
 	}
 
 	/**
@@ -812,7 +852,7 @@ public class CommonFunctions {
 	 * Wait until element by locator.
 	 *
 	 * @param driver            the driver
-	 * @param byLocator                the by locator
+	 * @param byLocator         the by locator
 	 * @param expectedCondition the expected condition
 	 * @param maxTimeout        the max timeout
 	 * @return the web element
@@ -832,5 +872,5 @@ public class CommonFunctions {
 					+ ".\n Please refer to  ExpectedConditionsEnums for the available optoins.");
 		}
 	}
-
+	
 }
