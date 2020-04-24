@@ -1,7 +1,8 @@
+.classpath
+.project
+.settings
 /target/*
 /allure-results/*
 /test-output/*
-.classpath
-.project
-.settings/
-/target/
+/output/*
+
