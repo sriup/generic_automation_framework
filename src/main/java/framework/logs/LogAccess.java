@@ -54,10 +54,15 @@ public class LogAccess {
 
 		String filePath = System.getProperty("user.dir") + File.separator + "target" + File.separator + "logs" ;
 
-		FolderFileUtils folderFileUtils = new FolderFileUtils(this);
-
 		try {
-			folderFileUtils.createFolder(filePath);
+			
+			File folderFile = new File(filePath);
+			if (!folderFile.exists()) {
+				if (folderFile.mkdir()) {
+					System.out.println("Folder is created");
+				}
+			}
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

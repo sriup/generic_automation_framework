@@ -23,16 +23,13 @@ public abstract class FwBaseClass {
 	/**
 	 * Initialize method
 	 *
-	 * @param logFilename The log filename
-	 * @param logLevel The logger level
-	 * @param downloadPath The download path
 	 * @param browserType The browser type
+	 * @param downloadPath The download path
+	 * 
 	 * @throws Exception The exception
 	 */
-	public void init(String logFilename, LogVerboseEnums logLevel, String downloadPath, String browserType) throws Exception {
+	public void init(String browserType, String downloadPath) throws Exception {
 		// TODO Auto-generated constructor stub
-		
-		initializeLogger(logFilename, logLevel);
 		
 		this.browserFunctions = new BrowserFunctions(this.logAccess);
 		browserFunctions.launch(browserType, downloadPath);
