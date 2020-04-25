@@ -17,6 +17,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import framework.logs.LogAccess;
 import io.github.bonigarcia.wdm.Architecture;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import io.qameta.allure.Step;
 
 /**
  * 
@@ -99,6 +100,7 @@ public class BrowserFunctions {
 	 * @return the {@link org.openqa.selenium.WebDriver WebDriver} for the specified
 	 *         browser
 	 */
+	@Step("Lauching \"{browserName}\" browser")
 	public WebDriver launch(String browserName, String downloadPath) {
 		setDownloadFolderPath(this.downloadFolderpath);
 		logAccess.getLogger().info("Launching browser :-  " + browserName);
@@ -126,6 +128,7 @@ public class BrowserFunctions {
 	 * @param URL to load
 	 * @see org.openqa.selenium.remote.RemoteWebDriver#get(String) get
 	 */
+	@Step("Navigating to \"{URL}\"")
 	public void navigate(String URL) {
 		logAccess.getLogger().info("Navigating to URL :- " + URL);
 		threadDriver.get().manage().window().maximize();
@@ -138,6 +141,7 @@ public class BrowserFunctions {
 	 * @return The URL of the page currently loaded in the browser
 	 * @see org.openqa.selenium.remote.RemoteWebDriver#getCurrentUrl() getCurrentURL
 	 */
+	@Step("Getting current URL")
 	public String getCurrentURL() {
 		String currentURL = threadDriver.get().getCurrentUrl();
 		logAccess.getLogger().info("Current URL :- " + currentURL);
@@ -150,6 +154,7 @@ public class BrowserFunctions {
 	 * 
 	 * @see org.openqa.selenium.remote.RemoteWebDriver#close() close
 	 */
+	@Step("Closing browser")
 	public void close() {
 		logAccess.getLogger().info("Closing browser");
 		threadDriver.get().close();
@@ -160,6 +165,7 @@ public class BrowserFunctions {
 	 * 
 	 * @see org.openqa.selenium.remote.RemoteWebDriver#quit() quit
 	 */
+	@Step("Quiting the browser")
 	public void quit() {
 		logAccess.getLogger().info("Quiting the browser");
 		threadDriver.get().quit();
@@ -170,6 +176,7 @@ public class BrowserFunctions {
 	 *
 	 * @see org.openqa.selenium.remote.RemoteWebDriver#navigate() refresh
 	 */
+	@Step("Refreshing the browser")
 	public void refresh() {
 		logAccess.getLogger().info("Refreshing the browser");
 		threadDriver.get().navigate().refresh();
@@ -179,6 +186,7 @@ public class BrowserFunctions {
 	 * Navigate back.
 	 */
 	// back
+	@Step("Navigating back in browser")
 	public void navigateBack() {
 		logAccess.getLogger().info("Navigating back in browser");
 		threadDriver.get().navigate().back();
@@ -187,7 +195,7 @@ public class BrowserFunctions {
 	/**
 	 * Navigate forward.
 	 */
-	// forward
+	@Step("Navigating forward in browser")
 	public void navigateForward() {
 		logAccess.getLogger().info("Navigating forward in browser");
 		threadDriver.get().navigate().forward();

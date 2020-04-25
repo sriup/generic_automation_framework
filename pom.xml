@@ -17,6 +17,114 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.20</version>
+
+				<configuration>
+					<suiteXmlFiles>
+						<suiteXmlFile>${suite}</suiteXmlFile>
+					</suiteXmlFiles>
+					<systemProperties>
+						<property>
+							<name>browser</name>
+							<value>${browser}</value>
+						</property>
+					</systemProperties>
+					<testFailureIgnore>true</testFailureIgnore>
+					<argLine>
+						-javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+					</argLine>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.aspectj</groupId>
+						<artifactId>aspectjweaver</artifactId>
+						<version>${aspectj.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>io.qameta.allure</groupId>
+				<artifactId>allure-maven</artifactId>
+				<version>2.8</version>
+				<configuration>
+					<outputDirectory>${basedir}/target/</outputDirectory>
+					<allureResultsDirectory>${basedir}/allure-results</allureResultsDirectory>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.0</version>
+				<configuration>
+					<source>${java.source-target.version}</source>
+					<target>${java.source-target.version}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>${basedir}</directory>
+							<includes>
+								<include>**/site/**</include>
+								<include>**/allure-results/**</include>
+								<include>**/test-output/**</include>
+							</includes>
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.2.0</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>io.qameta.allure</groupId>
+				<artifactId>allure-maven</artifactId>
+				<version>2.10.0</version>
+				<configuration>
+					<reportVersion>2.8.1</reportVersion>
+					<buildDirectory>.</buildDirectory>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+
 	<dependencies>
 		<!-- Selenium -->
 		<dependency>
@@ -44,7 +152,7 @@
 			<artifactId>ashot</artifactId>
 			<version>1.5.4</version>
 		</dependency>
-		<!--  Video recording -->
+		<!-- Video recording -->
 		<dependency>
 			<groupId>com.automation-remarks</groupId>
 			<artifactId>video-recorder-core</artifactId>
@@ -56,7 +164,7 @@
 			<artifactId>monte-screen-recorder</artifactId>
 			<version>0.7.7.0</version>
 		</dependency>
-		
+
 		<!-- Excel Read/Write -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>
@@ -102,11 +210,8 @@
 			<version>2.10.0</version>
 		</dependency>
 
-<!-- 		<dependency> -->
-<!-- 			<groupId>ru.yandex.qatools.allure</groupId> -->
-<!-- 			<artifactId>allure-testng-adaptor</artifactId> -->
-<!-- 			<version>1.4.22</version> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> <groupId>ru.yandex.qatools.allure</groupId> <artifactId>allure-testng-adaptor</artifactId> 
+			<version>1.4.22</version> </dependency> -->
 		<dependency>
 			<groupId>io.qameta.allure</groupId>
 			<artifactId>allure-testng</artifactId>
