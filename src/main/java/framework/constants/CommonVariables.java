@@ -2,14 +2,11 @@ package framework.constants;
 
 import framework.enums.LogVerboseEnums;
 
+// TODO: Auto-generated Javadoc
 /**
  * All the common variables related to the framework.
  */
 public class CommonVariables {
-
-	/** The browser select. */
-	public static String BROWSER_SELECT = System.getProperty("browserType");
-
 	/** The max timeout. */
 	public static int MAX_TIMEOUT = 120;
 

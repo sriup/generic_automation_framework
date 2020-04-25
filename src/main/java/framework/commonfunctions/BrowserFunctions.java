@@ -1,15 +1,21 @@
 package framework.commonfunctions;
 
+import java.io.File;
 import java.util.HashMap;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import framework.logs.LogAccess;
+import io.github.bonigarcia.wdm.Architecture;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 /**
@@ -21,6 +27,11 @@ import io.github.bonigarcia.wdm.WebDriverManager;
  */
 public class BrowserFunctions {
 
+	/**
+	 * Instantiates a new browser functions.
+	 *
+	 * @param logAccess the log access
+	 */
 	public BrowserFunctions(LogAccess logAccess) {
 		this.logAccess = logAccess;
 	}
@@ -28,9 +39,9 @@ public class BrowserFunctions {
 	/** The download folder path. */
 	private String downloadFolderpath = "";
 
-	/** Log info is written in LogAccess */
+	/** Log info is written in LogAccess. */
 	private LogAccess logAccess;
-	
+
 	/**
 	 * Sets the download folder path.
 	 *
@@ -38,7 +49,7 @@ public class BrowserFunctions {
 	 */
 	private void setDownloadFolderPath(String downloadPath) {
 		if (downloadPath.isEmpty()) {
-			this.downloadFolderpath = System.getProperty("user.dir") + "/Download_File";
+			this.downloadFolderpath = System.getProperty("user.dir") + File.separatorChar + "Download_File";
 		}
 	}
 
@@ -77,8 +88,7 @@ public class BrowserFunctions {
 	 * Launches the specified browser.
 	 *
 	 * @param browserName  provide the browser name as per the below list.<br>
-	 *                     Note: Below is the list of currently supported
-	 *                     browsers
+	 *                     Note: Below is the list of currently supported browsers
 	 *                     <ul>
 	 *                     <li>Chrome</li>
 	 *                     <li>Firefox</li>
@@ -90,8 +100,9 @@ public class BrowserFunctions {
 	 *         browser
 	 */
 	public WebDriver launch(String browserName, String downloadPath) {
-		setDownloadFolderPath(downloadPath);
-
+		setDownloadFolderPath(this.downloadFolderpath);
+		logAccess.getLogger().info("Launching browser :-  " + browserName);
+		logAccess.getLogger().info("Downloads folder :- " + getDownloadFilePath());
 		switch (browserName.trim().toLowerCase()) {
 		case "chrome":
 			return launchChrome();
@@ -103,8 +114,8 @@ public class BrowserFunctions {
 		case "internetexplorer":
 			return launchInternetExplorer();
 		default:
-			throw new IllegalArgumentException("Unexpected value: " + browserName
-					+ ".\n only supported browsers are: chrome, firefox, edge, ie, phantomjs");
+			throw new IllegalArgumentException(
+					"Unexpected value: " + browserName + ".\n only supported browsers are: chrome, firefox, edge, ie");
 		}
 
 	}
@@ -116,6 +127,7 @@ public class BrowserFunctions {
 	 * @see org.openqa.selenium.remote.RemoteWebDriver#get(String) get
 	 */
 	public void navigate(String URL) {
+		logAccess.getLogger().info("Navigating to URL :- " + URL);
 		threadDriver.get().manage().window().maximize();
 		threadDriver.get().get(URL);
 	}
@@ -127,7 +139,9 @@ public class BrowserFunctions {
 	 * @see org.openqa.selenium.remote.RemoteWebDriver#getCurrentUrl() getCurrentURL
 	 */
 	public String getCurrentURL() {
-		return threadDriver.get().getCurrentUrl();
+		String currentURL = threadDriver.get().getCurrentUrl();
+		logAccess.getLogger().info("Current URL :- " + currentURL);
+		return currentURL;
 	}
 
 	/**
@@ -137,6 +151,7 @@ public class BrowserFunctions {
 	 * @see org.openqa.selenium.remote.RemoteWebDriver#close() close
 	 */
 	public void close() {
+		logAccess.getLogger().info("Closing browser");
 		threadDriver.get().close();
 	}
 
@@ -146,6 +161,7 @@ public class BrowserFunctions {
 	 * @see org.openqa.selenium.remote.RemoteWebDriver#quit() quit
 	 */
 	public void quit() {
+		logAccess.getLogger().info("Quiting the browser");
 		threadDriver.get().quit();
 	}
 
@@ -155,6 +171,7 @@ public class BrowserFunctions {
 	 * @see org.openqa.selenium.remote.RemoteWebDriver#navigate() refresh
 	 */
 	public void refresh() {
+		logAccess.getLogger().info("Refreshing the browser");
 		threadDriver.get().navigate().refresh();
 	}
 
@@ -163,6 +180,7 @@ public class BrowserFunctions {
 	 */
 	// back
 	public void navigateBack() {
+		logAccess.getLogger().info("Navigating back in browser");
 		threadDriver.get().navigate().back();
 	}
 
@@ -171,6 +189,7 @@ public class BrowserFunctions {
 	 */
 	// forward
 	public void navigateForward() {
+		logAccess.getLogger().info("Navigating forward in browser");
 		threadDriver.get().navigate().forward();
 	}
 
@@ -180,10 +199,7 @@ public class BrowserFunctions {
 	 * @return the web driver
 	 */
 	/*
-	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	 * !!!!!!!!!!!!!!!!!!!!!!!!!!! !! Private Methods !!
-	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!
+	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!! Private Methods !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	 */
 	private WebDriver launchChrome() {
 		WebDriverManager.chromedriver().setup();
@@ -210,6 +226,8 @@ public class BrowserFunctions {
 	 */
 	private WebDriver launchFirefox() {
 		WebDriverManager.firefoxdriver().setup();
+		threadDriver = new ThreadLocal<RemoteWebDriver>();
+		setWebDriver(new FirefoxDriver());
 		return getWebDriver();
 
 	}
@@ -220,16 +238,32 @@ public class BrowserFunctions {
 	 * @return the web driver
 	 */
 	private WebDriver launchEdge() {
+		WebDriverManager.edgedriver().setup();
+		threadDriver = new ThreadLocal<RemoteWebDriver>();
+		setWebDriver(new EdgeDriver());
 		return getWebDriver();
 
 	}
 
 	/**
-	 * Launch internet explorer.
+	 * Launch Internet explorer.
 	 *
 	 * @return the web driver
 	 */
 	private WebDriver launchInternetExplorer() {
-		return getWebDriver();
+		WebDriverManager.globalConfig().setArchitecture(Architecture.X32);
+		WebDriverManager.iedriver().setup();
+		String binaryPath = WebDriverManager.iedriver().getBinaryPath();
+		System.setProperty("webdriver.ie.driver", binaryPath);
+		threadDriver = new ThreadLocal<RemoteWebDriver>();
+		InternetExplorerOptions options = new InternetExplorerOptions();
+		options.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
+		// options.destructivelyEnsureCleanSession();
+		options.disableNativeEvents();
+		options.enablePersistentHovering();
+		options.requireWindowFocus();
+		options.introduceFlakinessByIgnoringSecurityDomains();
+		threadDriver.set(new InternetExplorerDriver(options));
+		return threadDriver.get();
 	}
 }

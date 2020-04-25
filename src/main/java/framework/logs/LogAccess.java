@@ -16,13 +16,30 @@ import framework.constants.CommonVariables;
 import framework.enums.LogVerboseEnums;
 import framework.utilities.FolderFileUtils;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class LogAccess.
+ */
 public class LogAccess {
 
+	/** The is initialized. */
 	private boolean isInitialized;
+	
+	/** The logger file name. */
 	private String loggerFileName;
+	
+	/** The log. */
 	private Logger log;
+	
+	/** The log level. */
 	private LogVerboseEnums logLevel;
 
+	/**
+	 * Instantiates a new log access.
+	 *
+	 * @param filename the filename
+	 * @param logLevel the log level
+	 */
 	public LogAccess(String filename, LogVerboseEnums logLevel) {
 		// TODO Auto-generated constructor stub
 		this.logLevel = logLevel;
@@ -34,7 +51,7 @@ public class LogAccess {
 	}
 	
 	/**
-	 * Creating the Console Appender and File Appender
+	 * Creating the Console Appender and File Appender.
 	 */
 	private void intializeLogger() {
 
@@ -103,23 +120,26 @@ public class LogAccess {
 	}
 
 	/**
-	 * Fetching the Initialization flag
-	 * @return
+	 * Fetching the Initialization flag.
+	 *
+	 * @return true, if is initialized
 	 */
 	public boolean isInitialized() {
 		return isInitialized;
 	}
 
 	/**
-	 * Setting the Initialization flag
-	 * @param isInitialized
+	 * Setting the Initialization flag.
+	 *
+	 * @param isInitialized the new checks if is initialized
 	 */
 	public void setIsInitialized(boolean isInitialized) {
 		this.isInitialized = isInitialized;
 	}
 
 	/**
-	 * Fetching the Logger Filename
+	 * Fetching the Logger Filename.
+	 *
 	 * @return The filename
 	 */
 	public String getLoggerFileName() {
@@ -127,7 +147,8 @@ public class LogAccess {
 	}
 
 	/**
-	 * Setting the Filename
+	 * Setting the Filename.
+	 *
 	 * @param loggerFileName The filename
 	 */
 	public void setLoggerFileName(String loggerFileName) {
@@ -137,7 +158,8 @@ public class LogAccess {
 	}
 	
 	/**
-	 * Fetching the Log Level from the CommonVariables
+	 * Fetching the Log Level from the CommonVariables.
+	 *
 	 * @return Level of the Log
 	 */
 	public Level getLogLevel() {

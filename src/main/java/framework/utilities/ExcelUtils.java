@@ -21,14 +21,17 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import framework.logs.LogAccess;
 
+// TODO: Auto-generated Javadoc
 /**
  * All the methods related to the excel operations will be handled in this
  * class.
  */
 public class ExcelUtils {
 
-	/** The workbook */
+	/**  The workbook. */
 	private Workbook wb;
+	
+	/** The log access. */
 	private LogAccess logAccess;
 
 	/**
@@ -36,7 +39,8 @@ public class ExcelUtils {
 	 *
 	 * @param excelFilePath the excel file path
 	 * @param fileName      the file name
-	 * @throws IOException 
+	 * @param logAccess the log access
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public ExcelUtils(String excelFilePath, String fileName, LogAccess logAccess) throws IOException {
 			this.logAccess = logAccess;
@@ -45,6 +49,8 @@ public class ExcelUtils {
 
 	/**
 	 * Instantiates a new excel functions.
+	 *
+	 * @param logAccess the log access
 	 */
 	public ExcelUtils(LogAccess logAccess) {
 		
@@ -59,9 +65,11 @@ public class ExcelUtils {
 	 * @param excelFileName the excel file name
 	 * @param sheetName     Name of the work sheet
 	 * @param excelData     the excel data
-	 * @throws IOException 
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void createExcel(String excelFilePath, String excelFileName, String sheetName, Object[][] excelData) throws IOException {
+			this.logAccess.getLogger().debug("Creating Excel File :- " + excelFilePath + File.pathSeparatorChar + excelFileName);
+			this.logAccess.getLogger().debug("Sheet Name :- " + sheetName );
 			this.wb = getWorkBook(excelFilePath, excelFileName);
 			Sheet ws = wb.createSheet(sheetName);
 			// row index
@@ -104,7 +112,7 @@ public class ExcelUtils {
 	}
 
 	/**
-	 * Gets the sheet at the specified index (index starts with 0)
+	 * Gets the sheet at the specified index (index starts with 0).
 	 *
 	 * @param sheetIndex the index of the sheet number (0-based physical & logical)
 	 * @return the work sheet
@@ -135,7 +143,7 @@ public class ExcelUtils {
 	}
 
 	/**
-	 * Gets the column header index
+	 * Gets the column header index.
 	 *
 	 * @param sheetIndex the index of the sheet number (0-based physical & logical)
 	 *                   <br>
@@ -409,7 +417,8 @@ public class ExcelUtils {
 	 * @param rowNumber     the row number (starts with 0)
 	 * @param columnNumber  the column number (starts with 0)
 	 * @param value         the value
-	 * @throws IOException 
+	 * @param style the style
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	// write value in cell
 	public void writeCellData(String excelFilePath, String excelFileName, String sheetName, int rowNumber,
@@ -441,7 +450,8 @@ public class ExcelUtils {
 	 * @param rowNumber     the row number (starts with 0)
 	 * @param columnNumber  the column number (starts with 0)
 	 * @param value         the value
-	 * @throws IOException 
+	 * @param color the color
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void writeCellData(String excelFilePath, String excelFileName, int sheetIndex, int rowNumber,
 			int columnNumber, Object value, String color) throws IOException {
@@ -488,7 +498,7 @@ public class ExcelUtils {
 	 * @param rowNumber     the row number (starts with 0)
 	 * @param columnName    the column name
 	 * @param value         the value
-	 * @throws IOException 
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void writeCellData(String excelFilePath, String excelFileName, String sheetName, int rowNumber,
 			String columnName, Object value) throws IOException {
@@ -519,7 +529,7 @@ public class ExcelUtils {
 	 * @param rowNumber     the row number (starts with 0)
 	 * @param columnName    the column name
 	 * @param value         the value
-	 * @throws IOException 
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void writeCellData(String excelFilePath, String excelFileName, int sheetIndex, int rowNumber,
 			String columnName, Object value) throws IOException {
@@ -616,7 +626,7 @@ public class ExcelUtils {
 	 *
 	 * @param excelFilePath the excel file path
 	 * @param excelFileName the excel file name
-	 * @throws Exception 
+	 * @throws Exception the exception
 	 */
 	// delete file
 	public void deleteFile(String excelFilePath, String excelFileName) throws Exception {
@@ -625,7 +635,7 @@ public class ExcelUtils {
 	}
 
 	/**
-	 * Delete sheet based on the sheet name
+	 * Delete sheet based on the sheet name.
 	 *
 	 * @param sheetName Name of the work sheet
 	 */
@@ -636,7 +646,7 @@ public class ExcelUtils {
 	}
 
 	/**
-	 * Delete sheet based on the sheet index
+	 * Delete sheet based on the sheet index.
 	 *
 	 * @param sheetIndex the index of the sheet number (0-based physical & logical)
 	 */
@@ -649,7 +659,7 @@ public class ExcelUtils {
 	 *
 	 * @param excelFilePath the excel file path
 	 * @param excelFileName the excel file name
-	 * @throws IOException
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	// save workbook
 	public void saveWorkBook(String excelFilePath, String excelFileName) throws IOException {
@@ -662,7 +672,8 @@ public class ExcelUtils {
 
 	/**
 	 * Close work book.
-	 * @throws IOException 
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	// close sheet
 	public void closeWorkBook() throws IOException {

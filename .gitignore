@@ -4,5 +4,5 @@
 /target/*
 /allure-results/*
 /test-output/*
-/output/*
-
+/Output/*
+/target/

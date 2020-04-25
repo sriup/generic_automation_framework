@@ -1,5 +1,6 @@
 package framework.enums;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Enum LogVerboseEnums.
  */
@@ -17,16 +18,16 @@ public enum LogVerboseEnums {
 	/** ALL. */
 	ALL,
 	
-	/** FATAL */
+	/**  FATAL. */
 	FATAL,
 	
-	/** OFF */
+	/**  OFF. */
 	OFF,
 	
-	/** TRACE */
+	/**  TRACE. */
 	TRACE,
 	
-	/** WARN */
+	/**  WARN. */
 	WARN
 	
 	
