@@ -1,10 +1,6 @@
 package application.sample.baseclass;
 
-import java.awt.desktop.QuitEvent;
 import java.io.File;
-
-import com.mysql.cj.x.protobuf.MysqlxConnection.Close;
-
 import framework.abstracts.FwBaseClass;
 import framework.constants.CommonVariables;
 import framework.enums.LogVerboseEnums;
