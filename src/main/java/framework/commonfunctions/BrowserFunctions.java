@@ -117,7 +117,7 @@ public class BrowserFunctions {
 			return launchInternetExplorer();
 		default:
 			throw new IllegalArgumentException(
-					"Unexpected value: " + browserName + ".\n only supported browsers are: chrome, firefox, edge, ie");
+					"Unexpected value : " + browserName + "\n only supported browsers are: chrome, firefox, edge, ie");
 		}
 
 	}

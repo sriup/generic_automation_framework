@@ -18,37 +18,40 @@ public class BaseClass extends FwBaseClass {
 
 	/** The file utils. */
 	private FolderFileUtils fileUtils;
-
+	
 	/**
-	 * Instantiates a new base class.
-	 *
-	 * @param role       the role
-	 * @param methodName the method name
-	 * @param retryCount the retry count
-	 */
-	public BaseClass(String role, String methodName, int retryCount) {
-		super();
-		String logFilename = role + "_" + methodName + "_" + retryCount;
-		String screenshotFolderName = role + "_" + methodName + "_" + retryCount;
-		LogVerboseEnums logLevel = LogVerboseEnums.DEBUG;
-
-		initializeLogger(logFilename, logLevel);
-
-		getLogAccess().getLogger().warn(
+     * Instantiates a new base class.
+     *
+     * @param role the role
+     * @param methodName the method name
+     * @param retryCount the retry count
+     * @throws Exception the exception
+     */
+    public BaseClass(String browserName, String role, String methodName, int retryCount) throws Exception {
+        super();
+        String logFilename = role + methodName + "_" + retryCount;
+       
+        LogVerboseEnums logLevel = LogVerboseEnums.DEBUG;
+       
+        initializeLogger(logFilename, logLevel);
+       
+        fileUtils = new FolderFileUtils(getLogAccess());
+        getLogAccess().getLogger().warn(
 				"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
-		fileUtils = new FolderFileUtils(getLogAccess());
-
-		// Create Screenshot folder path
-		createScreenshotPath(screenshotFolderName);
-
-		try {
-			init(System.getProperty("browserType"), this.getScreenshotPath());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
+        //Create Screenshot folder path
+        createScreenshotPath(methodName);
+       
+        if(CommonVariables.BROWSER_SELECT == null || CommonVariables.BROWSER_SELECT.isEmpty() ) {
+            this.getLogAccess().getLogger().warn("POM.xml is having empty value for Browser selection");
+            this.getLogAccess().getLogger().info("So, we are using local browser '" + browserName + "' from test case ");
+        } else {
+            browserName = CommonVariables.BROWSER_SELECT;
+            this.getLogAccess().getLogger().info("Using Browser selection from POM.xml '" + CommonVariables.BROWSER_SELECT + "'");
+        }
+       
+        init(browserName, this.getScreenshotPath());
+       
+    }
 
 	/**
 	 * Creates the screenshot path.
@@ -85,10 +88,12 @@ public class BaseClass extends FwBaseClass {
 	 */
 	@Override
 	public void setNegativeStatus() {
+
 		try {
 			getBrowserFunctions().close();
 		} catch (NullPointerException e) {
-			getLogAccess().getLogger().warn("Driver instance not present");
+			this.getLogAccess().getLogger().warn("Driver instance not present");
+			e.printStackTrace();
 		}
 
 	}

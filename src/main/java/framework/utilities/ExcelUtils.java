@@ -9,43 +9,26 @@ import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import framework.logs.LogAccess;
 
-// TODO: Auto-generated Javadoc
 /**
  * All the methods related to the excel operations will be handled in this
  * class.
  */
 public class ExcelUtils {
 
-	/**  The workbook. */
+	/** The workbook. */
 	private Workbook wb;
-	
+
 	/** The log access. */
 	private LogAccess logAccess;
-
-	/**
-	 * Instantiates a new excel functions.
-	 *
-	 * @param excelFilePath the excel file path
-	 * @param fileName      the file name
-	 * @param logAccess the log access
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public ExcelUtils(String excelFilePath, String fileName, LogAccess logAccess) throws IOException {
-			this.logAccess = logAccess;
-			this.wb = getWorkBook(excelFilePath, fileName);
-	}
 
 	/**
 	 * Instantiates a new excel functions.
@@ -53,7 +36,7 @@ public class ExcelUtils {
 	 * @param logAccess the log access
 	 */
 	public ExcelUtils(LogAccess logAccess) {
-		
+
 		this.logAccess = logAccess;
 
 	}
@@ -67,36 +50,41 @@ public class ExcelUtils {
 	 * @param excelData     the excel data
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public void createExcel(String excelFilePath, String excelFileName, String sheetName, Object[][] excelData) throws IOException {
-			this.logAccess.getLogger().debug("Creating Excel File :- " + excelFilePath + File.pathSeparatorChar + excelFileName);
-			this.logAccess.getLogger().debug("Sheet Name :- " + sheetName );
-			this.wb = getWorkBook(excelFilePath, excelFileName);
-			Sheet ws = wb.createSheet(sheetName);
-			// row index
-			int rowIndex = 0;
-			// check if excelData is null
-			if (excelData != null) {
-				// write the data in the sheet
-				for (Object[] rowData : excelData) {
-					// create a row
-					Row row = ws.createRow(rowIndex++);
-					// column index
-					int colIndex = 0;
-					for (Object cellData : rowData) {
-						Cell cell = row.createCell(colIndex);
-						// set value in the cell
-						if (cellData instanceof Integer) {
-							// set value as integer
-							cell.setCellValue((Integer) cellData);
-						} else {
-							// set value as String for anything other than Integer
-							cell.setCellValue((String) cellData);
-						}
+	public void createExcel(String excelFilePath, String excelFileName, String sheetName, Object[][] excelData)
+			throws IOException {
+		this.logAccess.getLogger().info("File Path :- " + excelFilePath );
+		this.logAccess.getLogger().info("File Name :- " + excelFileName);
+		this.logAccess.getLogger().info("Sheet Name" + sheetName);
+		this.logAccess.getLogger()
+				.debug("Creating Excel File :- " + excelFilePath + File.pathSeparatorChar + excelFileName);
+		this.logAccess.getLogger().debug("Sheet Name :- " + sheetName);
+		this.wb = openWorkBook(excelFilePath, excelFileName);
+		Sheet ws = wb.createSheet(sheetName);
+		// row index
+		int rowIndex = 0;
+		// check if excelData is null
+		if (excelData != null) {
+			// write the data in the sheet
+			for (Object[] rowData : excelData) {
+				// create a row
+				Row row = ws.createRow(rowIndex++);
+				// column index
+				int colIndex = 0;
+				for (Object cellData : rowData) {
+					Cell cell = row.createCell(colIndex);
+					// set value in the cell
+					if (cellData instanceof Integer) {
+						// set value as integer
+						cell.setCellValue((Integer) cellData);
+					} else {
+						// set value as String for anything other than Integer
+						cell.setCellValue((String) cellData);
 					}
 				}
 			}
-			// save the excel file
-			saveWorkBook(excelFilePath, excelFileName);
+		}
+		// save the excel file
+		saveWorkBook(excelFilePath, excelFileName);
 	}
 
 	// add sheet
@@ -294,14 +282,33 @@ public class ExcelUtils {
 	 */
 	// get cell value by row, column (indexes)
 	public String getCellData(int sheetIndex, int rowNumber, int columnNumber) {
-		String cellValue = null;
+		String cellValue = "";
+
 		// check if the rowNumber is with in the limit of available rows
-		if (rowNumber <= getRowCount(sheetIndex)) {
-			// get row based on the sheet name and row index
-			Row row = getRow(sheetIndex, rowNumber);
-			cellValue = row.getCell(columnNumber).toString();
+		if (getRowCount(sheetIndex)>=rowNumber) {
+			try {
+				// get row based on the sheet name and row index
+				Row row = getRow(sheetIndex, rowNumber);
+				Cell cell = row.getCell(columnNumber);
+				CellType cellType = cell.getCellTypeEnum();
+
+				if (cellType == CellType.STRING) {
+					cellValue = cell.toString().trim();
+				} else if (cellType == CellType.NUMERIC) {
+					if (cell.getCellStyle().getDataFormatString().contains("%")) {
+						cellValue = Double.toString(cell.getNumericCellValue() * 100) + "%";
+					} else {
+						cellValue = Double.toString(cell.getNumericCellValue());
+					}
+				} else if (cellType == CellType.BOOLEAN) {
+					cellValue = String.valueOf(cell.getBooleanCellValue());
+				}
+			} catch (NullPointerException NPE) {
+				cellValue = "";
+			}
 		} else {
-			// throw error that rowNumber is > rows count in the sheet
+			this.logAccess.getLogger().warn("Cell :  \"R" + String.valueOf(rowNumber) + "C" + String.valueOf(columnNumber) +"\"  is out of range.");
+			throw new ArrayIndexOutOfBoundsException("Cell :  \"R" + String.valueOf(rowNumber) + "C" + String.valueOf(columnNumber) +"\"  is out of range." );
 		}
 		return cellValue;
 	}
@@ -417,7 +424,7 @@ public class ExcelUtils {
 	 * @param rowNumber     the row number (starts with 0)
 	 * @param columnNumber  the column number (starts with 0)
 	 * @param value         the value
-	 * @param style the style
+	 * @param style         the style
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	// write value in cell
@@ -450,7 +457,7 @@ public class ExcelUtils {
 	 * @param rowNumber     the row number (starts with 0)
 	 * @param columnNumber  the column number (starts with 0)
 	 * @param value         the value
-	 * @param color the color
+	 * @param color         the color
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void writeCellData(String excelFilePath, String excelFileName, int sheetIndex, int rowNumber,
@@ -631,7 +638,7 @@ public class ExcelUtils {
 	// delete file
 	public void deleteFile(String excelFilePath, String excelFileName) throws Exception {
 		FolderFileUtils ffUtils = new FolderFileUtils(this.logAccess);
-			ffUtils.deleteFileOrFolder(excelFilePath, excelFileName);
+		ffUtils.deleteFileOrFolder(excelFilePath, excelFileName);
 	}
 
 	/**
@@ -677,8 +684,8 @@ public class ExcelUtils {
 	 */
 	// close sheet
 	public void closeWorkBook() throws IOException {
-			wb.close();
-		
+		wb.close();
+
 	}
 
 	/*
@@ -694,9 +701,9 @@ public class ExcelUtils {
 	 * @return the work book
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	private Workbook getWorkBook(String excelFilePath, String excelFileName) throws IOException {
+	public Workbook openWorkBook(String excelFilePath, String excelFileName) throws IOException {
 		// Create an object of File class to open xlsx file
-		File file = new File(excelFilePath + File.pathSeparator + excelFileName);
+		File file = new File(excelFilePath + File.separatorChar + excelFileName);
 		// Create an object of FileInputStream class to read excel file
 		FileInputStream inputStream = new FileInputStream(file);
 		Workbook wb = null;
@@ -712,6 +719,7 @@ public class ExcelUtils {
 			// return xls workbook (Microsoft Excel 2003 file)
 			wb = new HSSFWorkbook(inputStream);
 		}
+		setWb(wb);
 		return wb;
 	}
 
@@ -731,6 +739,23 @@ public class ExcelUtils {
 			Cell cellToDelete = row.getCell(columnNumber);
 			row.removeCell(cellToDelete);
 		}
+	}
+
+	public Workbook getWb() {
+		return wb;
+	}
+
+	public void setWb(Workbook wb) {
+		if(this.wb != null){
+			try {
+				this.wb.close();
+			} catch (IOException e) {
+				this.logAccess.getLogger().debug("recieved IOException, please check the trace for more informtaion.");
+				e.printStackTrace();
+			}
+			this.wb = null;
+		}
+		this.wb = wb;
 	}
 
 }

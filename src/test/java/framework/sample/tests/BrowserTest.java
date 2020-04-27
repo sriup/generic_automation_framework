@@ -14,13 +14,6 @@ import application.sample.pagefunctions.LoginPage;
  */
 public class BrowserTest {
 
-	/**
-	 * Test bed.
-	 */
-	@BeforeSuite
-	public void testBed() {
-		System.setProperty("browserType", "Chrome");
-	}
 
 	/**
 	 * Sample test one.
@@ -30,8 +23,9 @@ public class BrowserTest {
 		String methodName = new Object() {
 		}.getClass().getEnclosingMethod().getName();
 
-		BaseClass baseClass = new BaseClass("BusinessOwner", methodName, 0);
+		BaseClass baseClass = null;
 		try {
+			baseClass = new BaseClass("chrome", "BusinessOwner", methodName, 0);
 			WebDriver driver = baseClass.getBrowserFunctions().getWebDriver();
 			baseClass.getBrowserFunctions().navigate("https://www.sparksoftcorp.com/");
 			LoginPage loginPage = new LoginPage(baseClass.getScreenshotPath(), baseClass.getLogAccess());
@@ -59,8 +53,9 @@ public class BrowserTest {
 		String methodName = new Object() {
 		}.getClass().getEnclosingMethod().getName();
 
-		BaseClass baseClass = new BaseClass("BusinessOwner", methodName, 0);
+		BaseClass baseClass = null;
 		try {
+			baseClass = new BaseClass("", "BusinessOwner", methodName, 0);
 			WebDriver driver = baseClass.getBrowserFunctions().getWebDriver();
 			baseClass.getBrowserFunctions().navigate("https://www.sparksoftcorp.com/");
 			LoginPage loginPage = new LoginPage(baseClass.getScreenshotPath(), baseClass.getLogAccess());
@@ -89,8 +84,9 @@ public class BrowserTest {
 		String methodName = new Object() {
 		}.getClass().getEnclosingMethod().getName();
 
-		BaseClass baseClass = new BaseClass("BusinessOwner", methodName, 0);
+		BaseClass baseClass = null;
 		try {
+			baseClass = new BaseClass("Firefox", "BusinessOwner", methodName, 0);
 			WebDriver driver = baseClass.getBrowserFunctions().getWebDriver();
 			baseClass.getBrowserFunctions().navigate("https://www.sparksoftcorp.com/");
 			LoginPage loginPage = new LoginPage(baseClass.getScreenshotPath(), baseClass.getLogAccess());
@@ -109,7 +105,6 @@ public class BrowserTest {
 		}
 
 	}
-
 	/**
 	 * Sample test four.
 	 */
@@ -118,8 +113,9 @@ public class BrowserTest {
 		String methodName = new Object() {
 		}.getClass().getEnclosingMethod().getName();
 
-		BaseClass baseClass = new BaseClass("BusinessOwner", methodName, 0);
+		BaseClass baseClass = null;
 		try {
+			baseClass = new BaseClass("IE", "BusinessOwner", methodName, 0);
 			WebDriver driver = baseClass.getBrowserFunctions().getWebDriver();
 			baseClass.getBrowserFunctions().navigate("https://www.sparksoftcorp.com/");
 			LoginPage loginPage = new LoginPage(baseClass.getScreenshotPath(), baseClass.getLogAccess());
