@@ -104,6 +104,17 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			<plugin>
+				<groupId>io.qameta.allure</groupId>
+				<artifactId>allure-maven</artifactId>
+				<version>2.10.0</version>
+				<configuration>
+					<reportVersion>2.8.1</reportVersion>
+					<buildDirectory>.</buildDirectory>
+				</configuration>
+			</plugin>
+			
 		</plugins>
 	</build>
 
@@ -115,7 +126,6 @@
 				<artifactId>allure-maven</artifactId>
 				<version>2.10.0</version>
 				<configuration>
-					<reportVersion>2.8.1</reportVersion>
 					<outputDirectory>${basedir}/target/allure-reports/</outputDirectory>
 					<allureResultsDirectory>${basedir}/target/allure-results</allureResultsDirectory>
 				</configuration>
@@ -211,12 +221,12 @@
 
 		<!-- <dependency> <groupId>ru.yandex.qatools.allure</groupId> <artifactId>allure-testng-adaptor</artifactId> 
 			<version>1.4.22</version> </dependency> -->
-<!-- 
+
 		<dependency>
 			<groupId>ru.yandex.qatools.allure</groupId>
 			<artifactId>allure-testng-adaptor</artifactId>
 			<version>1.4.22</version>
-		</dependency> -->
+		</dependency>
 		<dependency>
 			<groupId>io.qameta.allure</groupId>
 			<artifactId>allure-testng</artifactId>
