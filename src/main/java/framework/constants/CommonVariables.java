@@ -2,14 +2,15 @@ package framework.constants;
 
 import framework.enums.LogVerboseEnums;
 
+// TODO: Auto-generated Javadoc
 /**
  * All the common variables related to the framework.
  */
 public class CommonVariables {
-
+	
 	/** The browser select. */
-	public static String BROWSER_SELECT = System.getProperty("browserType");
-
+    public static String BROWSER_SELECT = System.getProperty("browserType"); 
+    
 	/** The max timeout. */
 	public static int MAX_TIMEOUT = 120;
 
@@ -36,39 +37,38 @@ public class CommonVariables {
 	 * <td>1</td>
 	 * <td>mm:dd:yy</td>
 	 * </tr>
-	 * </table>
 	 * 
 	 * <tr>
 	 * <td>2</td>
 	 * <td>MM/dd/yyyy</td>
 	 * </tr>
-	 * </table>
 	 * 
 	 * <tr>
 	 * <td>3</td>
 	 * <td>MM/dd/yyyy hh:mm</td>
 	 * </tr>
-	 * </table>
 	 * 
 	 * <tr>
 	 * <td>4</td>
 	 * <td>hh:mm</td>
 	 * </tr>
-	 * </table>
 	 * 
 	 * <tr>
 	 * <td>5</td>
 	 * <td>MM/dd/yyyy h:mma</td>
 	 * </tr>
-	 * </table>
 	 * 
 	 * <tr>
 	 * <td>6</td>
 	 * <td>MM/dd/yyyy mm:ss a</td>
 	 * </tr>
+	 * <tr>
+	 * <td>7</td>
+	 * <td>MM_dd_yyyy_hh_mm_ss</td>
+	 * </tr>
 	 * </table>
 	 */
-	public String[] TIME_FORMATS = { "yyyy:mm:dd_hh_MM_ss", "mm:dd:yy", "MM/dd/yyyy", "MM/dd/yyyy hh:mm", "hh:mm",
-			"MM/dd/yyyy h:mma", "MM/dd/yyyy mm:ss a" };
+	public static String[] TIME_FORMATS = { "yyyy:MM:dd_hh_mm_ss", "mm:dd:yy", "MM/dd/yyyy", "MM/dd/yyyy hh:mm", "hh:mm",
+			"MM/dd/yyyy h:mma", "MM/dd/yyyy mm:ss a", "MM_dd_yyyy_hh_mm_ss"};
 
 }

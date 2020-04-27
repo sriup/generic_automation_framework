@@ -17,20 +17,18 @@ public abstract class FwBaseClass {
 	/** The screenshot path. */
 	private String screenshotPath;
 	
-	/** Capturing all the log info in the LogAccess */
+	/**  Capturing all the log info in the LogAccess. */
 	private LogAccess logAccess;
 	
 	/**
-	 * Initialize method
+	 * Initialize method.
 	 *
 	 * @param browserType The browser type
 	 * @param downloadPath The download path
-	 * 
 	 * @throws Exception The exception
 	 */
 	public void init(String browserType, String downloadPath) throws Exception {
-		// TODO Auto-generated constructor stub
-		
+
 		this.browserFunctions = new BrowserFunctions(this.logAccess);
 		browserFunctions.launch(browserType, downloadPath);
 		
@@ -75,10 +73,20 @@ public abstract class FwBaseClass {
 	}
 
 	
+	/**
+	 * Gets the log access.
+	 *
+	 * @return the log access
+	 */
 	public LogAccess getLogAccess() {
 		return logAccess;
 	}
 
+	/**
+	 * Sets the log access.
+	 *
+	 * @param logAccess the new log access
+	 */
 	public void setLogAccess(LogAccess logAccess) {
 		this.logAccess = logAccess;
 	}
@@ -87,6 +95,7 @@ public abstract class FwBaseClass {
 	 * Sets the log access filename.
 	 *
 	 * @param filename the new log access filename
+	 * @param logLevel the log level
 	 */
 	public void initializeLogger(String filename, LogVerboseEnums logLevel) {
 
@@ -103,4 +112,14 @@ public abstract class FwBaseClass {
 	 */
 	public abstract void createScreenshotPath(String screenshotFolderName);
 	
+	
+	/**
+	 * Sets the positive status.
+	 */
+	public abstract void setPositiveStatus();
+	
+	/**
+	 * Sets the negative status.
+	 */
+	public abstract void setNegativeStatus();
 }

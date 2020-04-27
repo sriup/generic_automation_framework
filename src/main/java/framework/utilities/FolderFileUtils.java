@@ -11,13 +11,20 @@ import org.apache.commons.io.FileUtils;
 
 import framework.logs.LogAccess;
 
+// TODO: Auto-generated Javadoc
 /**
  * All methods related to the file and folder.
  */
 public class FolderFileUtils {
 
+	/** The log access. */
 	private LogAccess logAccess;
 
+	/**
+	 * Instantiates a new folder file utils.
+	 *
+	 * @param logAccess the log access
+	 */
 	public FolderFileUtils(LogAccess logAccess) {
 		// TODO Auto-generated constructor stub
 		this.logAccess = logAccess;
@@ -48,11 +55,11 @@ public class FolderFileUtils {
 
 	/**
 	 * It creates the folder if folder is not present or else it will return the
-	 * existing Absolute path
-	 * 
+	 * existing Absolute path.
+	 *
 	 * @param folderPath Provide the Absolute Folder path
-	 * @return
-	 * @throws Exception
+	 * @return the file
+	 * @throws Exception the exception
 	 */
 	public File createFolder(String folderPath) throws Exception {
 

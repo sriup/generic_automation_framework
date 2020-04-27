@@ -1,5 +1,6 @@
 package framework.enums;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Enum ExpectedConditionsEnums.
  */
@@ -12,5 +13,8 @@ public enum ExpectedConditionsEnums {
 	CLICKABLE,
 	
 	/** The visible. */
-	VISIBLE
+	VISIBLE,
+	
+	/**The display**/
+	DISPLAYED
 }
