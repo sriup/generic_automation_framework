@@ -23,15 +23,14 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.20</version>
-
 				<configuration>
 					<suiteXmlFiles>
 						<suiteXmlFile>${suite}</suiteXmlFile>
 					</suiteXmlFiles>
 					<systemProperties>
 						<property>
-							<name>browser</name>
-							<value>${browser}</value>
+							<name>browserType</name>
+							<value>${browserType}</value>
 						</property>
 					</systemProperties>
 					<testFailureIgnore>true</testFailureIgnore>
@@ -48,15 +47,6 @@
 				</dependencies>
 			</plugin>
 			<plugin>
-				<groupId>io.qameta.allure</groupId>
-				<artifactId>allure-maven</artifactId>
-				<version>2.8</version>
-				<configuration>
-					<outputDirectory>${basedir}/target/</outputDirectory>
-					<allureResultsDirectory>${basedir}/allure-results</allureResultsDirectory>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.0</version>
@@ -65,6 +55,7 @@
 					<target>${java.source-target.version}</target>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
 				<version>3.0.0</version>
@@ -101,15 +92,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>io.qameta.allure</groupId>
-				<artifactId>allure-maven</artifactId>
-				<version>2.10.0</version>
-				<configuration>
-					<reportVersion>2.8.1</reportVersion>
-					<buildDirectory>.</buildDirectory>
-				</configuration>
-			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -124,6 +107,22 @@
 		</plugins>
 	</build>
 
+	<reporting>
+		<excludeDefaults>true</excludeDefaults>
+		<plugins>
+			<plugin>
+				<groupId>io.qameta.allure</groupId>
+				<artifactId>allure-maven</artifactId>
+				<version>2.10.0</version>
+				<configuration>
+					<reportVersion>2.8.1</reportVersion>
+					<outputDirectory>${basedir}/target/allure-reports/</outputDirectory>
+					<allureResultsDirectory>${basedir}/target/allure-results</allureResultsDirectory>
+				</configuration>
+			</plugin>
+		</plugins>
+		<outputDirectory>${basedir}/site</outputDirectory>
+	</reporting>
 
 	<dependencies>
 		<!-- Selenium -->
@@ -212,6 +211,12 @@
 
 		<!-- <dependency> <groupId>ru.yandex.qatools.allure</groupId> <artifactId>allure-testng-adaptor</artifactId> 
 			<version>1.4.22</version> </dependency> -->
+<!-- 
+		<dependency>
+			<groupId>ru.yandex.qatools.allure</groupId>
+			<artifactId>allure-testng-adaptor</artifactId>
+			<version>1.4.22</version>
+		</dependency> -->
 		<dependency>
 			<groupId>io.qameta.allure</groupId>
 			<artifactId>allure-testng</artifactId>
