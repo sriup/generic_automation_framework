@@ -1,8 +1,10 @@
 .classpath
 .project
 .settings
+.allure
+/doc/
 /target/*
 /allure-results/*
 /test-output/*
 /Output/*
-/target/
+
