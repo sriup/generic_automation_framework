@@ -55,7 +55,7 @@ public class BrowserTest {
 
 		BaseClass baseClass = null;
 		try {
-			baseClass = new BaseClass("", "BusinessOwner", methodName, 0);
+			baseClass = new BaseClass("Edge", "BusinessOwner", methodName, 0);
 			WebDriver driver = baseClass.getBrowserFunctions().getWebDriver();
 			baseClass.getBrowserFunctions().navigate("https://www.sparksoftcorp.com/");
 			LoginPage loginPage = new LoginPage(baseClass.getScreenshotPath(), baseClass.getLogAccess());
