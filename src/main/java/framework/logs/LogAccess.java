@@ -85,7 +85,8 @@ public class LogAccess {
 
 		appender.setFile(filePath + File.separator + loggerFileName + ".log");
 
-		appender.setThreshold(getLogLevel());
+		
+		appender.setThreshold(Level.ALL);
 
 		PatternLayout layOut = new PatternLayout();
 		layOut.setConversionPattern("%d{YYYY-MM-dd HH:mm:ss} - [%M] %m%n");
@@ -107,7 +108,7 @@ public class LogAccess {
 			log = Logger.getLogger(loggerFileName);
 
 			Logger.getRootLogger().setAdditivity(false);
-			log.setLevel(getLogLevel());
+			log.setLevel(Level.ALL);
 
 			intializeLogger();
 			isInitialized = true;

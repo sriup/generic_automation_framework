@@ -10,8 +10,6 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import framework.logs.LogAccess;
@@ -218,12 +216,11 @@ public class BrowserFunctions {
 		chromePrefs.put("download.default_directory", this.getDownloadFilePath());
 		ChromeOptions options = new ChromeOptions();
 		options.setExperimentalOption("prefs", chromePrefs);
-		DesiredCapabilities cap = DesiredCapabilities.chrome();
-		cap.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
-		cap.setCapability("pageLoadStrategy", "none");
-		cap.setCapability(ChromeOptions.CAPABILITY, options);
+		options.setCapability("ACCEPT_SSL_CERTS", true);
+		options.setCapability("pageLoadStrategy", "none");
+		
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
-		setWebDriver(new ChromeDriver(cap));
+		setWebDriver(new ChromeDriver(options));
 		return getWebDriver();
 	}
 

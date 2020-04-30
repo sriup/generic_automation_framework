@@ -1,8 +1,5 @@
 package framework.constants;
 
-import framework.enums.LogVerboseEnums;
-
-// TODO: Auto-generated Javadoc
 /**
  * All the common variables related to the framework.
  */

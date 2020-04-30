@@ -27,7 +27,7 @@ public class BaseClass extends FwBaseClass {
         super();
         String logFilename = role + methodName + "_" + retryCount;
        
-        LogVerboseEnums logLevel = LogVerboseEnums.DEBUG;
+        LogVerboseEnums logLevel = LogVerboseEnums.INFO;
        
         initializeLogger(logFilename, logLevel);
        

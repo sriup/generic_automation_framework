@@ -225,8 +225,6 @@ public class ExcelUtils {
 	 * @return List of rows
 	 */
 	public List<Row> getRow(int sheetIndex, int startRowNum, int endRowNum) {
-		// get work sheet based on the sheet name
-		Sheet ws = getSheet(sheetIndex);
 		// get row based on the index
 		int maxRows = getRowCount(sheetIndex);
 
