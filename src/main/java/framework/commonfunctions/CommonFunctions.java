@@ -118,16 +118,6 @@ public class CommonFunctions {
 		return dateTimeUtil.getCurrentDateTime(CommonVariables.TIME_FORMATS[7]);
 	}
 
-	/**
-	 * Find element.
-	 *
-	 * @return true, if successful
-	 */
-
-	public boolean findElement() {
-
-		return false;
-	}
 
 	/**
 	 * Wait for element.
@@ -977,6 +967,9 @@ public class CommonFunctions {
 		case VISIBLE:
 			return (new WebDriverWait(driver, CommonVariables.MAX_TIMEOUT))
 					.until(ExpectedConditions.visibilityOf(element));
+		case PRESENCE:
+			return (new WebDriverWait(driver, CommonVariables.MAX_TIMEOUT))
+					.until((WebDriver lDriver) -> element);
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + expectedCondition + ".\n This method supports "
 					+ ExpectedConditionsEnums.CLICKABLE.toString() + " and " + ExpectedConditionsEnums.VISIBLE
@@ -999,10 +992,12 @@ public class CommonFunctions {
 		switch (expectedCondition) {
 		case CLICKABLE:
 			return wait.until(ExpectedConditions.elementToBeClickable(byLocator));
+		case VISIBLE:
+//			return (WebElement) wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(byLocator));
+			return (new WebDriverWait(driver, CommonVariables.MAX_TIMEOUT))
+					.until(ExpectedConditions.visibilityOf(driver.findElement(byLocator)));
 		case PRESENCE:
 			return wait.until(ExpectedConditions.presenceOfElementLocated(byLocator));
-		case VISIBLE:
-			return (WebElement) wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(byLocator));
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + expectedCondition
 					+ ".\n Please refer to  ExpectedConditionsEnums for the available optoins.");

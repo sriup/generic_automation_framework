@@ -13,8 +13,6 @@ public enum ExpectedConditionsEnums {
 	CLICKABLE,
 	
 	/** The visible. */
-	VISIBLE,
-	
-	/**The display**/
-	DISPLAYED
+	VISIBLE
+
 }
