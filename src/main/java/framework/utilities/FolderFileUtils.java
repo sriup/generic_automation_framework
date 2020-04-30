@@ -348,7 +348,7 @@ public class FolderFileUtils {
 	 * @param folderPath Provide the path of the folder where it has all the files
 	 * @return The list of all the files from the expected folder
 	 */
-	public List<String> getAllFilename(String folderPath) {
+	public List<String> getAllFileNames(String folderPath) {
 		
 		File dir = new File(folderPath); 
 		
