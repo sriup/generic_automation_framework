@@ -95,7 +95,8 @@ public abstract class FwBaseClass {
 	 * Sets the log access filename.
 	 *
 	 * @param filename the new log access filename
-	 * @param logLevel the log level
+	 * @param logLevel the console log level
+	 * <br> <b>Note:</b> .log file will always store <i>ALL</i> log level information.
 	 */
 	public void initializeLogger(String filename, LogVerboseEnums logLevel) {
 
