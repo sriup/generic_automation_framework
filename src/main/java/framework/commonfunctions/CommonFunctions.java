@@ -22,6 +22,7 @@ import framework.utilities.ExcelUtil;
 import framework.utilities.FakeDataUtil;
 import framework.utilities.FolderFileUtil;
 import framework.utilities.SecurityUtil;
+import framework.utilities.ZipUtil;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -58,6 +59,10 @@ public class CommonFunctions {
 		return securityUtil;
 	}
 
+	private ZipUtil zipUtil;
+	public ZipUtil getzipUtil() {
+		return this.zipUtil;
+	}
 	/**
 	 * Gets the DateTimeUtils.
 	 *
@@ -99,6 +104,7 @@ public class CommonFunctions {
 		excelUtil = new ExcelUtil(logAccess);
 		fakeDataUtil = new FakeDataUtil();
 		securityUtil = new SecurityUtil();
+		zipUtil = new ZipUtil(logAccess);
 	}
 
 	/**
