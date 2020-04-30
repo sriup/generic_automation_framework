@@ -5,6 +5,7 @@ import java.io.File;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -16,9 +17,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import framework.constants.CommonVariables;
 import framework.enums.ExpectedConditionsEnums;
 import framework.logs.LogAccess;
-import framework.utilities.DateTimeUtils;
-import framework.utilities.ExcelUtils;
-import framework.utilities.FolderFileUtils;
+import framework.utilities.DateTimeUtil;
+import framework.utilities.ExcelUtil;
+import framework.utilities.FakeDataUtil;
+import framework.utilities.FolderFileUtil;
+import framework.utilities.SecurityUtil;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -35,66 +38,51 @@ public class CommonFunctions {
 	private LogAccess logAccess;
 
 	/** The Date Time Utilities */
-	private DateTimeUtils dtUtils;
+	private DateTimeUtil dateTimeUtil;
 
 	/** The Folder File Utilities */
-	private FolderFileUtils ffUtils;
+	private FolderFileUtil folderFileUtil;
 
 	/** The Excel Utilities */
-	private ExcelUtils xlUtils;
+	private ExcelUtil excelUtil;
+
+	private FakeDataUtil fakeDataUtil;
+
+	public FakeDataUtil getFakeDataUtil() {
+		return fakeDataUtil;
+	}
+
+	private SecurityUtil securityUtil;
+
+	public SecurityUtil getsecurityUtil() {
+		return securityUtil;
+	}
 
 	/**
 	 * Gets the DateTimeUtils.
 	 *
 	 * @return the instance of DateTimeUtils
 	 */
-	public DateTimeUtils getDtUtils() {
-		return dtUtils;
+	public DateTimeUtil getDtUtils() {
+		return dateTimeUtil;
 	}
 
 	/**
-	 * Sets the DateTimeUtils.
+	 * Gets the folderFileUtil.
 	 *
-	 * @param create and set the DateTimeUtils instance
+	 * @return the folderFileUtil
 	 */
-	public void setDtUtils(DateTimeUtils dtUtils) {
-		this.dtUtils = dtUtils;
+	public FolderFileUtil getFfUtils() {
+		return folderFileUtil;
 	}
 
 	/**
-	 * Gets the ff utils.
+	 * Gets the excelUtil.
 	 *
-	 * @return the ff utils
+	 * @return the excelUtil
 	 */
-	public FolderFileUtils getFfUtils() {
-		return ffUtils;
-	}
-
-	/**
-	 * Sets the ff utils.
-	 *
-	 * @param ffUtils the new ff utils
-	 */
-	public void setFfUtils(FolderFileUtils ffUtils) {
-		this.ffUtils = ffUtils;
-	}
-
-	/**
-	 * Gets the xl utils.
-	 *
-	 * @return the xl utils
-	 */
-	public ExcelUtils getXlUtils() {
-		return xlUtils;
-	}
-
-	/**
-	 * Sets the xl utils.
-	 *
-	 * @param xlUtils the new xl utils
-	 */
-	public void setXlUtils(ExcelUtils xlUtils) {
-		this.xlUtils = xlUtils;
+	public ExcelUtil getXlUtils() {
+		return excelUtil;
 	}
 
 	/**
@@ -106,9 +94,11 @@ public class CommonFunctions {
 	public CommonFunctions(String screenShotsPath, LogAccess logAccess) {
 		this.logAccess = logAccess;
 		this.screenShotsPath = screenShotsPath;
-		dtUtils = new DateTimeUtils(logAccess);
-		ffUtils = new FolderFileUtils(logAccess);
-		xlUtils = new ExcelUtils(logAccess);
+		dateTimeUtil = new DateTimeUtil(logAccess);
+		folderFileUtil = new FolderFileUtil(logAccess);
+		excelUtil = new ExcelUtil(logAccess);
+		fakeDataUtil = new FakeDataUtil();
+		securityUtil = new SecurityUtil();
 	}
 
 	/**
@@ -119,7 +109,7 @@ public class CommonFunctions {
 	 * @throws Exception the exception
 	 */
 	public String getScreenShotTime() throws Exception {
-		return dtUtils.getCurrentDateTime(CommonVariables.TIME_FORMATS[7]);
+		return dateTimeUtil.getCurrentDateTime(CommonVariables.TIME_FORMATS[7]);
 	}
 
 	/**
@@ -455,9 +445,10 @@ public class CommonFunctions {
 		// set element original style
 		try {
 			setOriginalStyle(driver, element, originalStyle);
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Unable to set the original style.");
+		} catch (NoSuchElementException NSE) {
+			// we don't have to either print the trace or throw the exception
+			// here as there are situations where the element might not present
+			// after performing some actions like click
 		}
 	}
 
@@ -565,7 +556,7 @@ public class CommonFunctions {
 		// un-highlihgt
 		unHighlightElement(driver, element, originalStyle);
 	}
-	
+
 	public void inputValue(WebDriver driver, By byLocator, String value, boolean isCaptureScreenshot,
 			String screenShotName) throws Exception {
 		WebElement element = driver.findElement(byLocator);

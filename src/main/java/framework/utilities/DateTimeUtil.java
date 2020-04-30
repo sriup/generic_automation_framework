@@ -10,11 +10,10 @@ import java.util.TimeZone;
 
 import framework.logs.LogAccess;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class DateTimeUtils.
  */
-public class DateTimeUtils {
+public class DateTimeUtil {
 
 	/** The log access. */
 	private LogAccess logAccess;
@@ -24,7 +23,7 @@ public class DateTimeUtils {
 	 *
 	 * @param logAccess the log access
 	 */
-	public DateTimeUtils(LogAccess logAccess) {
+	public DateTimeUtil(LogAccess logAccess) {
 		this.logAccess = logAccess;
 	}
 
