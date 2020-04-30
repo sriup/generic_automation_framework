@@ -16,7 +16,7 @@ import framework.logs.LogAccess;
 /**
  * All methods related to the file and folder.
  */
-public class FolderFileUtils {
+public class FolderFileUtil {
 
 	/** The log access. */
 	private LogAccess logAccess;
@@ -26,7 +26,7 @@ public class FolderFileUtils {
 	 *
 	 * @param logAccess the log access
 	 */
-	public FolderFileUtils(LogAccess logAccess) {
+	public FolderFileUtil(LogAccess logAccess) {
 		// TODO Auto-generated constructor stub
 		this.logAccess = logAccess;
 	}

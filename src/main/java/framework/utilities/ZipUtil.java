@@ -18,11 +18,11 @@ import framework.logs.LogAccess;
 /**
  * All the methods related to the zip operations will be  handled in this class.
  */
-public class ZipUtils {
+public class ZipUtil {
 	
 	private LogAccess logAccess;
 	
-	public ZipUtils(LogAccess logAccess) {
+	public ZipUtil(LogAccess logAccess) {
 		this.logAccess = logAccess;
 	}
 	
@@ -34,7 +34,7 @@ public class ZipUtils {
 	 */
 	public void zipFolder(String folderPath) {
 		
-		FolderFileUtils fFUtils = new FolderFileUtils(logAccess);
+		FolderFileUtil fFUtils = new FolderFileUtil(logAccess);
 		
 		this.logAccess.getLogger().debug("Fetching all the files from the folder path '" + folderPath + "'");
 		

@@ -24,7 +24,7 @@ import framework.logs.LogAccess;
  * All the methods related to the excel operations will be handled in this
  * class.
  */
-public class ExcelUtils {
+public class ExcelUtil {
 
 	/** The workbook. */
 	private Workbook wb;
@@ -38,7 +38,7 @@ public class ExcelUtils {
 	 * @param logAccess
 	 *            the log access
 	 */
-	public ExcelUtils(LogAccess logAccess) {
+	public ExcelUtil(LogAccess logAccess) {
 
 		this.logAccess = logAccess;
 
@@ -803,7 +803,7 @@ public class ExcelUtils {
 	 */
 	// delete file
 	public void deleteFile(String excelFilePath, String excelFileName) throws Exception {
-		FolderFileUtils ffUtils = new FolderFileUtils(this.logAccess);
+		FolderFileUtil ffUtils = new FolderFileUtil(this.logAccess);
 		ffUtils.deleteFileOrFolder(excelFilePath, excelFileName);
 	}
 
