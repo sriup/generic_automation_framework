@@ -12,9 +12,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
-import framework.constants.CommonVariables;
 import framework.enums.LogVerboseEnums;
-import framework.utilities.FolderFileUtils;
 
 // TODO: Auto-generated Javadoc
 /**

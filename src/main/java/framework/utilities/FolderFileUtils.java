@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -315,6 +316,50 @@ public class FolderFileUtils {
 		
 		return success;
 
+	}
+	
+	/**
+	 * Fetch list of all the files from the folder. 
+	 * 
+	 * Note:- This will only fetch files from the folder. It will not fetch files from the sub-folder.
+	 * 
+	 * @param folderPath Provide the path of the folder where it has all the files
+	 * @return The list of all the files from the expected folder
+	 */
+	public List<File> getAllFiles(String folderPath) {
+		
+		File dir = new File(folderPath); 
+		
+		List<File> fileList = new ArrayList<File>();
+		File[] files = dir.listFiles();
+		for (File file : files) {
+			fileList.add(file);
+		}
+		
+		return fileList;
+		
+	}
+	
+	/**
+	 * Fetch list of all the files from the folder. 
+	 * 
+	 * Note:- This will only fetch files from the folder. It will not fetch files from the sub-folder.
+	 * 
+	 * @param folderPath Provide the path of the folder where it has all the files
+	 * @return The list of all the files from the expected folder
+	 */
+	public List<String> getAllFilename(String folderPath) {
+		
+		File dir = new File(folderPath); 
+		
+		List<String> filenamesList = new ArrayList<String>();
+		File[] files = dir.listFiles();
+		for (File file : files) {
+			filenamesList.add(file.getName());
+		}
+		
+		return filenamesList;
+		
 	}
 	
 }
