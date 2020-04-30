@@ -29,8 +29,8 @@ public class ZipUtils {
 	// zip folder
 	/**
 	 * Zipping all the files in the mentioned folder.
-	 * Note:- The zipping will happen only on folder level files not on the sub-folder files 
-	 * @param folderPath
+	 * Note:- The zipping will happen only on folder level files not on the sub-folder files.
+	 * @param folderPath The folder path to be zipped.
 	 */
 	public void zipFolder(String folderPath) {
 		
@@ -48,30 +48,30 @@ public class ZipUtils {
 		
 		this.logAccess.getLogger().debug("Going to zip the folder in the destination folder '" + destinationFolder + "'");
 		
-		zipFiles(directoryToZip, filesList, destinationFolder);
+		zipFiles(filesList, destinationFolder);
 		
 	}
 	
-	
-
 	/**
-	 * Zipping the files in the mentioned Folder
-	 * @param directoryToZip The folder name in which all the files to be zipped
-	 * @param fileList List of all the files to be zipped
-	 * @param destinationFolder Destination folder where the zip file to be saved
+	 * Zipping the files in the mentioned Folder.
+	 * @param fileList List of all the files to be zipped.
+	 * @param destinationFolder Destination folder where the zip file to be saved.
 	 */
-	public void zipFiles(File directoryToZip, List<File> fileList, String destinationFolder) {
+	public void zipFiles(List<File> fileList, String destinationFolder) {
 
 		try {
-			this.logAccess.getLogger().debug("directoryToZip :- '" + directoryToZip + "' and the destinationFolder :- '" + destinationFolder + "'");
 			
-			FileOutputStream fos = new FileOutputStream(destinationFolder + File.separator + directoryToZip.getName() + ".zip");
+			String parentFolderName = fileList.get(0).getParentFile().getName();
+			
+			this.logAccess.getLogger().debug("parentFolderName :- '" + parentFolderName + "' and the destinationFolder :- '" + destinationFolder + "'");
+			
+			FileOutputStream fos = new FileOutputStream(destinationFolder + File.separator + parentFolderName + ".zip");
 			ZipOutputStream zos = new ZipOutputStream(fos);
 
 			for (File file : fileList) {
 				if (!file.isDirectory()) {
 					this.logAccess.getLogger().debug("Zipping only files. Not zipping on directories");
-					addToZip(directoryToZip, file, zos);
+					addToZip(file, zos);
 				}
 			}
 			
@@ -93,26 +93,23 @@ public class ZipUtils {
 	}
 
 	/**
-	 * Adding individual file to the ZipOutputStream
-	 * @param directoryToZip The folder name in which the files are present
-	 * @param file File to be zipped
-	 * @param zos ZipOutputStream
-	 * @throws FileNotFoundException
-	 * @throws IOException
+	 * Adding individual file to the ZipOutputStream.
+	 * @param file File to be zipped.
+	 * @param zos ZIP output stream.
+	 * @throws FileNotFoundException Signals that an attempt to open the file denoted by a specified pathnamehas failed. 
 	 */
-	public void addToZip(File directoryToZip, File file, ZipOutputStream zos) throws FileNotFoundException,
+	public void addToZip(File file, ZipOutputStream zos) throws FileNotFoundException,
 			IOException {
 
-		this.logAccess.getLogger().debug("directoryToZip :- '" + directoryToZip + "' and the filename :- '" + file.getName() + "'");
+		this.logAccess.getLogger().debug("filename :- '" + file.getName() + "'");
 		
 		FileInputStream fis = new FileInputStream(file);
 
-		String zipFilePath = file.getCanonicalPath().substring(directoryToZip.getCanonicalPath().length() + 1,
-				file.getCanonicalPath().length());
+		String currentFilename = file.getName();
 		
-		this.logAccess.getLogger().debug("Writing '" + zipFilePath + "' to zip file");
+		this.logAccess.getLogger().debug("Current File '" + currentFilename + "' to zip");
 		
-		ZipEntry zipEntry = new ZipEntry(zipFilePath);
+		ZipEntry zipEntry = new ZipEntry(currentFilename);
 		zos.putNextEntry(zipEntry);
 
 		byte[] bytes = new byte[1024];
