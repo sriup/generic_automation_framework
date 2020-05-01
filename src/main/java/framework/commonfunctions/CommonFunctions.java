@@ -220,11 +220,12 @@ public class CommonFunctions {
 	 * 
 	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param elements          the {@link org.openqa.selenium.WebElement element}
+	 * @param maxTimeOut		Maximium time to wait for the element(s) visible
 	 * @return	List of WebElements
 	 */
-	public List<WebElement> waitForElementsToVisible(WebDriver driver, List<WebElement> elements) {
+	public List<WebElement> waitForElementsToVisible(WebDriver driver, List<WebElement> elements, int maxTimeOut) {
 		this.logAccess.getLogger().debug("waiting for all specified elements in the list to be visible" + elements);
-		return (new WebDriverWait(driver, 60)).until(ExpectedConditions.visibilityOfAllElements(elements));
+		return (new WebDriverWait(driver, maxTimeOut)).until(ExpectedConditions.visibilityOfAllElements(elements));
 	}
 
 	/**
