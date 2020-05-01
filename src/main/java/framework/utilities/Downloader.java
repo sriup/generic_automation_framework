@@ -11,9 +11,20 @@ import framework.logs.LogAccess;
 
 public class Downloader {
 	
-	public static void downloadFile(LogAccess logAceess, String url, String driverZipPath) throws MalformedURLException, IOException {
-		File tempZipFile = new File(driverZipPath);
-		// donwload the zip file to temp directory
-		FileUtils.copyURLToFile(new URL(url), tempZipFile);
+	/**
+	 * Downloads the file from the URL
+	 * @param logAceess 
+	 * LogAccess instance
+	 * @param url		
+	 * URL from where the file should be download
+	 * @param driverZipPath 
+	 * 	
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 */
+	public static void downloadFile(LogAccess logAceess, String url, String destination) throws MalformedURLException, IOException {
+		File tempFile = new File(destination);
+		// Download the file to the destination directory
+		FileUtils.copyURLToFile(new URL(url), tempFile);
 	}
 }

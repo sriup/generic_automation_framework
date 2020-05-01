@@ -12,20 +12,33 @@ public class GenericUtils {
 	 * @return random string
 	 */
 	public String generateRandomString(int stringLength) {
-		String allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // alphabets
+		String allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		return RandomStringUtils.random(stringLength, allowedChars);
 	}
 	
 	/**
-	 * Generate random digit number
-	 * @param numberLength Length of the digit number
+	 * Generates random alphanumeric string
+	 * @param length Number of chars in the string
+	 * @return
+	 */
+	public String generateAlphaNumericString(int length) {
+        String allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        return RandomStringUtils.random(length, allowedChars);
+    }
+	
+	/**
+	 * Generate random number
+	 * @param length Length of the digit number
 	 * @return random number
 	 */
-	public int generateDigitNumber(int numberLength) {
-		SecureRandom random = new SecureRandom();
-		int num = random.nextInt(numberLength);
-		return num;
-	}
+	public String generateRandomNumber(int length) {
+        String allowedChars = "0123456789";
+        String randomNumber = "";
+        String temp = RandomStringUtils.random(length, allowedChars);
+        randomNumber = temp.substring(0, temp.length());
+       
+        return randomNumber;
+    }
 	
 	/**
 	 * Generate number in the given minimum and maximum range

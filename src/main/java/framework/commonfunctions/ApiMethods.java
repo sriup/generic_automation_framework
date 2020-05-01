@@ -2,7 +2,6 @@ package framework.commonfunctions;
 
 import framework.logs.LogAccess;
 import io.restassured.RestAssured;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
@@ -14,6 +13,12 @@ public class ApiMethods {
 		this.logAccess = logAccess;
 	}
 
+	/**
+	 * makes Get request to the rest api.
+	 *
+	 * @param uri the uri URI for the request
+	 * @return the response {@link io.restassured.response.Response Response}
+	 */
 	public Response get(String uri) {
 
 		RequestSpecification httpRequest = RestAssured.given();
