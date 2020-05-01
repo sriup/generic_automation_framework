@@ -1,10 +1,11 @@
 package application.sample.baseclass;
 
 import java.io.File;
+
 import framework.abstracts.FwBaseClass;
 import framework.constants.CommonVariables;
 import framework.enums.LogVerboseEnums;
-import framework.utilities.FolderFileUtils;
+import framework.utilities.FolderFileUtil;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -13,7 +14,7 @@ import framework.utilities.FolderFileUtils;
 public class BaseClass extends FwBaseClass {
 
 	/** The file utils. */
-	private FolderFileUtils fileUtils;
+	private FolderFileUtil fileUtils;
 	
 	/**
      * Instantiates a new base class.
@@ -31,7 +32,7 @@ public class BaseClass extends FwBaseClass {
        
         initializeLogger(logFilename, logLevel);
        
-        fileUtils = new FolderFileUtils(getLogAccess());
+        fileUtils = new FolderFileUtil(getLogAccess());
         getLogAccess().getLogger().warn(
 				"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         //Create Screenshot folder path
