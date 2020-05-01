@@ -3,6 +3,8 @@ package framework.utilities;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.temporal.IsoFields;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -198,9 +200,7 @@ public class DateTimeUtil {
 	public String getCurrentDateTime() throws Exception {
 		
 		String dateTime = getCurrentDateTime("MM/dd/yyyy hh:mm");
-		
-		this.logAccess.getLogger().debug("dateTime :- " + dateTime);
-		
+			
 		return dateTime;
 	}
 
@@ -377,6 +377,16 @@ public class DateTimeUtil {
 		this.logAccess.getLogger().debug("Date, Year and Month in custom date format :- " + date);
 		
 		return date;
+	}
+	
+	/**
+	 * Gets the current quarter
+	 * @return Quarter like Q1, Q2, Q3 and Q4
+	 */
+	public String getCurrentQuarter() {
+
+		String qtr = Integer.toString(LocalDate.now().get(IsoFields.QUARTER_OF_YEAR));
+			return "Q" + qtr;
 	}
 
 }

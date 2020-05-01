@@ -1,6 +1,7 @@
 package framework.commonfunctions;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
@@ -24,7 +25,6 @@ import framework.utilities.FolderFileUtil;
 import framework.utilities.SecurityUtil;
 import framework.utilities.ZipUtil;
 
-// TODO: Auto-generated Javadoc
 /**
  * 
  * All the methods related to the common operations will be handled in this
@@ -38,61 +38,97 @@ public class CommonFunctions {
 	/** Log info is written in LogAccess. */
 	private LogAccess logAccess;
 
-	/** The Date Time Utilities */
+	/** The Date Time Utility */
 	private DateTimeUtil dateTimeUtil;
 
-	/** The Folder File Utilities */
-	private FolderFileUtil folderFileUtil;
-
-	/** The Excel Utilities */
-	private ExcelUtil excelUtil;
-
-	private FakeDataUtil fakeDataUtil;
-
-	public FakeDataUtil getFakeDataUtil() {
-		return fakeDataUtil;
-	}
-
-	private SecurityUtil securityUtil;
-
-	public SecurityUtil getsecurityUtil() {
-		return securityUtil;
-	}
-
-	private ZipUtil zipUtil;
-	public ZipUtil getzipUtil() {
-		return this.zipUtil;
-	}
 	/**
 	 * Gets the DateTimeUtils.
 	 *
 	 * @return the instance of DateTimeUtils
 	 */
-	public DateTimeUtil getDtUtils() {
+	public DateTimeUtil getDateTimeUtil() {
 		return dateTimeUtil;
 	}
+
+	/** The Folder File Utility */
+	private FolderFileUtil folderFileUtil;
 
 	/**
 	 * Gets the folderFileUtil.
 	 *
 	 * @return the folderFileUtil
 	 */
-	public FolderFileUtil getFfUtils() {
+	public FolderFileUtil getFolderFileUtil() {
 		return folderFileUtil;
 	}
+
+	/** The Excel Utility */
+	private ExcelUtil excelUtil;
 
 	/**
 	 * Gets the excelUtil.
 	 *
 	 * @return the excelUtil
 	 */
-	public ExcelUtil getXlUtils() {
+	public ExcelUtil getExcelUtil() {
 		return excelUtil;
 	}
 
+	/** The Fake Data Utility */
+	private FakeDataUtil fakeDataUtil;
+
 	/**
-	 * Instantiates a new common functions.
+	 * Gets the FakeDataUtil.
 	 *
+	 * @return the FakeDataUtil
+	 */
+	public FakeDataUtil getFakeDataUtil() {
+		return fakeDataUtil;
+	}
+
+	/** The Security Utility */
+	private SecurityUtil securityUtil;
+
+	/**
+	 * Gets the SecurityUtil.
+	 *
+	 * @return the SecurityUtil
+	 */
+	public SecurityUtil getSecurityUtil() {
+		return securityUtil;
+	}
+
+	/** The Zip Utility */
+	private ZipUtil zipUtil;
+
+	/**
+	 * Gets the ZipUtil.
+	 *
+	 * @return the ZipUtil
+	 */
+	public ZipUtil getZipUtil() {
+		return this.zipUtil;
+	}
+
+	/**
+	 * Instantiates a new common functions.<br>
+	 * All the utilities available in the framework will be instantiate as part of
+	 * this. <br>
+	 * Below is the list of utilities available in framework
+	 * <ul>
+	 * <li>{@link DateTimeUtil DateTimeUtil} can be accessed using
+	 * {@link #getDateTimeUtil}</li>
+	 * <li>{@link FolderFileUtil FolderFileUtil} can be accessed using
+	 * {@link #getFolderFileUtil}</li>
+	 * <li>{@link ExcelUtil ExcelUtil} can be accessed using
+	 * {@link #getExcelUtil}</li>
+	 * <li>{@link FakeDataUtil FakeDataUtil} can be accessed using
+	 * {@link #getFakeDataUtil}</li>
+	 * <li>{@link SecurityUtil SecurityUtil} can be accessed using
+	 * {@link #getSecurityUtil}</li>
+	 * <li>{@link ZipUtil ZipUtil} can be accessed using {@link #getZipUtil}</li>
+	 * </ul>
+	 * 
 	 * @param screenShotsPath the screen shots path
 	 * @param logAccess       Log Access object
 	 */
@@ -117,7 +153,6 @@ public class CommonFunctions {
 	public String getScreenShotTime() throws Exception {
 		return dateTimeUtil.getCurrentDateTime(CommonVariables.TIME_FORMATS[7]);
 	}
-
 
 	/**
 	 * Wait for element.
@@ -178,6 +213,18 @@ public class CommonFunctions {
 		this.logAccess.getLogger()
 				.debug("waiting for element to be " + expectedCondition.toString() + " :- " + byLocator);
 		return waitUntilElement(driver, byLocator, expectedCondition, maxTimeout);
+	}
+
+	/**
+	 * Wait for element(s) visible
+	 * 
+	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param elements          the {@link org.openqa.selenium.WebElement element}
+	 * @return	List of WebElements
+	 */
+	public List<WebElement> waitForElementsToVisible(WebDriver driver, List<WebElement> elements) {
+		this.logAccess.getLogger().debug("waiting for all specified elements in the list to be visible" + elements);
+		return (new WebDriverWait(driver, 60)).until(ExpectedConditions.visibilityOfAllElements(elements));
 	}
 
 	/**
@@ -968,8 +1015,7 @@ public class CommonFunctions {
 			return (new WebDriverWait(driver, CommonVariables.MAX_TIMEOUT))
 					.until(ExpectedConditions.visibilityOf(element));
 		case PRESENCE:
-			return (new WebDriverWait(driver, CommonVariables.MAX_TIMEOUT))
-					.until((WebDriver lDriver) -> element);
+			return (new WebDriverWait(driver, CommonVariables.MAX_TIMEOUT)).until((WebDriver lDriver) -> element);
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + expectedCondition + ".\n This method supports "
 					+ ExpectedConditionsEnums.CLICKABLE.toString() + " and " + ExpectedConditionsEnums.VISIBLE
