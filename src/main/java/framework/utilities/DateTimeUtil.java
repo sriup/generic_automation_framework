@@ -200,9 +200,7 @@ public class DateTimeUtil {
 	public String getCurrentDateTime() throws Exception {
 		
 		String dateTime = getCurrentDateTime("MM/dd/yyyy hh:mm");
-		
-		this.logAccess.getLogger().debug("dateTime :- " + dateTime);
-		
+			
 		return dateTime;
 	}
 

@@ -25,6 +25,7 @@ import io.qameta.allure.Step;
  * @see org.openqa.selenium.remote.RemoteWebDriver
  */
 public class BrowserFunctions {
+	
 
 	/**
 	 * Instantiates a new browser functions.
@@ -32,7 +33,7 @@ public class BrowserFunctions {
 	 * @param logAccess the log access
 	 */
 	public BrowserFunctions(LogAccess logAccess) {
-		this.logAccess = logAccess;
+		this.logAccess = logAccess;	
 	}
 
 	/** The download folder path. */
@@ -103,6 +104,12 @@ public class BrowserFunctions {
 		setDownloadFolderPath(this.downloadFolderpath);
 		logAccess.getLogger().info("Launching browser :-  " + browserName);
 		logAccess.getLogger().info("Downloads folder :- " + getDownloadFilePath());
+		
+		if(browserName.equalsIgnoreCase("chrome") || browserName.equalsIgnoreCase("firefox") ) {
+			DownloadWebDrivers.downloadDriver(browserName);
+		}
+		
+		
 		switch (browserName.trim().toLowerCase()) {
 		case "chrome":
 			return launchChrome();
@@ -208,8 +215,8 @@ public class BrowserFunctions {
 	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!! Private Methods !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	 */
 	private WebDriver launchChrome() {
-		WebDriverManager.chromedriver().setup();
-
+//		WebDriverManager.chromedriver().setup();
+		System.setProperty("webdriver.chrome.driver",System.getProperty("user.dir")+ File.separatorChar + "drivers" + File.separator  + "Chrome" + File.separator +"chromedriver.exe");
 		// !! Chrome Options !!
 		HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
 		chromePrefs.put("profile.default_content_settings.popups", 0);
@@ -230,7 +237,8 @@ public class BrowserFunctions {
 	 * @return the web driver
 	 */
 	private WebDriver launchFirefox() {
-		WebDriverManager.firefoxdriver().setup();
+//		WebDriverManager.firefoxdriver().setup();
+		System.setProperty("webdriver.gecko.driver", System.getProperty("user.dir")+  File.separatorChar + "drivers" + File.separatorChar + "FireFox" +  File.separator + "geckodriver.exe");
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		setWebDriver(new FirefoxDriver());
 		return getWebDriver();
@@ -270,5 +278,5 @@ public class BrowserFunctions {
 		options.introduceFlakinessByIgnoringSecurityDomains();
 		threadDriver.set(new InternetExplorerDriver(options));
 		return threadDriver.get();
-	}
+	}	
 }
