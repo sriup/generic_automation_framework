@@ -77,7 +77,7 @@ public class BaseClass extends FwBaseClass {
 	 */
 	@Override
 	public void setPositiveStatus() {
-		getBrowserFunctions().close();
+		getBrowserFunctions().quit();
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class BaseClass extends FwBaseClass {
 	public void setNegativeStatus() {
 
 		try {
-			getBrowserFunctions().close();
+			getBrowserFunctions().quit();
 		} catch (NullPointerException e) {
 			this.getLogAccess().getLogger().warn("Driver instance not present");
 			e.printStackTrace();

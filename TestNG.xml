@@ -4,7 +4,7 @@
   <test name="Framework">
     <classes>
     
-       <class name="framework.sample.tests.BrowserTest"/>
+        <class name="framework.sample.tests.BrowserTest"/>
 
     </classes>
   </test> <!-- Test -->
