@@ -45,7 +45,7 @@ public class FolderFileUtil {
 		this.logAccess.getLogger().info("FolderPath :- " + folderPath);
 		this.logAccess.getLogger().info("folderName :- " + folderName);
 
-		File folderFile = new File(folderPath + folderName);
+		File folderFile = new File(folderPath + File.separatorChar +  folderName);
 		if (!folderFile.exists()) {
 			if (folderFile.mkdir()) {
 				this.logAccess.getLogger().info("Folder is created!");
@@ -87,7 +87,7 @@ public class FolderFileUtil {
 		this.logAccess.getLogger().info("folderPath :- " + folderPath);
 		this.logAccess.getLogger().info("fileOrFolderName :- " + fileOrFolderName);
 
-		File folderFile = new File(folderPath + fileOrFolderName);
+		File folderFile = new File(folderPath + File.separatorChar +  fileOrFolderName);
 
 		if (!folderFile.exists()) {
 			if (folderFile.delete()) {
@@ -157,7 +157,7 @@ public class FolderFileUtil {
 		this.logAccess.getLogger().info("filePath :- " + filePath);
 		this.logAccess.getLogger().info("filename :- " + filename);
 
-		this.logAccess.getLogger().info("inputLine :- " + input);
+		this.logAccess.getLogger().info("input :- " + input);
 
 		File file = createFile(filePath, filename);
 
@@ -273,9 +273,9 @@ public class FolderFileUtil {
 	 */
 	public File moveFile(String oldFilePath, String newFilePath, String filename) throws IOException {
 
-		File oldFile = new File(oldFilePath + filename);
+		File oldFile = new File(oldFilePath + File.separatorChar +  filename);
 
-		File newFile = new File(newFilePath + filename);
+		File newFile = new File(newFilePath + File.separatorChar +  filename);
 
 		Files.move(oldFile.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
@@ -297,9 +297,9 @@ public class FolderFileUtil {
 	 */
 	public File copyFile(String oldFilePath, String newFilePath, String filename) throws IOException {
 
-		File oldFile = new File(oldFilePath + filename);
+		File oldFile = new File(oldFilePath + File.separatorChar +  filename);
 
-		File newFile = new File(newFilePath + filename);
+		File newFile = new File(newFilePath + File.separatorChar +  filename);
 
 		Files.copy(oldFile.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
@@ -321,9 +321,9 @@ public class FolderFileUtil {
 	 */
 	public boolean renameFilename(String filePath, String oldFilename, String newFilename) throws IOException {
 
-		File oldFile = new File(filePath + oldFilename);
+		File oldFile = new File(filePath + File.separatorChar +  oldFilename);
 
-		File newFile = new File(filePath + newFilename);
+		File newFile = new File(filePath + File.separatorChar +  newFilename);
 
 		if (newFile.exists()) {
 
