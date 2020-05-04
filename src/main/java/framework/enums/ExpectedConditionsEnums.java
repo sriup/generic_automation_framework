@@ -3,7 +3,6 @@ package framework.enums;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Enum ExpectedConditionsEnums.
  */

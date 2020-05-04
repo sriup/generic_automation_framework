@@ -35,14 +35,14 @@ public class CommonFunctions {
 	/** Folder path where the captured screenshots should be stored. */
 	private String screenShotsPath;
 
-	/** Log info is written in LogAccess. */
+	/** LogAccess object */
 	private LogAccess logAccess;
 
-	/** The Date Time Utility */
+	/** DateTimeUtil object */
 	private DateTimeUtil dateTimeUtil;
 
 	/**
-	 * Gets the DateTimeUtils.
+	 * Gets the dateTimeUtil object
 	 *
 	 * @return the instance of DateTimeUtils
 	 */
@@ -50,11 +50,11 @@ public class CommonFunctions {
 		return dateTimeUtil;
 	}
 
-	/** The Folder File Utility */
+	/** FolderFileUtil object */
 	private FolderFileUtil folderFileUtil;
 
 	/**
-	 * Gets the folderFileUtil.
+	 * Gets the folderFileUtil object
 	 *
 	 * @return the folderFileUtil
 	 */
@@ -145,7 +145,7 @@ public class CommonFunctions {
 
 	/**
 	 * Sets the date time format for the screenshot. <br>
-	 * Note:<i> This will be prepended to the screenshot name.</i>
+	 * <font color="orange">Note:<i> This will be prepended to the screenshot name.</i></font>
 	 *
 	 * @return the screen shot time
 	 * @throws Exception the exception
@@ -458,8 +458,8 @@ public class CommonFunctions {
 	 * @param element the {@link org.openqa.selenium.WebElement element} <br>
 	 *                This method will highlight the element and does not set back
 	 *                the original style. <br>
-	 *                Note: Use {@link #unHighlightElement unHighlightElement}
-	 *                method to set back the original style of the element.
+	 *                <font color="orange"><b>Note:</b> Use {@link #unHighlightElement unHighlightElement}
+	 *                method to set back the original style of the element.</font>
 	 * @return the String with original style of the element
 	 */
 	public String highlightElement(WebDriver driver, WebElement element) {
@@ -800,8 +800,8 @@ public class CommonFunctions {
 	/**
 	 * Trigger general events on the {@link org.openqa.selenium.WebElement element}.
 	 * <br>
-	 * Note: This helps in running the tests on IE where the associated event not
-	 * triggered <br>
+	 * <font color="orange"><b>Note:</b> This helps in running the tests on IE where the associated event not
+	 * triggered <br></font>
 	 * Please use {@link #jsTriggerMouseEvent} method for mouse related events.
 	 * 
 	 * 

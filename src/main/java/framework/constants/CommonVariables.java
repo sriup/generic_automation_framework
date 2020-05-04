@@ -25,7 +25,7 @@ public class CommonVariables {
 
 	/**
 	 * List of available time formats.
-	 * <table border=1 summary="">
+	 * <table border=1>
 	 * <tr>
 	 * <th>Index</th>
 	 * <th>Format</th>

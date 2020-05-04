@@ -14,7 +14,6 @@ import org.apache.log4j.PatternLayout;
 
 import framework.enums.LogVerboseEnums;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class LogAccess.
  */

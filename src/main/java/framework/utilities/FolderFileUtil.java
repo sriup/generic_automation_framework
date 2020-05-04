@@ -27,7 +27,6 @@ public class FolderFileUtil {
 	 * @param logAccess the log access
 	 */
 	public FolderFileUtil(LogAccess logAccess) {
-		// TODO Auto-generated constructor stub
 		this.logAccess = logAccess;
 	}
 

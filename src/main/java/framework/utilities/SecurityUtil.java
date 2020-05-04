@@ -13,14 +13,14 @@ public class SecurityUtil {
 	 * 
 	 * @param secretKey
 	 *            Secret Key <br>
-	 *            <i>Note : Here are couple of sample secret keys that you can try
+	 *            <i>Note : Here are couple of sample secret keys that you can try</i>
 	 *            <br>
 	 *            <ul>
 	 *            <li>QDWSM3OYBPGTEVSPB5FKVDM3CSNCWHVK</li>
 	 *            <li>TY3ZX2YMUJSPTN6Z</li>
 	 *            </ul>
 	 *            <br>
-	 *            </i>
+	 *            
 	 * @return String current token
 	 * 
 	 */

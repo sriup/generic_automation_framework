@@ -1,6 +1,5 @@
 package framework.enums;
 
-// TODO: Auto-generated Javadoc
 /**
  * This enum holds the possilbe {@link org.apache.log4j.Level LogLevels}
  */

@@ -29,7 +29,7 @@ public class BrowserFunctions {
 	
 
 	/**
-	 * Instantiates a new {@link BrowserFunctions} class with log access.
+	 * Instantiates a new {@link BrowserFunctions} object with log access.
 	 *
 	 * @param logAccess the instance of {@link LogAccess}
 	 */
@@ -45,9 +45,8 @@ public class BrowserFunctions {
 
 	/**
 	 * Sets the download folder path.<br>
-	 *<b>Note : </b> This will set the download folder path as part of driver capabilities.
+	 * <font color="orange"><b>Note : </b></font> This will set the download folder path as part of driver capabilities.
 	 * @param downloadPath the path where the files should be download when download from browser
-	 * @throws Exception exception
 	 */
 	private void setDownloadFolderPath(String downloadPath) {
 		if (downloadPath.isEmpty()) {
@@ -90,13 +89,13 @@ public class BrowserFunctions {
 	 * Launches the specified browser.
 	 *
 	 * @param browserName  provide the browser name as per the below list.<br>
-	 *                     Note: Below is the list of currently supported browsers
+	 *                     <font color="orange"><b>Note:</b> Below is the list of currently supported browsers
 	 *                     <ul>
 	 *                     <li>Chrome</li>
 	 *                     <li>Firefox</li>
 	 *                     <li>Edge</li>
 	 *                     <li>IE</li>
-	 *                     </ul>
+	 *                     </ul></font>
 	 * @param downloadPath the download path
 	 * @return the {@link org.openqa.selenium.WebDriver WebDriver} for the specified
 	 *         browser
