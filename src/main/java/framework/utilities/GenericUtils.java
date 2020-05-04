@@ -9,7 +9,7 @@ public class GenericUtils {
 	/**
 	 * Generates random string with Alphabet chars
 	 * @param stringLength Number Of chars in the string 
-	 * @return random string
+	 * @return Random Alpha string
 	 */
 	public String generateRandomString(int stringLength) {
 		String allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -19,7 +19,7 @@ public class GenericUtils {
 	/**
 	 * Generates random alphanumeric string
 	 * @param length Number of chars in the string
-	 * @return
+	 * @return Random AlphaNumeric String 
 	 */
 	public String generateAlphaNumericString(int length) {
         String allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -27,9 +27,9 @@ public class GenericUtils {
     }
 	
 	/**
-	 * Generate random number
+	 * Generates random number
 	 * @param length Length of the digit number
-	 * @return random number
+	 * @return Random number
 	 */
 	public String generateRandomNumber(int length) {
         String allowedChars = "0123456789";
@@ -41,7 +41,7 @@ public class GenericUtils {
     }
 	
 	/**
-	 * Generate number in the given minimum and maximum range
+	 * Generates number in the given minimum and maximum range
 	 * @param minValue minimum value in the range
 	 * @param maxValue maximum value in the range
 	 * @return random number

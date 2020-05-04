@@ -16,7 +16,7 @@ public class Downloader {
 	 * 
 	 * @param logAceess     LogAccess instance
 	 * @param url           URL from where the file should be download
-	 * @param destination   destination folder path
+	 * @param destination   destination folder path to save the file
 	 * 
 	 * @throws MalformedURLException
 	 * @throws IOException

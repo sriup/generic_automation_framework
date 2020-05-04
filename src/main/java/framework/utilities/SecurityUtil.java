@@ -11,11 +11,16 @@ public class SecurityUtil {
 	/**
 	 * Gets the token based on the secret key
 	 * 
-	 * @param secretKey Secret Key <br>
-	 *                  <i>Note : Here are couple of sample secret keys that you can
-	 *                  try <br>
-	 *                  QDWSM3OYBPGTEVSPB5FKVDM3CSNCWHVK <br>
-	 *                  TY3ZX2YMUJSPTN6Z</i>
+	 * @param secretKey
+	 *            Secret Key <br>
+	 *            <i>Note : Here are couple of sample secret keys that you can try
+	 *            <br>
+	 *            <ul>
+	 *            <li>QDWSM3OYBPGTEVSPB5FKVDM3CSNCWHVK</li>
+	 *            <li>TY3ZX2YMUJSPTN6Z</li>
+	 *            </ul>
+	 *            <br>
+	 *            </i>
 	 * @return String current token
 	 * 
 	 */
@@ -26,12 +31,14 @@ public class SecurityUtil {
 		return otp.now();
 	}
 
-	
 	/**
-	 * Encrypts the text 
-	 * <i>Note : </i> Make sure to add <u>AES_KEY</u> in the User Environment Variables<br>
-	 *  Please use the same AES_KEY across all the team members, otherwise tests will fail. 
-	 * @param textToEncrypt  Text to encrypt
+	 * Encrypts the text <i>Note : </i> Make sure to add <b>AES_KEY</b> in the User
+	 * Environment Variables<br>
+	 * Please use the same AES_KEY across all the team members, <b>otherwise tests will
+	 * fail</b>.
+	 * 
+	 * @param textToEncrypt
+	 *            Text to encrypt
 	 * @return Encrypted text
 	 */
 	public String encrypt(String textToEncrypt) {
@@ -61,10 +68,13 @@ public class SecurityUtil {
 	}
 
 	/**
-	 * Decrypts the encrypted text 
-	 * <i>Note : </i> Make sure to add <u>AES_KEY</u> in the User Environment Variables<br>
-	 *  Please use the same AES_KEY across all the team members, otherwise tests will fail. 
-	 * @param textToDecrypt  Text to decrypt
+	 * Decrypts the encrypted text <i>Note : </i> Make sure to add <b>AES_KEY</b> in
+	 * the User Environment Variables<br>
+	 * Please use the same AES_KEY across all the team members, <b>otherwise tests will
+	 * fail</b>.
+	 * 
+	 * @param textToDecrypt
+	 *            Text to decrypt
 	 * @return Decrypted text
 	 */
 	public String decrypt(String textToDecrypt) {
