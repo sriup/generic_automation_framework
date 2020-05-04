@@ -216,7 +216,7 @@ public class ExcelUtil {
 		// get row based on the index
 		return ws.getRow(rowNumber);
 	}
-
+	
 	/**
 	 * Gets the row 
 	 * @param sheetIndex the index of the sheet number (0-based physical & logical)
@@ -224,7 +224,7 @@ public class ExcelUtil {
 	 * @param endRowNum Row index upto 
 	 * @return List of rows
 	 */
-	public List<Row> getRow(int sheetIndex, int startRowNum, int endRowNum) {
+	public List<Row> getRows(int sheetIndex, int startRowNum, int endRowNum) {
 		// get row based on the index
 		int maxRows = getRowCount(sheetIndex);
 
@@ -235,16 +235,33 @@ public class ExcelUtil {
 					+ "' and endRowNum '" + endRowNum + "'. Max rows are '" + maxRows + "'");
 		}
 		
-		List<Row> rowList = new ArrayList<Row>();
+		List<Row> rowsList = new ArrayList<Row>();
 
 		for (int currentRowIndex = startRowNum; currentRowIndex <= endRowNum; currentRowIndex++) {
 
 			Row row = this.getRow(sheetIndex, currentRowIndex);
 			
-			rowList.add(row);
+			rowsList.add(row);
 		}
 
-		return rowList;
+		return rowsList;
+	}
+	
+
+	/**
+	 * Gets the row 
+	 * @param sheetName Name of the work sheet
+	 * @param startRowNum Row index starts from
+	 * @param endRowNum Row index upto 
+	 * @return List of rows
+	 */
+	public List<Row> getRows(String sheetName, int startRowNum, int endRowNum) {
+		
+		int sheetIndex = getSheetIndex(sheetName);
+		
+		List<Row> rowsList = getRows(sheetIndex, startRowNum, endRowNum);
+		
+		return rowsList;
 	}
 
 	/**
