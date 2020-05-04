@@ -2,15 +2,27 @@ package framework.utilities;
 
 import com.github.javafaker.Faker;
 
+import framework.logs.LogAccess;
+
 /**
  * This class helps in getting the fake data which can be used as part of your
  * test.
  *
  */
 public class FakeDataUtil {
+	
+	/** The Faker object. */
 	Faker faker;
+	
+	/** The Log Access object */
+	private LogAccess logAccess;
 
-	public FakeDataUtil() {
+	/**
+	 * Instantiates Faker object
+	 * @param logAccess LogAccess instance
+	 */
+	public FakeDataUtil(LogAccess logAccess) {
+		this.logAccess = logAccess;
 		this.faker = new Faker();
 	}
 
@@ -20,7 +32,12 @@ public class FakeDataUtil {
 	 * @return First Name
 	 */
 	public String firstName() {
-		return this.faker.name().firstName();
+		
+		String firstName = this.faker.name().firstName();
+		
+		this.logAccess.getLogger().debug("Generating firstName '" + firstName + "' from faker");
+		
+		return firstName;
 	}
 
 	/**
@@ -29,7 +46,12 @@ public class FakeDataUtil {
 	 * @return Last Name
 	 */
 	public String lastName() {
-		return this.faker.name().lastName();
+		
+		String lastName = this.faker.name().lastName();
+		
+		this.logAccess.getLogger().debug("Generating lastName '" + lastName + "' from faker");
+		
+		return lastName;
 	}
 
 	/**
@@ -38,7 +60,12 @@ public class FakeDataUtil {
 	 * @return Funny Name
 	 */
 	public String funnyName() {
-		return this.faker.funnyName().name();
+		
+		String funnyName = this.faker.funnyName().name();
+		
+		this.logAccess.getLogger().debug("Generating funnyName '" + funnyName + "' from faker");
+		
+		return funnyName;
 	}
 	
 	/**
@@ -46,7 +73,12 @@ public class FakeDataUtil {
 	 * @return Full Address
 	 */
 	public String fullAddress() {
-		return this.faker.address().fullAddress();
+		
+		String fullAddress = this.faker.address().fullAddress();
+		
+		this.logAccess.getLogger().debug("Generating fullAddress '" + fullAddress + "' from faker");
+		
+		return fullAddress;
 	}
 
 	/**
@@ -54,7 +86,12 @@ public class FakeDataUtil {
 	 * @return Street Address
 	 */
 	public String streetAddress() {
-		return this.faker.address().streetAddress();
+		
+		String streetAddress = this.faker.address().streetAddress();
+		
+		this.logAccess.getLogger().debug("Generating streetAddress '" + streetAddress + "' from faker");
+		
+		return streetAddress;
 	}
 	
 	/**
@@ -63,7 +100,12 @@ public class FakeDataUtil {
 	 * @return Zip Code
 	 */
 	public String zipCode(String stateAbbr) {
-		return this.faker.address().zipCodeByState(stateAbbr);
+		
+		String zipCode = this.faker.address().zipCodeByState(stateAbbr);
+		
+		this.logAccess.getLogger().debug("Generating zipCode '" + zipCode + "' from faker");
+		
+		return zipCode;
 	}
 
 	/**
@@ -72,7 +114,12 @@ public class FakeDataUtil {
 	 * @return Business Name
 	 */
 	public String businessName() {
-		return this.faker.company().name();
+		
+		String businessName = this.faker.company().name();
+		
+		this.logAccess.getLogger().debug("Generating businessName '" + businessName + "' from faker");
+		
+		return businessName;
 	}
 
 }
