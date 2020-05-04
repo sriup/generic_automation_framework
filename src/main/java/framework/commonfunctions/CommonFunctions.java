@@ -138,7 +138,7 @@ public class CommonFunctions {
 		dateTimeUtil = new DateTimeUtil(logAccess);
 		folderFileUtil = new FolderFileUtil(logAccess);
 		excelUtil = new ExcelUtil(logAccess);
-		fakeDataUtil = new FakeDataUtil();
+		fakeDataUtil = new FakeDataUtil(logAccess);
 		securityUtil = new SecurityUtil();
 		zipUtil = new ZipUtil(logAccess);
 	}
