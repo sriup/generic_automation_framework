@@ -112,7 +112,7 @@ public class ExcelUtil {
 	 * Gets the sheet at the specified index (index starts with 0).
 	 *
 	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical & logical)
+	 *            the index of the sheet number (0-based physical and logical)
 	 * @return the work sheet
 	 */
 	public Sheet getSheet(int sheetIndex) {
@@ -147,7 +147,7 @@ public class ExcelUtil {
 	 * Gets the column header index.
 	 *
 	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical & logical) <br>
+	 *            the index of the sheet number (0-based physical and logical) <br>
 	 *            sheet index starts with 0.
 	 * @param columnName
 	 *            Name of the column
@@ -172,7 +172,7 @@ public class ExcelUtil {
 	 * Gets the row count.
 	 *
 	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical & logical)
+	 *            the index of the sheet number (0-based physical and logical)
 	 * @return the row count
 	 */
 	// get row count by sheet index
@@ -204,7 +204,7 @@ public class ExcelUtil {
 	 * Gets the row.
 	 *
 	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical & logical)
+	 *            the index of the sheet number (0-based physical and logical)
 	 * @param rowNumber
 	 *            the row number
 	 * @return the row
@@ -219,7 +219,7 @@ public class ExcelUtil {
 	
 	/**
 	 * Gets the row 
-	 * @param sheetIndex the index of the sheet number (0-based physical & logical)
+	 * @param sheetIndex the index of the sheet number (0-based physical and logical)
 	 * @param startRowNum Row index starts from
 	 * @param endRowNum Row index upto 
 	 * @return List of rows
@@ -288,7 +288,7 @@ public class ExcelUtil {
 	 * Gets the column data.
 	 *
 	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical & logical)
+	 *            the index of the sheet number (0-based physical and logical)
 	 * @param columnNumber
 	 *            the column number
 	 * @return the column data
@@ -327,7 +327,7 @@ public class ExcelUtil {
 	 * Gets the column headers.
 	 *
 	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical & logical)
+	 *            the index of the sheet number (0-based physical and logical)
 	 * @return the column headers
 	 */
 	// get headers
@@ -347,7 +347,7 @@ public class ExcelUtil {
 	 * Gets the cell data.
 	 *
 	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical & logical)
+	 *            the index of the sheet number (0-based physical and logical)
 	 * @param rowNumber
 	 *            the row number
 	 * @param columnNumber
@@ -530,7 +530,7 @@ public class ExcelUtil {
 	 * Gets the row data.
 	 *
 	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical & logical)
+	 *            the index of the sheet number (0-based physical and logical)
 	 * @param rowNumber
 	 *            the row number
 	 * @return the row data
@@ -604,7 +604,7 @@ public class ExcelUtil {
 	 * @param excelFileName
 	 *            the excel file name
 	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical & logical)
+	 *            the index of the sheet number (0-based physical and logical)
 	 * @param rowNumber
 	 *            the row number (starts with 0)
 	 * @param columnNumber
@@ -697,7 +697,7 @@ public class ExcelUtil {
 	 * @param excelFileName
 	 *            the excel file name
 	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical & logical)
+	 *            the index of the sheet number (0-based physical and logical)
 	 * @param rowNumber
 	 *            the row number (starts with 0)
 	 * @param columnName
@@ -746,7 +746,7 @@ public class ExcelUtil {
 	 * Delete row.
 	 *
 	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical & logical)
+	 *            the index of the sheet number (0-based physical and logical)
 	 * @param rowNumber
 	 *            the row number
 	 */
@@ -758,7 +758,7 @@ public class ExcelUtil {
 	 * Delete column.
 	 *
 	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical & logical)
+	 *            the index of the sheet number (0-based physical and logical)
 	 * @param columnNumber
 	 *            the column number
 	 */
@@ -771,7 +771,7 @@ public class ExcelUtil {
 	 * Delete column.
 	 *
 	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical & logical)
+	 *            the index of the sheet number (0-based physical and logical)
 	 * @param columnName
 	 *            the column name
 	 */
@@ -840,7 +840,7 @@ public class ExcelUtil {
 	 * Delete sheet based on the sheet index.
 	 *
 	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical & logical)
+	 *            the index of the sheet number (0-based physical and logical)
 	 */
 	public void deleteSheet(int sheetIndex) {
 		wb.removeSheetAt(sheetIndex);
@@ -919,7 +919,7 @@ public class ExcelUtil {
 	 * Delete column and retain column width.
 	 *
 	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical & logical)
+	 *            the index of the sheet number (0-based physical and logical)
 	 * @param columnNumber
 	 *            the column number
 	 */

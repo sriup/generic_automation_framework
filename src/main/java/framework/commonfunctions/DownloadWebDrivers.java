@@ -26,7 +26,7 @@ public class DownloadWebDrivers {
 	 * Download driver <br>
 	 * <b>Note : </b> Driver will be downloaded only if the latest version is not available on the local machine.<br>
 	 *  If the latest driver is available, simple it will consume the existing driver rather downloading it again.
-	 *  <i>Currently this method will support <u>WINDOWS<u> platform
+	 *  <i>Currently this method will support <u>WINDOWS</u> platform</i>
 	 *  
 	 * @param browserName the browser name
 	 */
@@ -68,9 +68,9 @@ public class DownloadWebDrivers {
 	}
 
 	/**
-	 * Gets the Chrome driver version.
+	 * Gets the Chrome driver latest version
 	 *
-	 * @return the Chrome driver version
+	 * @return the Chrome driver latest version
 	 */
 	private static String getChromeDriverVersion() {
 		String uri = "https://chromedriver.storage.googleapis.com/LATEST_RELEASE";
@@ -81,9 +81,9 @@ public class DownloadWebDrivers {
 	}
 
 	/**
-	 * Gets the Gecko driver version.
+	 * Gets the Gecko driver latest version.
 	 *
-	 * @return the Gecko driver version
+	 * @return the Gecko driver latest version
 	 */
 	private static String getGeckoDriverVersion() {
 		String uri = "https://github.com/mozilla/geckodriver/releases/latest";
@@ -96,7 +96,7 @@ public class DownloadWebDrivers {
 	}
 
 	/**
-	 * Download web driver <br>
+	 * Download latest driver<br>
 	 * 
 	 *
 	 * @param browserName       the browser name

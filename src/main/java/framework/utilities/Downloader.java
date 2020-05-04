@@ -18,8 +18,8 @@ public class Downloader {
 	 * @param url           URL from where the file should be download
 	 * @param destination   destination folder path
 	 * 
-	 * @throws MalformedURLException
-	 * @throws IOException
+	 * @throws MalformedURLException exception
+	 * @throws IOException exception
 	 */
 	public static void downloadFile(LogAccess logAceess, String url, String destination)
 			throws MalformedURLException, IOException {

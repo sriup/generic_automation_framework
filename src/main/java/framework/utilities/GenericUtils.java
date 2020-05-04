@@ -19,7 +19,7 @@ public class GenericUtils {
 	/**
 	 * Generates random alphanumeric string
 	 * @param length Number of chars in the string
-	 * @return
+	 * @return random alphanumeric string
 	 */
 	public String generateAlphaNumericString(int length) {
         String allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
