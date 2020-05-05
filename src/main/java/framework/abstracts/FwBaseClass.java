@@ -96,7 +96,7 @@ public abstract class FwBaseClass {
 
 	/**
 	 * Sets the screenshot path.<br>
-	 * <font color="orange"><b>Note : </b> This method in turn calls
+	 * <font color="orange"><b>Note :</b> This method in turn calls
 	 * {@link #createScreenshotName} method that creates the screenshots folder and
 	 * also sets the {@link #screenshotPath}.</font>
 	 * 
