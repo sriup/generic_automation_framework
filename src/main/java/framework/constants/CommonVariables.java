@@ -8,7 +8,7 @@ public class CommonVariables {
 	/**
 	 * The browser Name
 	 * This variable will be updated based on the value provided as part of<br> 
-	 * maven command. Make sure you include "-DbrowserName" to set the browser name.<br>
+	 * maven command. Make sure you include <font color="blue">"-DbrowserName"</font> to set the browser name.<br>
 	 * eg : <b>-DbrowserName="chrome"</b>
 	 * */
 	

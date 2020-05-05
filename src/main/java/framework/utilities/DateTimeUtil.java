@@ -240,7 +240,7 @@ public class DateTimeUtil {
 	}
 
 	/**
-	 * Fetching the Current Timestamp .
+	 * Fetching the Current Timestamp.
 	 *
 	 * @return Timestamp
 	 * @throws Exception The Exception
