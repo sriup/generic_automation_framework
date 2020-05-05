@@ -13,6 +13,7 @@ import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import framework.logs.LogAccess;
+import framework.utilities.FolderFileUtil;
 import io.github.bonigarcia.wdm.Architecture;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.qameta.allure.Step;
@@ -28,9 +29,9 @@ public class BrowserFunctions {
 	
 
 	/**
-	 * Instantiates a new browser functions.
+	 * Instantiates a new {@link BrowserFunctions} object with log access.
 	 *
-	 * @param logAccess the log access
+	 * @param logAccess the instance of {@link LogAccess}
 	 */
 	public BrowserFunctions(LogAccess logAccess) {
 		this.logAccess = logAccess;	
@@ -43,9 +44,9 @@ public class BrowserFunctions {
 	private LogAccess logAccess;
 
 	/**
-	 * Sets the download folder path.
-	 *
-	 * @param downloadPath the path where the files should be download
+	 * Sets the download folder path.<br>
+	 * <font color="blue"><b>Note : </b></font> This will set the download folder path as part of driver capabilities.
+	 * @param downloadPath the path where the files should be download when download from browser
 	 */
 	private void setDownloadFolderPath(String downloadPath) {
 		if (downloadPath.isEmpty()) {
@@ -88,13 +89,13 @@ public class BrowserFunctions {
 	 * Launches the specified browser.
 	 *
 	 * @param browserName  provide the browser name as per the below list.<br>
-	 *                     Note: Below is the list of currently supported browsers
+	 *                     <font color="blue"><b>Note:</b> Below is the list of currently supported browsers
 	 *                     <ul>
 	 *                     <li>Chrome</li>
 	 *                     <li>Firefox</li>
 	 *                     <li>Edge</li>
 	 *                     <li>IE</li>
-	 *                     </ul>
+	 *                     </ul></font>
 	 * @param downloadPath the download path
 	 * @return the {@link org.openqa.selenium.WebDriver WebDriver} for the specified
 	 *         browser
@@ -102,14 +103,13 @@ public class BrowserFunctions {
 	@Step("Lauching \"{browserName}\" browser")
 	public WebDriver launch(String browserName, String downloadPath) {
 		setDownloadFolderPath(this.downloadFolderpath);
-		logAccess.getLogger().info("Launching browser :-  " + browserName);
-		logAccess.getLogger().info("Downloads folder :- " + getDownloadFilePath());
+		this.logAccess.getLogger().info("Launching browser :-  " + browserName);
+		this.logAccess.getLogger().info("Downloads folder :- " + getDownloadFilePath());
 		
 		if(browserName.equalsIgnoreCase("chrome") || browserName.equalsIgnoreCase("firefox") ) {
 			DownloadWebDrivers.downloadDriver(browserName);
 		}
-		
-		
+				
 		switch (browserName.trim().toLowerCase()) {
 		case "chrome":
 			return launchChrome();
@@ -121,6 +121,7 @@ public class BrowserFunctions {
 		case "internetexplorer":
 			return launchInternetExplorer();
 		default:
+			this.logAccess.getLogger().info("Unexpected value : " + browserName + "\n only supported browsers are: chrome, firefox, edge, ie");
 			throw new IllegalArgumentException(
 					"Unexpected value : " + browserName + "\n only supported browsers are: chrome, firefox, edge, ie");
 		}
@@ -206,14 +207,17 @@ public class BrowserFunctions {
 		threadDriver.get().navigate().forward();
 	}
 
+	
+	/*
+	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!! Private Methods !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	 */
+	
 	/**
 	 * Launch Chrome.
 	 *
 	 * @return the web driver
 	 */
-	/*
-	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!! Private Methods !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	 */
+	
 	private WebDriver launchChrome() {
 //		WebDriverManager.chromedriver().setup();
 		System.setProperty("webdriver.chrome.driver",System.getProperty("user.dir")+ File.separatorChar + "drivers" + File.separator  + "Chrome" + File.separator +"chromedriver.exe");

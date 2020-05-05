@@ -35,14 +35,14 @@ public class CommonFunctions {
 	/** Folder path where the captured screenshots should be stored. */
 	private String screenShotsPath;
 
-	/** Log info is written in LogAccess. */
+	/** LogAccess object */
 	private LogAccess logAccess;
 
-	/** The Date Time Utility */
+	/** DateTimeUtil object */
 	private DateTimeUtil dateTimeUtil;
 
 	/**
-	 * Gets the DateTimeUtils.
+	 * Gets the dateTimeUtil object
 	 *
 	 * @return the instance of DateTimeUtils
 	 */
@@ -50,11 +50,11 @@ public class CommonFunctions {
 		return dateTimeUtil;
 	}
 
-	/** The Folder File Utility */
+	/** FolderFileUtil object */
 	private FolderFileUtil folderFileUtil;
 
 	/**
-	 * Gets the folderFileUtil.
+	 * Gets the folderFileUtil object
 	 *
 	 * @return the folderFileUtil
 	 */
@@ -138,14 +138,14 @@ public class CommonFunctions {
 		dateTimeUtil = new DateTimeUtil(logAccess);
 		folderFileUtil = new FolderFileUtil(logAccess);
 		excelUtil = new ExcelUtil(logAccess);
-		fakeDataUtil = new FakeDataUtil();
+		fakeDataUtil = new FakeDataUtil(logAccess);
 		securityUtil = new SecurityUtil();
 		zipUtil = new ZipUtil(logAccess);
 	}
 
 	/**
 	 * Sets the date time format for the screenshot. <br>
-	 * Note:<i> This will be prepended to the screenshot name.</i>
+	 * <font color="blue">Note:<i> This will be prepended to the screenshot name.</i></font>
 	 *
 	 * @return the screen shot time
 	 * @throws Exception the exception
@@ -218,10 +218,10 @@ public class CommonFunctions {
 	/**
 	 * Wait for element(s) visible
 	 * 
-	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param elements          the {@link org.openqa.selenium.WebElement element}
-	 * @param maxTimeOut		Maximium time to wait for the element(s) visible
-	 * @return	List of WebElements
+	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param elements   the {@link org.openqa.selenium.WebElement element}
+	 * @param maxTimeOut Maximium time to wait for the element(s) visible
+	 * @return List of WebElements
 	 */
 	public List<WebElement> waitForElementsToVisible(WebDriver driver, List<WebElement> elements, int maxTimeOut) {
 		this.logAccess.getLogger().debug("waiting for all specified elements in the list to be visible" + elements);
@@ -231,10 +231,9 @@ public class CommonFunctions {
 	/**
 	 * Wait for invisibility of element.
 	 *
-	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param element           the {@link org.openqa.selenium.WebElement element}
-	 * @param expectedCondition the expected condition
-	 * @param maxTimeout        the max timeout
+	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param element    the {@link org.openqa.selenium.WebElement element}
+	 * @param maxTimeout the max timeout
 	 */
 	public void waitForInvisibilityOfElement(WebDriver driver, WebElement element, int maxTimeout) {
 		this.logAccess.getLogger().info("waiting for element to be invisible  :- " + element);
@@ -459,8 +458,8 @@ public class CommonFunctions {
 	 * @param element the {@link org.openqa.selenium.WebElement element} <br>
 	 *                This method will highlight the element and does not set back
 	 *                the original style. <br>
-	 *                Note: Use {@link #unHighlightElement unHighlightElement}
-	 *                method to set back the original style of the element.
+	 *                <font color="blue"><b>Note:</b> Use {@link #unHighlightElement unHighlightElement}
+	 *                method to set back the original style of the element.</font>
 	 * @return the String with original style of the element
 	 */
 	public String highlightElement(WebDriver driver, WebElement element) {
@@ -529,7 +528,12 @@ public class CommonFunctions {
 	 * @param element             the {@link org.openqa.selenium.WebElement element}
 	 * @param isCaptureScreenShot the is capture screen shot
 	 * @param captureBefore       the capture before
-	 * @param screenShotName      the screen shot name
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
 	 * @throws Exception the exception
 	 */
 	// click element
@@ -569,10 +573,7 @@ public class CommonFunctions {
 	 * @param isCaptureScreenshot toggle to capture screenshot
 	 * @param screenShotName      the screen shot name <br>
 	 *                            Date time Stamp will be <i>prepended</i> to the
-	 *                            screenshot name by default. Make sure set the date
-	 *                            time format using
-	 *                            {@link #setScreenShotTimeStampFormat
-	 *                            setScreenShotTimeStampFormat} setter. <br>
+	 *                            screenshot name by default.<br>
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
@@ -617,10 +618,7 @@ public class CommonFunctions {
 	 * @param isCaptureScreenshot the is capture screenshot
 	 * @param screenShotName      the screenshot name <br>
 	 *                            Date time Stamp will be <i>prepended</i> to the
-	 *                            screenshot name by default. Make sure set the date
-	 *                            time format using
-	 *                            {@link #setScreenShotTimeStampFormat
-	 *                            setScreenShotTimeStampFormat} setter. <br>
+	 *                            screenshot name by default.<br>
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
@@ -653,10 +651,7 @@ public class CommonFunctions {
 	 * @param isCaptureScreenshot the is capture screenshot
 	 * @param screenShotName      the screenshot name <br>
 	 *                            Date time Stamp will be <i>prepended</i> to the
-	 *                            screenshot name by default. Make sure set the date
-	 *                            time format using
-	 *                            {@link #setScreenShotTimeStampFormat
-	 *                            setScreenShotTimeStampFormat} setter. <br>
+	 *                            screenshot name by default.<br>
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
@@ -689,10 +684,7 @@ public class CommonFunctions {
 	 * @param isCaptureScreenshot the is capture screenshot
 	 * @param screenShotName      the screenshot name <br>
 	 *                            Date time Stamp will be <i>prepended</i> to the
-	 *                            screenshot name by default. Make sure set the date
-	 *                            time format using
-	 *                            {@link #setScreenShotTimeStampFormat
-	 *                            setScreenShotTimeStampFormat} setter. <br>
+	 *                            screenshot name by default.<br>
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
@@ -725,10 +717,7 @@ public class CommonFunctions {
 	 * @param isCaptureScreenShot the is capture screen shot
 	 * @param screenShotName      the screen shot name <br>
 	 *                            Date time Stamp will be <i>prepended</i> to the
-	 *                            screenshot name by default. Make sure set the date
-	 *                            time format using
-	 *                            {@link #setScreenShotTimeStampFormat
-	 *                            setScreenShotTimeStampFormat} setter. <br>
+	 *                            screenshot name by default.<br>
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
@@ -762,10 +751,7 @@ public class CommonFunctions {
 	 * @param isCaptureScreenShot the is capture screen shot
 	 * @param screenShotName      the screen shot name <br>
 	 *                            Date time Stamp will be <i>prepended</i> to the
-	 *                            screenshot name by default. Make sure set the date
-	 *                            time format using
-	 *                            {@link #setScreenShotTimeStampFormat
-	 *                            setScreenShotTimeStampFormat} setter. <br>
+	 *                            screenshot name by default.<br>
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
@@ -792,7 +778,7 @@ public class CommonFunctions {
 	}
 
 	/**
-	 * Trigger general events on the {@link org.openqa.selenium.WebElement element
+	 * Trigger general events on the {@link org.openqa.selenium.WebElement element}
 	 *
 	 * @param driver    the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param element   the {@link org.openqa.selenium.WebElement element} the
@@ -814,8 +800,8 @@ public class CommonFunctions {
 	/**
 	 * Trigger general events on the {@link org.openqa.selenium.WebElement element}.
 	 * <br>
-	 * Note: This helps in running the tests on IE where the associated event not
-	 * triggered <br>
+	 * <font color="blue"><b>Note:</b> This helps in running the tests on IE where the associated event not
+	 * triggered <br></font>
 	 * Please use {@link #jsTriggerMouseEvent} method for mouse related events.
 	 * 
 	 * 
@@ -856,9 +842,7 @@ public class CommonFunctions {
 	 * @param element        the {@link org.openqa.selenium.WebElement element}
 	 * @param screenshotName the screenshot name <br>
 	 *                       Date time Stamp will be <i>prepended</i> to the
-	 *                       screenshot name by default. Make sure set the date time
-	 *                       format using {@link #setScreenShotTimeStampFormat
-	 *                       setScreenShotTimeStampFormat} setter. <br>
+	 *                       screenshot name by default.<br>
 	 *                       Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                       setter to set the path where you want to store the
 	 *                       screenshots.
@@ -880,12 +864,10 @@ public class CommonFunctions {
 	 * will be set back after screenshot.
 	 *
 	 * @param driver         the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param element        the {@link org.openqa.selenium.WebElement element}
+	 * @param byLocator      the by Locator
 	 * @param screenshotName the screenshot name <br>
 	 *                       Date time Stamp will be <i>prepended</i> to the
-	 *                       screenshot name by default. Make sure set the date time
-	 *                       format using {@link #setScreenShotTimeStampFormat
-	 *                       setScreenShotTimeStampFormat} setter. <br>
+	 *                       screenshot name by default.<br>
 	 *                       Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                       setter to set the path where you want to store the
 	 *                       screenshots.
@@ -909,9 +891,7 @@ public class CommonFunctions {
 	 * @param driver         the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param screenshotName the screenshot name <br>
 	 *                       Date time Stamp will be <i>prepended</i> to the
-	 *                       screenshot name by default. Make sure set the date time
-	 *                       format using {@link #setScreenShotTimeStampFormat
-	 *                       setScreenShotTimeStampFormat} setter. <br>
+	 *                       screenshot name by default.<br>
 	 *                       Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                       setter to set the path where you want to store the
 	 *                       screenshots.
@@ -932,9 +912,7 @@ public class CommonFunctions {
 	 * @param driver         the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param screenshotName the screenshot name <br>
 	 *                       Date time Stamp will be <i>prepended</i> to the
-	 *                       screenshot name by default. Make sure set the date time
-	 *                       format using {@link #setScreenShotTimeStampFormat
-	 *                       setScreenShotTimeStampFormat} setter. <br>
+	 *                       screenshot name by default.<br>
 	 *                       Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                       setter to set the path where you want to store the
 	 *                       screenshots.

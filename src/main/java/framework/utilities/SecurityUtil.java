@@ -13,14 +13,15 @@ public class SecurityUtil {
 	 * 
 	 * @param secretKey
 	 *            Secret Key <br>
-	 *            <i>Note : Here are couple of sample secret keys that you can try
+	 *            <font color='orange'><i>Note : Here are couple of sample secret keys that you can try</i>
 	 *            <br>
 	 *            <ul>
 	 *            <li>QDWSM3OYBPGTEVSPB5FKVDM3CSNCWHVK</li>
 	 *            <li>TY3ZX2YMUJSPTN6Z</li>
 	 *            </ul>
+	 *            </font>
 	 *            <br>
-	 *            </i>
+	 *            
 	 * @return String current token
 	 * 
 	 */
@@ -32,10 +33,11 @@ public class SecurityUtil {
 	}
 
 	/**
-	 * Encrypts the text <i>Note : </i> Make sure to add <b>AES_KEY</b> in the User
+	 * Encrypts the text <br>
+	 * <i><font color='blue'>Note : </i> Make sure to add </font><b>AES_KEY</b><font color='blue'> in the User
 	 * Environment Variables<br>
-	 * Please use the same AES_KEY across all the team members, <b>otherwise tests will
-	 * fail</b>.
+	 * Please use the same AES_KEY across all the team members, <b>otherwise tests will</font>
+	 * <font color='red'>fail</font></b>.
 	 * 
 	 * @param textToEncrypt
 	 *            Text to encrypt

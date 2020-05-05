@@ -13,13 +13,13 @@ public class Downloader {
 
 	/**
 	 * Downloads the file from the URL
-	 * 
+	 * <font color="blue"><b>Note : </b> File will be override with the new download, if already exist in the destination.</font>
 	 * @param logAceess     LogAccess instance
 	 * @param url           URL from where the file should be download
 	 * @param destination   destination folder path to save the file
 	 * 
-	 * @throws MalformedURLException
-	 * @throws IOException
+	 * @throws MalformedURLException exception
+	 * @throws IOException exception
 	 */
 	public static void downloadFile(LogAccess logAceess, String url, String destination)
 			throws MalformedURLException, IOException {

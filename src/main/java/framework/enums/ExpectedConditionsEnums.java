@@ -1,18 +1,26 @@
 package framework.enums;
 
-// TODO: Auto-generated Javadoc
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
 /**
  * The Enum ExpectedConditionsEnums.
  */
 public enum ExpectedConditionsEnums {
 	
-	/** The presence. */
+	/** The presence of the element(s)
+	 * @see ExpectedConditions
+	 *  */
 	PRESENCE,
 	
-	/** The clickable. */
+	/** The the element(s) is/are clickable
+	 * @see ExpectedCondition
+	 *  */
 	CLICKABLE,
 	
-	/** The visible. */
+	/** The the element(s) is/are visible
+	 * @see ExpectedCondition
+	 *  */
 	VISIBLE
 
 }

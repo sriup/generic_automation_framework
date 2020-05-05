@@ -1,33 +1,56 @@
 package framework.enums;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Enum LogVerboseEnums.
+ * This enum holds the possilbe {@link org.apache.log4j.Level LogLevels}
  */
 public enum LogVerboseEnums {
 	
-	/** The debug. */
+	/** debug log level
+	 * @see org.apache.log4j.Level#DEBUG
+	 * */
 	DEBUG,
 	
-	/** The error. */
+	/** error log level
+	 * @see org.apache.log4j.Level#ERROR
+	 * */
 	ERROR,
 	
-	/** The info. */
+	/** info log level
+	 * @see org.apache.log4j.Level#INFO
+	 * */
 	INFO,
 	
-	/** ALL. */
+	/** ALL log level
+	 *
+	 * @see org.apache.log4j.Level#ALL 
+	 **/
 	ALL,
 	
-	/**  FATAL. */
+	/**  fatal log level
+	 * 
+	 * @see org.apache.log4j.Level#FATAL
+	 * */
 	FATAL,
 	
-	/**  OFF. */
+	/** off log level
+	 * 
+	 * @see org.apache.log4j.Level#OFF
+	 * */
 	OFF,
 	
-	/**  TRACE. */
+	/**
+	 * trace log level
+	 * 
+	 * @see org.apache.log4j.Level#TRACE
+	 * 
+	 **/
 	TRACE,
 	
-	/**  WARN. */
+	/**
+	 *warn log level
+	 *
+	 * @see org.apache.log4j.Level#WARN 
+	 **/
 	WARN
 	
 	
