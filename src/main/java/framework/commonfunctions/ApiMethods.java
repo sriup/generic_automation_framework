@@ -14,7 +14,7 @@ public class ApiMethods {
 	private LogAccess logAccess;
 
 	/**
-	 * Instantiates a new APIMethods object with set the log access.
+	 * Instantiates a new APIMethods object to set the log access.
 	 * @param logAccess instance of{@link LogAccess}
 	 */
 	public ApiMethods(LogAccess logAccess) {

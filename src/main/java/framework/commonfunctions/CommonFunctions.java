@@ -528,7 +528,7 @@ public class CommonFunctions {
 	 * @param element             the {@link org.openqa.selenium.WebElement element}
 	 * @param isCaptureScreenShot the is capture screen shot
 	 * @param captureBefore       the capture before
-	 * @param screenShotName      the screen shot name the screenshot name <br>
+	 * @param screenShotName      the screenshot name <br>
 	 *                            Date time Stamp will be <i>prepended</i> to the
 	 *                            screenshot name by default.<br>
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}

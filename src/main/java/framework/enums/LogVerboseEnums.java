@@ -10,7 +10,7 @@ public enum LogVerboseEnums {
 	 * */
 	DEBUG,
 	
-	/** error level
+	/** error log level
 	 * @see org.apache.log4j.Level#ERROR
 	 * */
 	ERROR,
