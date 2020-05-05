@@ -45,7 +45,7 @@ public class BrowserFunctions {
 
 	/**
 	 * Sets the download folder path.<br>
-	 * <font color="orange"><b>Note : </b></font> This will set the download folder path as part of driver capabilities.
+	 * <font color="blue"><b>Note : </b></font> This will set the download folder path as part of driver capabilities.
 	 * @param downloadPath the path where the files should be download when download from browser
 	 */
 	private void setDownloadFolderPath(String downloadPath) {
@@ -89,7 +89,7 @@ public class BrowserFunctions {
 	 * Launches the specified browser.
 	 *
 	 * @param browserName  provide the browser name as per the below list.<br>
-	 *                     <font color="orange"><b>Note:</b> Below is the list of currently supported browsers
+	 *                     <font color="blue"><b>Note:</b> Below is the list of currently supported browsers
 	 *                     <ul>
 	 *                     <li>Chrome</li>
 	 *                     <li>Firefox</li>

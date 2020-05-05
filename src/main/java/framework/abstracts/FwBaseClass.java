@@ -30,7 +30,7 @@ public abstract class FwBaseClass {
 
 	/**
 	 * This method will launch the browser.<br>
-	 * <font color="orange"><b>Note : </b> browserName will be decided based on the
+	 * <font color="blue"><b>Note : </b> browserName will be decided based on the
 	 * value provided in the maven command.<br>
 	 * If browserName is provided in the maven command it will be updated in the
 	 * {@link CommonVariables#BROWSER_SELECT} and same will be used while launching
@@ -41,7 +41,7 @@ public abstract class FwBaseClass {
 	 * This gives the flexibility to run the tests from pom.xml, test or
 	 * TestNg.xml<br>
 	 * </font> <br>
-	 * <font color="blue">browserName specified in the maven command will
+	 * <font color="red">browserName specified in the maven command will
 	 * <b>supersedes</b> the browserName from test.</font>
 	 * 
 	 *
@@ -76,7 +76,7 @@ public abstract class FwBaseClass {
 
 	/**
 	 * Gets the screenshot path.<br>
-	 * <font color="orange"><b>Note : </b>This method will create "SystemGenerated_"
+	 * <font color="blue"><b>Note : </b>This method will create "SystemGenerated_"
 	 * folder appended with date time stamp under "Outputs/Screenshots" folder, if
 	 * {@link #createScreenshotPath} is not called in the "BaseClass"
 	 * constructor.</font>
@@ -96,7 +96,7 @@ public abstract class FwBaseClass {
 
 	/**
 	 * Sets the screenshot path.<br>
-	 * <font color="orange"><b>Note :</b> This method in turn calls
+	 * <font color="blue"><b>Note :</b> This method in turn calls
 	 * {@link #createScreenshotName} method that creates the screenshots folder and
 	 * also sets the {@link #screenshotPath}.</font>
 	 * 
@@ -123,7 +123,7 @@ public abstract class FwBaseClass {
 	 *
 	 * @param filename the new log access filename
 	 * @param logLevel the console log level <br>
-	 *                 <font color="orange"><b>Note:</b> .log file will always store
+	 *                 <font color="blue"><b>Note:</b> .log file will always store
 	 *                 <i>ALL</i> log level information.</font>
 	 */
 	public void initializeLogger(String filename, LogVerboseEnums logLevel) {
@@ -136,7 +136,7 @@ public abstract class FwBaseClass {
 
 	/**
 	 * Creates the screenshot folder<br>
-	 * <font color="orange"><b>Note : </b> Folder will be created under
+	 * <font color="blue"><b>Note : </b> Folder will be created under
 	 * "Outputs/Screenshots" folder also set's the {@link #screenshotPath}
 	 * variable.</font>
 	 * 

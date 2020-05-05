@@ -145,7 +145,7 @@ public class CommonFunctions {
 
 	/**
 	 * Sets the date time format for the screenshot. <br>
-	 * <font color="orange">Note:<i> This will be prepended to the screenshot name.</i></font>
+	 * <font color="blue">Note:<i> This will be prepended to the screenshot name.</i></font>
 	 *
 	 * @return the screen shot time
 	 * @throws Exception the exception
@@ -458,7 +458,7 @@ public class CommonFunctions {
 	 * @param element the {@link org.openqa.selenium.WebElement element} <br>
 	 *                This method will highlight the element and does not set back
 	 *                the original style. <br>
-	 *                <font color="orange"><b>Note:</b> Use {@link #unHighlightElement unHighlightElement}
+	 *                <font color="blue"><b>Note:</b> Use {@link #unHighlightElement unHighlightElement}
 	 *                method to set back the original style of the element.</font>
 	 * @return the String with original style of the element
 	 */
@@ -800,7 +800,7 @@ public class CommonFunctions {
 	/**
 	 * Trigger general events on the {@link org.openqa.selenium.WebElement element}.
 	 * <br>
-	 * <font color="orange"><b>Note:</b> This helps in running the tests on IE where the associated event not
+	 * <font color="blue"><b>Note:</b> This helps in running the tests on IE where the associated event not
 	 * triggered <br></font>
 	 * Please use {@link #jsTriggerMouseEvent} method for mouse related events.
 	 * 

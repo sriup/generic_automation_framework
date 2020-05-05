@@ -13,7 +13,7 @@ public class Downloader {
 
 	/**
 	 * Downloads the file from the URL
-	 * <font color="orange"><b>Note : </b> File will be override with the new download, if already exist in the destination.</font>
+	 * <font color="blue"><b>Note : </b> File will be override with the new download, if already exist in the destination.</font>
 	 * @param logAceess     LogAccess instance
 	 * @param url           URL from where the file should be download
 	 * @param destination   destination folder path to save the file

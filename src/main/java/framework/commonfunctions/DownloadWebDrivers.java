@@ -24,7 +24,7 @@ public class DownloadWebDrivers {
 
 	/**
 	 * Download driver <br>
-	 * <font color="orange"><b>Note : </b> Driver will be downloaded only if the latest version is not available on the local machine.<br>
+	 * <font color="blue"><b>Note : </b> Driver will be downloaded only if the latest version is not available on the local machine.<br>
 	 *  If the latest driver is available, simple it will consume the existing driver rather downloading it again.
 	 *  <i>Currently this method will support <u>WINDOWS</u> platform</i></font>
 	 *  
