@@ -11,17 +11,16 @@ public class SecurityUtil {
 	/**
 	 * Gets the token based on the secret key
 	 * 
-	 * @param secretKey
-	 *            Secret Key <br>
-	 *            <font color='orange'><i>Note : Here are couple of sample secret keys that you can try</i>
-	 *            <br>
-	 *            <ul>
-	 *            <li>QDWSM3OYBPGTEVSPB5FKVDM3CSNCWHVK</li>
-	 *            <li>TY3ZX2YMUJSPTN6Z</li>
-	 *            </ul>
-	 *            </font>
-	 *            <br>
-	 *            
+	 * @param secretKey Secret Key <br>
+	 *                  <font color='orange'><i>Note : Make sure you the secretKey
+	 *                  is encrypted. Here are couple of sample secret keys that you
+	 *                  can try</i> <br>
+	 *                  <ul>
+	 *                  <li>QDWSM3OYBPGTEVSPB5FKVDM3CSNCWHVK</li>
+	 *                  <li>TY3ZX2YMUJSPTN6Z</li>
+	 *                  </ul>
+	 *                  </font> <br>
+	 * 
 	 * @return String current token
 	 * 
 	 */
@@ -33,14 +32,42 @@ public class SecurityUtil {
 	}
 
 	/**
-	 * Encrypts the text <br>
-	 * <i><font color='blue'>Note : </i> Make sure to add </font><b>AES_KEY</b><font color='blue'> in the User
-	 * Environment Variables<br>
-	 * Please use the same AES_KEY across all the team members, <b>otherwise tests will</font>
-	 * <font color='red'>fail</font></b>.
+	 * Gets the token based on the secret key
 	 * 
-	 * @param textToEncrypt
-	 *            Text to encrypt
+	 * @param secretKey Secret Key <br>
+	 *                  <font color='orange'><i>Note : secret key (either encrypted/decrypted)
+	 *                  Here are couple of sample decrypted secret keys that you
+	 *                  can try</i> <br>
+	 *                  <ul>
+	 *                  <li>QDWSM3OYBPGTEVSPB5FKVDM3CSNCWHVK</li>
+	 *                  <li>TY3ZX2YMUJSPTN6Z</li>
+	 *                  </ul>
+	 *                  </font> <br>
+	 * @param isSecretKeyEncrypted  specify if secret key encrypted
+	 * @return String current token
+	 * 
+	 */
+	public String getToken(String secretKey, boolean isSecretKeyEncrypted) {
+		String token = null;
+		// create the instance of the TOTP with the security key
+		if (isSecretKeyEncrypted) {
+			token = getToken(secretKey);
+		}else {
+			token = getToken(encrypt(secretKey));
+		}
+		
+		// Get the latest token
+		return token;
+	}
+	/**
+	 * Encrypts the text <br>
+	 * <i><font color='blue'>Note : </i> Make sure to add
+	 * </font><b>AES_KEY</b><font color='blue'> in the User Environment
+	 * Variables<br>
+	 * Please use the same AES_KEY across all the team members, <b>otherwise tests
+	 * will</font> <font color='red'>fail</font></b>.
+	 * 
+	 * @param textToEncrypt Text to encrypt
 	 * @return Encrypted text
 	 */
 	public String encrypt(String textToEncrypt) {
@@ -72,11 +99,10 @@ public class SecurityUtil {
 	/**
 	 * Decrypts the encrypted text <i>Note : </i> Make sure to add <b>AES_KEY</b> in
 	 * the User Environment Variables<br>
-	 * Please use the same AES_KEY across all the team members, <b>otherwise tests will
-	 * fail</b>.
+	 * Please use the same AES_KEY across all the team members, <b>otherwise tests
+	 * will fail</b>.
 	 * 
-	 * @param textToDecrypt
-	 *            Text to decrypt
+	 * @param textToDecrypt Text to decrypt
 	 * @return Decrypted text
 	 */
 	public String decrypt(String textToDecrypt) {

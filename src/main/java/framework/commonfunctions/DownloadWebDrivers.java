@@ -74,7 +74,7 @@ public class DownloadWebDrivers {
 	 */
 	private static String getChromeDriverVersion() {
 		String uri = "https://chromedriver.storage.googleapis.com/LATEST_RELEASE";
-		Response response = apiMethods.get(uri);
+		Response response = apiMethods.sendRequest("get", uri);
 		// response code
 		DownloadWebDrivers.logAccess.getLogger().debug("RESPONSE CODE: " + response.getStatusCode());
 		return response.getBody().asString();
@@ -87,7 +87,7 @@ public class DownloadWebDrivers {
 	 */
 	private static String getGeckoDriverVersion() {
 		String uri = "https://github.com/mozilla/geckodriver/releases/latest";
-		Response response = apiMethods.get(uri);
+		Response response = apiMethods.sendRequest("get", uri);
 		// response code
 		DownloadWebDrivers.logAccess.getLogger().debug("RESPONSE CODE: " + response.getStatusCode());
 		JsonPath jsonPathEvaluator = response.jsonPath();

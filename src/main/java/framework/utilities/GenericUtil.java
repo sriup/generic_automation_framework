@@ -4,7 +4,7 @@ import java.security.SecureRandom;
 
 import org.apache.commons.lang.RandomStringUtils;
 
-public class GenericUtils {
+public class GenericUtil {
 	
 	/**
 	 * Generates random string with Alphabet chars
