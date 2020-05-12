@@ -11,10 +11,11 @@ import io.restassured.response.Response;
 
 public class JsonUtil {
 	private LogAccess logAccess;
+
 	public JsonUtil(LogAccess logAccess) {
 		this.logAccess = logAccess;
 	}
-	
+
 	public String getValue(String jsonFilePath, String jsonPath) throws IOException {
 		DocumentContext jPathDocCon = null;
 		jPathDocCon = JsonPath.parse(new File(jsonFilePath));
@@ -23,13 +24,12 @@ public class JsonUtil {
 		this.logAccess.getLogger().info("JSonPath : " + jsonPath + "\n Result : " + result);
 		return result;
 	}
-	
+
 	public String getValue(Response response, String jsonPath) {
 		String result;
 		result = response.jsonPath().getString(jsonPath);
 		this.logAccess.getLogger().info("JSonPath : " + jsonPath + "\n Result : " + result);
 		return result;
 	}
-	
 
 }

@@ -19,8 +19,7 @@ public class ApiMethods {
 	private LogAccess logAccess;
 	private FolderFileUtil folderFileUtil;
 
-	public Map<String,Object> defaultHeadersMap;
-	
+	public Map<String, Object> defaultHeadersMap;
 
 	/**
 	 * Instantiates a new APIMethods object to set the log access.
@@ -29,10 +28,10 @@ public class ApiMethods {
 	 */
 	public ApiMethods(LogAccess logAccess) {
 		this.logAccess = logAccess;
-		defaultHeadersMap = new HashMap<String,Object>();
+		defaultHeadersMap = new HashMap<String, Object>();
 		defaultHeadersMap.put("Content-Type", "application/json");
 		defaultHeadersMap.put("Accept", "application/json");
-		
+
 	}
 
 	/**
@@ -113,7 +112,8 @@ public class ApiMethods {
 	 * @param data        data
 	 * @return response object {@link io.restassured.response.Response Response}
 	 */
-	public Response sendReqResponse(String requestType, String uri, HashMap<String, String> headers,HashMap<String, String> data) {
+	public Response sendReqResponse(String requestType, String uri, HashMap<String, String> headers,
+			HashMap<String, String> data) {
 		this.logAccess.getLogger().info("Sending " + requestType + " request to " + uri);
 		RequestSpecification httpRequest = RestAssured.given();
 
@@ -159,9 +159,10 @@ public class ApiMethods {
 	}
 
 	/**
-	 * @param folderPath      folder path to store file name
-	 * @param fileName        file name to store the response content
-	 * @param response response object {@link io.restassured.response.Response Response}
+	 * @param folderPath folder path to store file name
+	 * @param fileName   file name to store the response content
+	 * @param response   response object {@link io.restassured.response.Response
+	 *                   Response}
 	 * @throws Exception exception
 	 */
 	public void writeResposeToFile(String folderPath, String fileName, Response response) throws Exception {

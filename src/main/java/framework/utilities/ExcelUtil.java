@@ -35,8 +35,7 @@ public class ExcelUtil {
 	/**
 	 * Instantiates a new excel functions.
 	 *
-	 * @param logAccess
-	 *            the log access
+	 * @param logAccess the log access
 	 */
 	public ExcelUtil(LogAccess logAccess) {
 
@@ -47,16 +46,11 @@ public class ExcelUtil {
 	/**
 	 * Creates the excel.
 	 *
-	 * @param excelFilePath
-	 *            the excel file path
-	 * @param excelFileName
-	 *            the excel file name
-	 * @param sheetName
-	 *            Name of the work sheet
-	 * @param excelData
-	 *            the excel data
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @param excelFilePath the excel file path
+	 * @param excelFileName the excel file name
+	 * @param sheetName     Name of the work sheet
+	 * @param excelData     the excel data
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void createExcel(String excelFilePath, String excelFileName, String sheetName, Object[][] excelData)
 			throws IOException {
@@ -88,6 +82,8 @@ public class ExcelUtil {
 						// set value as String for anything other than Integer
 						cell.setCellValue((String) cellData);
 					}
+					// increase the column number
+					colIndex++;
 				}
 			}
 		}
@@ -100,8 +96,7 @@ public class ExcelUtil {
 	/**
 	 * Gets the sheet.
 	 *
-	 * @param sheetName
-	 *            Name of the work sheet
+	 * @param sheetName Name of the work sheet
 	 * @return the work sheet
 	 */
 	public Sheet getSheet(String sheetName) {
@@ -111,8 +106,8 @@ public class ExcelUtil {
 	/**
 	 * Gets the sheet at the specified index (index starts with 0).
 	 *
-	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical and logical)
+	 * @param sheetIndex the index of the sheet number (0-based physical and
+	 *                   logical)
 	 * @return the work sheet
 	 */
 	public Sheet getSheet(int sheetIndex) {
@@ -122,8 +117,7 @@ public class ExcelUtil {
 	/**
 	 * Gets the sheet index.
 	 *
-	 * @param sheetName
-	 *            Name of the work sheet
+	 * @param sheetName Name of the work sheet
 	 * @return the sheet index
 	 */
 	public int getSheetIndex(String sheetName) {
@@ -133,10 +127,8 @@ public class ExcelUtil {
 	/**
 	 * Gets the column header index.
 	 *
-	 * @param sheetName
-	 *            Name of the work sheet
-	 * @param columnName
-	 *            the column name
+	 * @param sheetName  Name of the work sheet
+	 * @param columnName the column name
 	 * @return the column header index
 	 */
 	public int getColumnHeaderIndex(String sheetName, String columnName) {
@@ -146,11 +138,10 @@ public class ExcelUtil {
 	/**
 	 * Gets the column header index.
 	 *
-	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical and logical) <br>
-	 *            sheet index starts with 0.
-	 * @param columnName
-	 *            Name of the column
+	 * @param sheetIndex the index of the sheet number (0-based physical and
+	 *                   logical) <br>
+	 *                   sheet index starts with 0.
+	 * @param columnName Name of the column
 	 * @return the index of the column (index starts with 0)
 	 */
 	public int getColumnHeaderIndex(int sheetIndex, String columnName) {
@@ -160,8 +151,7 @@ public class ExcelUtil {
 	/**
 	 * Gets the used row count from the sheet.
 	 *
-	 * @param sheetName
-	 *            Name of the work sheet
+	 * @param sheetName Name of the work sheet
 	 * @return the used rows count
 	 */
 	public int getRowCount(String sheetName) {
@@ -171,8 +161,8 @@ public class ExcelUtil {
 	/**
 	 * Gets the row count.
 	 *
-	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical and logical)
+	 * @param sheetIndex the index of the sheet number (0-based physical and
+	 *                   logical)
 	 * @return the row count
 	 */
 	// get row count by sheet index
@@ -186,10 +176,8 @@ public class ExcelUtil {
 	/**
 	 * Gets the row.
 	 *
-	 * @param sheetName
-	 *            Name of the work sheet
-	 * @param rowNumber
-	 *            the row number
+	 * @param sheetName Name of the work sheet
+	 * @param rowNumber the row number
 	 * @return the row
 	 */
 	// get Row
@@ -203,10 +191,9 @@ public class ExcelUtil {
 	/**
 	 * Gets the row.
 	 *
-	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical and logical)
-	 * @param rowNumber
-	 *            the row number
+	 * @param sheetIndex the index of the sheet number (0-based physical and
+	 *                   logical)
+	 * @param rowNumber  the row number
 	 * @return the row
 	 */
 	// get Row
@@ -216,12 +203,14 @@ public class ExcelUtil {
 		// get row based on the index
 		return ws.getRow(rowNumber);
 	}
-	
+
 	/**
-	 * Gets the row 
-	 * @param sheetIndex the index of the sheet number (0-based physical and logical)
+	 * Gets the row
+	 * 
+	 * @param sheetIndex  the index of the sheet number (0-based physical and
+	 *                    logical)
 	 * @param startRowNum Row index starts from
-	 * @param endRowNum Row index upto 
+	 * @param endRowNum   Row index upto
 	 * @return List of rows
 	 */
 	public List<Row> getRows(int sheetIndex, int startRowNum, int endRowNum) {
@@ -234,43 +223,41 @@ public class ExcelUtil {
 			throw new ArrayIndexOutOfBoundsException("Invalid row range : StartRowNum '" + startRowNum
 					+ "' and endRowNum '" + endRowNum + "'. Max rows are '" + maxRows + "'");
 		}
-		
+
 		List<Row> rowsList = new ArrayList<Row>();
 
 		for (int currentRowIndex = startRowNum; currentRowIndex <= endRowNum; currentRowIndex++) {
 
 			Row row = this.getRow(sheetIndex, currentRowIndex);
-			
+
 			rowsList.add(row);
 		}
 
 		return rowsList;
 	}
-	
 
 	/**
-	 * Gets the row 
-	 * @param sheetName Name of the work sheet
+	 * Gets the row
+	 * 
+	 * @param sheetName   Name of the work sheet
 	 * @param startRowNum Row index starts from
-	 * @param endRowNum Row index upto 
+	 * @param endRowNum   Row index upto
 	 * @return List of rows
 	 */
 	public List<Row> getRows(String sheetName, int startRowNum, int endRowNum) {
-		
+
 		int sheetIndex = getSheetIndex(sheetName);
-		
+
 		List<Row> rowsList = getRows(sheetIndex, startRowNum, endRowNum);
-		
+
 		return rowsList;
 	}
 
 	/**
 	 * Gets the column data.
 	 *
-	 * @param sheetName
-	 *            Name of the work sheet
-	 * @param columnNumber
-	 *            the column number
+	 * @param sheetName    Name of the work sheet
+	 * @param columnNumber the column number
 	 * @return the column data
 	 */
 	// get column data
@@ -287,10 +274,9 @@ public class ExcelUtil {
 	/**
 	 * Gets the column data.
 	 *
-	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical and logical)
-	 * @param columnNumber
-	 *            the column number
+	 * @param sheetIndex   the index of the sheet number (0-based physical and
+	 *                     logical)
+	 * @param columnNumber the column number
 	 * @return the column data
 	 */
 	public String[] getColumnData(int sheetIndex, int columnNumber) {
@@ -306,8 +292,7 @@ public class ExcelUtil {
 	/**
 	 * Gets the column headers.
 	 *
-	 * @param sheetName
-	 *            Name of the work sheet
+	 * @param sheetName Name of the work sheet
 	 * @return the column headers
 	 */
 	// get headers
@@ -326,8 +311,8 @@ public class ExcelUtil {
 	/**
 	 * Gets the column headers.
 	 *
-	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical and logical)
+	 * @param sheetIndex the index of the sheet number (0-based physical and
+	 *                   logical)
 	 * @return the column headers
 	 */
 	// get headers
@@ -346,12 +331,10 @@ public class ExcelUtil {
 	/**
 	 * Gets the cell data.
 	 *
-	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical and logical)
-	 * @param rowNumber
-	 *            the row number
-	 * @param columnNumber
-	 *            the column number
+	 * @param sheetIndex   the index of the sheet number (0-based physical and
+	 *                     logical)
+	 * @param rowNumber    the row number
+	 * @param columnNumber the column number
 	 * @return the cell data
 	 */
 	// get cell value by row, column (indexes)
@@ -392,12 +375,9 @@ public class ExcelUtil {
 	/**
 	 * Gets the cell data.
 	 *
-	 * @param sheetName
-	 *            Name of the work sheet
-	 * @param rowNumber
-	 *            the row number
-	 * @param columnNumber
-	 *            the column number
+	 * @param sheetName    Name of the work sheet
+	 * @param rowNumber    the row number
+	 * @param columnNumber the column number
 	 * @return the cell data
 	 */
 	// get cell value by row, column (indexes)
@@ -418,12 +398,9 @@ public class ExcelUtil {
 	/**
 	 * Gets the cell data.
 	 *
-	 * @param sheetName
-	 *            Name of the work sheet
-	 * @param rowNumber
-	 *            the row number
-	 * @param columnName
-	 *            the column name
+	 * @param sheetName  Name of the work sheet
+	 * @param rowNumber  the row number
+	 * @param columnName the column name
 	 * @return the cell data
 	 */
 	// get cell value by header
@@ -440,38 +417,40 @@ public class ExcelUtil {
 		}
 		return cellValue;
 	}
-	
+
 	/**
-	 * Gets the cell data 
-	 * @param sheetName Name of the work sheet
-	 * @param row Excel row
+	 * Gets the cell data
+	 * 
+	 * @param sheetName  Name of the work sheet
+	 * @param row        Excel row
 	 * @param columnName the column name
 	 * @return the cell data
 	 */
 	public String getCellData(String sheetName, Row row, String columnName) {
-		
+
 		int sheetIndex = getSheetIndex(sheetName);
-		
+
 		String cellValue = getCellData(sheetIndex, row, columnName);
-		
+
 		this.logAccess.getLogger().debug("Current cell value is '" + cellValue + "'");
-		
+
 		return cellValue;
 	}
-	
+
 	/**
-	 * Gets the cell data 
+	 * Gets the cell data
+	 * 
 	 * @param sheetIndex Sheet Index of the work sheet
-	 * @param row Excel row
+	 * @param row        Excel row
 	 * @param columnName the column name
 	 * @return the cell data
 	 */
 	public String getCellData(int sheetIndex, Row row, String columnName) {
 		String cellValue = "";
-		
+
 		try {
 			int columnNumber = getColumnHeaderIndex(sheetIndex, columnName);
-			
+
 			// get row based on the sheet name and row index
 			Cell cell = row.getCell(columnNumber);
 			CellType cellType = cell.getCellTypeEnum();
@@ -490,11 +469,10 @@ public class ExcelUtil {
 		} catch (NullPointerException NPE) {
 			cellValue = "";
 		}
-	
+
 		return cellValue;
 	}
-	
-	
+
 	// get row data return map
 
 	// get sheet data
@@ -502,10 +480,8 @@ public class ExcelUtil {
 	/**
 	 * Gets the row data.
 	 *
-	 * @param sheetName
-	 *            Name of the work sheet
-	 * @param rowNumber
-	 *            the row number
+	 * @param sheetName Name of the work sheet
+	 * @param rowNumber the row number
 	 * @return the row data
 	 */
 	public Map<String, String> getRowData(String sheetName, int rowNumber) {
@@ -529,10 +505,9 @@ public class ExcelUtil {
 	/**
 	 * Gets the row data.
 	 *
-	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical and logical)
-	 * @param rowNumber
-	 *            the row number
+	 * @param sheetIndex the index of the sheet number (0-based physical and
+	 *                   logical)
+	 * @param rowNumber  the row number
 	 * @return the row data
 	 */
 	public Map<String, String> getRowData(int sheetIndex, int rowNumber) {
@@ -559,22 +534,14 @@ public class ExcelUtil {
 	/**
 	 * Write cell data.
 	 *
-	 * @param excelFilePath
-	 *            the excel file path
-	 * @param excelFileName
-	 *            the excel file name
-	 * @param sheetName
-	 *            Name of the work sheet
-	 * @param rowNumber
-	 *            the row number (starts with 0)
-	 * @param columnNumber
-	 *            the column number (starts with 0)
-	 * @param value
-	 *            the value
-	 * @param style
-	 *            the style
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @param excelFilePath the excel file path
+	 * @param excelFileName the excel file name
+	 * @param sheetName     Name of the work sheet
+	 * @param rowNumber     the row number (starts with 0)
+	 * @param columnNumber  the column number (starts with 0)
+	 * @param value         the value
+	 * @param style         the style
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	// write value in cell
 	public void writeCellData(String excelFilePath, String excelFileName, String sheetName, int rowNumber,
@@ -599,22 +566,15 @@ public class ExcelUtil {
 	/**
 	 * Write cell data.
 	 *
-	 * @param excelFilePath
-	 *            the excel file path
-	 * @param excelFileName
-	 *            the excel file name
-	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical and logical)
-	 * @param rowNumber
-	 *            the row number (starts with 0)
-	 * @param columnNumber
-	 *            the column number (starts with 0)
-	 * @param value
-	 *            the value
-	 * @param color
-	 *            the color
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @param excelFilePath the excel file path
+	 * @param excelFileName the excel file name
+	 * @param sheetIndex    the index of the sheet number (0-based physical and
+	 *                      logical)
+	 * @param rowNumber     the row number (starts with 0)
+	 * @param columnNumber  the column number (starts with 0)
+	 * @param value         the value
+	 * @param color         the color
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void writeCellData(String excelFilePath, String excelFileName, int sheetIndex, int rowNumber,
 			int columnNumber, Object value, String color) throws IOException {
@@ -655,20 +615,13 @@ public class ExcelUtil {
 	/**
 	 * Write cell data.
 	 *
-	 * @param excelFilePath
-	 *            the excel file path
-	 * @param excelFileName
-	 *            the excel file name
-	 * @param sheetName
-	 *            Name of the work sheet
-	 * @param rowNumber
-	 *            the row number (starts with 0)
-	 * @param columnName
-	 *            the column name
-	 * @param value
-	 *            the value
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @param excelFilePath the excel file path
+	 * @param excelFileName the excel file name
+	 * @param sheetName     Name of the work sheet
+	 * @param rowNumber     the row number (starts with 0)
+	 * @param columnName    the column name
+	 * @param value         the value
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void writeCellData(String excelFilePath, String excelFileName, String sheetName, int rowNumber,
 			String columnName, Object value) throws IOException {
@@ -692,20 +645,14 @@ public class ExcelUtil {
 	/**
 	 * Write cell data.
 	 *
-	 * @param excelFilePath
-	 *            the excel file path
-	 * @param excelFileName
-	 *            the excel file name
-	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical and logical)
-	 * @param rowNumber
-	 *            the row number (starts with 0)
-	 * @param columnName
-	 *            the column name
-	 * @param value
-	 *            the value
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @param excelFilePath the excel file path
+	 * @param excelFileName the excel file name
+	 * @param sheetIndex    the index of the sheet number (0-based physical and
+	 *                      logical)
+	 * @param rowNumber     the row number (starts with 0)
+	 * @param columnName    the column name
+	 * @param value         the value
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void writeCellData(String excelFilePath, String excelFileName, int sheetIndex, int rowNumber,
 			String columnName, Object value) throws IOException {
@@ -732,10 +679,8 @@ public class ExcelUtil {
 	/**
 	 * Delete row.
 	 *
-	 * @param sheetName
-	 *            Name of the work sheet
-	 * @param rowNumber
-	 *            the row number
+	 * @param sheetName Name of the work sheet
+	 * @param rowNumber the row number
 	 */
 	// delete row
 	public void deleteRow(String sheetName, int rowNumber) {
@@ -745,10 +690,9 @@ public class ExcelUtil {
 	/**
 	 * Delete row.
 	 *
-	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical and logical)
-	 * @param rowNumber
-	 *            the row number
+	 * @param sheetIndex the index of the sheet number (0-based physical and
+	 *                   logical)
+	 * @param rowNumber  the row number
 	 */
 	public void deleteRow(int sheetIndex, int rowNumber) {
 		getSheet(sheetIndex).removeRow(getRow(sheetIndex, rowNumber));
@@ -757,10 +701,9 @@ public class ExcelUtil {
 	/**
 	 * Delete column.
 	 *
-	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical and logical)
-	 * @param columnNumber
-	 *            the column number
+	 * @param sheetIndex   the index of the sheet number (0-based physical and
+	 *                     logical)
+	 * @param columnNumber the column number
 	 */
 	// delete cell
 	public void deleteColumn(int sheetIndex, int columnNumber) {
@@ -770,10 +713,9 @@ public class ExcelUtil {
 	/**
 	 * Delete column.
 	 *
-	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical and logical)
-	 * @param columnName
-	 *            the column name
+	 * @param sheetIndex the index of the sheet number (0-based physical and
+	 *                   logical)
+	 * @param columnName the column name
 	 */
 	public void deleteColumn(int sheetIndex, String columnName) {
 		int columnIndex = getColumnHeaderIndex(sheetIndex, columnName);
@@ -783,10 +725,8 @@ public class ExcelUtil {
 	/**
 	 * Delete column.
 	 *
-	 * @param sheetName
-	 *            Name of the work sheet
-	 * @param columnNumber
-	 *            the column number
+	 * @param sheetName    Name of the work sheet
+	 * @param columnNumber the column number
 	 */
 	// delete column
 	public void deleteColumn(String sheetName, int columnNumber) {
@@ -797,10 +737,8 @@ public class ExcelUtil {
 	/**
 	 * Delete column.
 	 *
-	 * @param sheetName
-	 *            Name of the work sheet
-	 * @param columnName
-	 *            the column name
+	 * @param sheetName  Name of the work sheet
+	 * @param columnName the column name
 	 */
 	public void deleteColumn(String sheetName, String columnName) {
 		int sheetIndex = getSheetIndex(sheetName);
@@ -811,12 +749,9 @@ public class ExcelUtil {
 	/**
 	 * Delete file.
 	 *
-	 * @param excelFilePath
-	 *            the excel file path
-	 * @param excelFileName
-	 *            the excel file name
-	 * @throws Exception
-	 *             the exception
+	 * @param excelFilePath the excel file path
+	 * @param excelFileName the excel file name
+	 * @throws Exception the exception
 	 */
 	// delete file
 	public void deleteFile(String excelFilePath, String excelFileName) throws Exception {
@@ -827,8 +762,7 @@ public class ExcelUtil {
 	/**
 	 * Delete sheet based on the sheet name.
 	 *
-	 * @param sheetName
-	 *            Name of the work sheet
+	 * @param sheetName Name of the work sheet
 	 */
 	// delete sheet
 	public void deleteSheet(String sheetName) {
@@ -839,8 +773,8 @@ public class ExcelUtil {
 	/**
 	 * Delete sheet based on the sheet index.
 	 *
-	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical and logical)
+	 * @param sheetIndex the index of the sheet number (0-based physical and
+	 *                   logical)
 	 */
 	public void deleteSheet(int sheetIndex) {
 		wb.removeSheetAt(sheetIndex);
@@ -849,12 +783,9 @@ public class ExcelUtil {
 	/**
 	 * Save work book.
 	 *
-	 * @param excelFilePath
-	 *            the excel file path
-	 * @param excelFileName
-	 *            the excel file name
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @param excelFilePath the excel file path
+	 * @param excelFileName the excel file name
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	// save workbook
 	public void saveWorkBook(String excelFilePath, String excelFileName) throws IOException {
@@ -868,8 +799,7 @@ public class ExcelUtil {
 	/**
 	 * Close work book.
 	 *
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	// close sheet
 	public void closeWorkBook() throws IOException {
@@ -885,13 +815,10 @@ public class ExcelUtil {
 	/**
 	 * Gets the work book based on the excel file path and name.
 	 *
-	 * @param excelFilePath
-	 *            the excel file path
-	 * @param excelFileName
-	 *            the excel file name
+	 * @param excelFilePath the excel file path
+	 * @param excelFileName the excel file name
 	 * @return the work book
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public Workbook openWorkBook(String excelFilePath, String excelFileName) throws IOException {
 		// Create an object of File class to open xlsx file
@@ -918,10 +845,9 @@ public class ExcelUtil {
 	/**
 	 * Delete column and retain column width.
 	 *
-	 * @param sheetIndex
-	 *            the index of the sheet number (0-based physical and logical)
-	 * @param columnNumber
-	 *            the column number
+	 * @param sheetIndex   the index of the sheet number (0-based physical and
+	 *                     logical)
+	 * @param columnNumber the column number
 	 */
 	private void deleteColumnAndRetainColumnWidth(int sheetIndex, int columnNumber) {
 		// get number of rows

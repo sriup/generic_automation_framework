@@ -11,22 +11,20 @@ public class SecurityUtil {
 	/**
 	 * Gets the token based on the secret key
 	 * 
-	 * @param secretKey Secret Key <br>
-	 *                  <font color='orange'><i>Note : Make sure you the secretKey
-	 *                  is encrypted. Here are couple of sample secret keys that you
-	 *                  can try</i> <br>
-	 *                  <ul>
-	 *                  <li>QDWSM3OYBPGTEVSPB5FKVDM3CSNCWHVK</li>
-	 *                  <li>TY3ZX2YMUJSPTN6Z</li>
-	 *                  </ul>
-	 *                  </font> <br>
+	 * @param encryptedSecretKey Secret Key <br>
+	 *                           <font color='orange'><i>Note : Make sure you the
+	 *                           secretKey is encrypted. Did not provided the sample
+	 *                           encrypted keys as the encrypted text will be based
+	 *                           on the AES_KEY. Please look into
+	 *                           {@link #getToken(String, boolean)} method if you
+	 *                           want to learn more about this. </font> <br>
 	 * 
 	 * @return String current token
 	 * 
 	 */
-	public String getToken(String secretKey) {
+	public String getToken(String encryptedSecretKey) {
 		// create the instance of the TOTP with the security key
-		Totp otp = new Totp(secretKey);
+		Totp otp = new Totp(decrypt(encryptedSecretKey));
 		// Get the latest token
 		return otp.now();
 	}
@@ -34,16 +32,16 @@ public class SecurityUtil {
 	/**
 	 * Gets the token based on the secret key
 	 * 
-	 * @param secretKey Secret Key <br>
-	 *                  <font color='orange'><i>Note : secret key (either encrypted/decrypted)
-	 *                  Here are couple of sample decrypted secret keys that you
-	 *                  can try</i> <br>
-	 *                  <ul>
-	 *                  <li>QDWSM3OYBPGTEVSPB5FKVDM3CSNCWHVK</li>
-	 *                  <li>TY3ZX2YMUJSPTN6Z</li>
-	 *                  </ul>
-	 *                  </font> <br>
-	 * @param isSecretKeyEncrypted  specify if secret key encrypted
+	 * @param secretKey            Secret Key <br>
+	 *                             <font color='orange'><i>Note : secret key (either
+	 *                             encrypted/decrypted) Here are couple of sample
+	 *                             decrypted secret keys that you can try</i> <br>
+	 *                             <ul>
+	 *                             <li>QDWSM3OYBPGTEVSPB5FKVDM3CSNCWHVK</li>
+	 *                             <li>TY3ZX2YMUJSPTN6Z</li>
+	 *                             </ul>
+	 *                             </font> <br>
+	 * @param isSecretKeyEncrypted specify if secret key encrypted
 	 * @return String current token
 	 * 
 	 */
@@ -52,13 +50,14 @@ public class SecurityUtil {
 		// create the instance of the TOTP with the security key
 		if (isSecretKeyEncrypted) {
 			token = getToken(secretKey);
-		}else {
+		} else {
 			token = getToken(encrypt(secretKey));
 		}
-		
+
 		// Get the latest token
 		return token;
 	}
+
 	/**
 	 * Encrypts the text <br>
 	 * <i><font color='blue'>Note : </i> Make sure to add

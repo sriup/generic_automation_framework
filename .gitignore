@@ -3,8 +3,9 @@
 .settings
 .allure
 /doc/
-/target/*
 /allure-results/*
 /test-output/*
 /Output/*
 /site/*
+/drivers/
+/target/

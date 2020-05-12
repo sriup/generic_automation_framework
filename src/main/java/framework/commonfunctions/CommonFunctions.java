@@ -2,6 +2,7 @@ package framework.commonfunctions;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
@@ -145,7 +146,8 @@ public class CommonFunctions {
 
 	/**
 	 * Sets the date time format for the screenshot. <br>
-	 * <font color="blue">Note:<i> This will be prepended to the screenshot name.</i></font>
+	 * <font color="blue">Note:<i> This will be prepended to the screenshot
+	 * name.</i></font>
 	 *
 	 * @return the screen shot time
 	 * @throws Exception the exception
@@ -175,7 +177,7 @@ public class CommonFunctions {
 	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param element           the {@link org.openqa.selenium.WebElement element}
 	 * @param expectedCondition the expected condition
-	 * @param maxTimeout        the max timeout
+	 * @param maxTimeout        the max timeout in seconds
 	 * @return the {@link org.openqa.selenium.WebElement element}
 	 */
 	public WebElement waitForElement(WebDriver driver, WebElement element, ExpectedConditionsEnums expectedCondition,
@@ -205,7 +207,7 @@ public class CommonFunctions {
 	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param byLocator         the by locator
 	 * @param expectedCondition the expected condition
-	 * @param maxTimeout        the max timeout
+	 * @param maxTimeout        the max timeout in seconds
 	 * @return the web element
 	 */
 	public WebElement waitForElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition,
@@ -233,28 +235,46 @@ public class CommonFunctions {
 	 *
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param element    the {@link org.openqa.selenium.WebElement element}
-	 * @param maxTimeout the max timeout
+	 * @param maxTimeout the max timeout in seconds
 	 */
 	public void waitForInvisibilityOfElement(WebDriver driver, WebElement element, int maxTimeout) {
 		this.logAccess.getLogger().info("waiting for element to be invisible  :- " + element);
-		WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
-		wait.until(ExpectedConditions.invisibilityOf(element));
+
+		try {
+			WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
+			wait.until(ExpectedConditions.invisibilityOf(element));
+		} catch (Exception e) {
+			if (!isElementPresent(driver, element)
+					&& e.getClass().toString().equals("org.openqa.selenium.TimeoutException")) {
+				// ignore the exception as the element is not present which means it's not
+				// visible
+				// this issue will be taken care in later version of selenium
+			}
+		}
+
 	}
 
 	/**
 	 * Wait for invisibility of element by locator.
 	 *
-	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param byLocator         the by locator
-	 * @param expectedCondition the expected condition
-	 * @param maxTimeout        the max timeout
+	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator  the by locator
+	 * @param maxTimeout the max timeout in seconds
 	 */
-	@SuppressWarnings("unlikely-arg-type")
-	public void waitForInvisibilityOfElement(WebDriver driver, By byLocator, ExpectedConditions expectedCondition,
-			int maxTimeout) {
+	public void waitForInvisibilityOfElement(WebDriver driver, By byLocator, int maxTimeout) {
 		this.logAccess.getLogger().info("waiting for element to be invisible  :- " + byLocator);
-		WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
-		wait.equals(ExpectedConditions.invisibilityOfElementLocated(byLocator));
+
+		try {
+			WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
+			wait.until(ExpectedConditions.invisibilityOfElementLocated(byLocator));
+		} catch (Exception e) {
+			if (driver.findElements(byLocator).size() == 0
+					&& e.getClass().toString().equals("org.openqa.selenium.TimeoutException")) {
+				// ignore the exception as the element is not present which means it's not
+				// visible
+				// this issue will be taken care in later version of selenium
+			}
+		}
 	}
 
 	/**
@@ -269,12 +289,12 @@ public class CommonFunctions {
 		this.logAccess.getLogger().info("checking if element is present  :- " + element);
 		// wait for the {@link org.openqa.selenium.WebElement element} to present
 		try {
-			waitForElement(driver, element, ExpectedConditionsEnums.VISIBLE, CommonVariables.MED_TIMEOUT);
-			// return true if the element is visible
+			waitForElement(driver, element, ExpectedConditionsEnums.PRESENCE, CommonVariables.MED_TIMEOUT);
+			// return true if the element is present
 			return true;
 		} catch (Exception e) {
 			// return false if the element is not
-			// visible
+			// present
 			return false;
 		}
 	}
@@ -292,8 +312,30 @@ public class CommonFunctions {
 		// wait for the {@link org.openqa.selenium.WebElement element} to present for
 		// specified time
 		try {
-			waitForElement(driver, element, ExpectedConditionsEnums.VISIBLE, maxTimeout);
-			// return true if the element is visible
+			waitForElement(driver, element, ExpectedConditionsEnums.PRESENCE, maxTimeout);
+			// return true if the element is present
+			return true;
+		} catch (Exception e) {
+			// return false if the element is not
+			// present
+			return false;
+		}
+	}
+
+	/**
+	 * Checks if is element present by locator.
+	 *
+	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator  the by locator
+	 * @return true, if is element present by locator
+	 */
+	public boolean isElementPresent(WebDriver driver, By byLocator) {
+		this.logAccess.getLogger().info("checking if element is present  :- " + byLocator);
+		// wait for the {@link org.openqa.selenium.WebElement element} to present for
+		// specified time
+		try {
+			waitForElement(driver, byLocator, ExpectedConditionsEnums.PRESENCE, CommonVariables.MED_TIMEOUT);
+			// return true if the /element is visible
 			return true;
 		} catch (Exception e) {
 			// return false if the element is not
@@ -307,7 +349,7 @@ public class CommonFunctions {
 	 *
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param byLocator  the by locator
-	 * @param maxTimeout the max timeout
+	 * @param maxTimeout the max timeout in seconds
 	 * @return true, if is element present by locator
 	 */
 	public boolean isElementPresent(WebDriver driver, By byLocator, int maxTimeout) {
@@ -315,8 +357,8 @@ public class CommonFunctions {
 		// wait for the {@link org.openqa.selenium.WebElement element} to present for
 		// specified time
 		try {
-			waitForElement(driver, byLocator, ExpectedConditionsEnums.VISIBLE, maxTimeout);
-			// return true if the element is visible
+			waitForElement(driver, byLocator, ExpectedConditionsEnums.PRESENCE, maxTimeout);
+			// return true if the /element is visible
 			return true;
 		} catch (Exception e) {
 			// return false if the element is not
@@ -324,13 +366,12 @@ public class CommonFunctions {
 			return false;
 		}
 	}
-
 	/**
 	 * Checks if is element displayed by locator.
 	 *
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param byLocator  the by locator
-	 * @param maxTimeout the max timeout
+	 * @param maxTimeout the max timeout in seconds
 	 * @return true, if is element displayed by locator
 	 */
 	public boolean isElementDisplayed(WebDriver driver, By byLocator, int maxTimeout) {
@@ -374,7 +415,7 @@ public class CommonFunctions {
 	 *
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param element    the {@link org.openqa.selenium.WebElement element}
-	 * @param maxTimeout the max timeout
+	 * @param maxTimeout the max timeout in seconds
 	 * @return true, if is element displayed
 	 */
 	public boolean isElementDisplayed(WebDriver driver, WebElement element, int maxTimeout) {
@@ -414,7 +455,7 @@ public class CommonFunctions {
 	 *
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param element    the {@link org.openqa.selenium.WebElement element}
-	 * @param maxTimeout the max timeout
+	 * @param maxTimeout the max timeout in seconds
 	 * @return true, if is element enabled
 	 */
 	public boolean isElementEnabled(WebDriver driver, WebElement element, int maxTimeout) {
@@ -435,7 +476,7 @@ public class CommonFunctions {
 	 *
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param byLocator  the by locator
-	 * @param maxTimeout the max timeout
+	 * @param maxTimeout the max timeout in seconds
 	 * @return true, if is element enabled by locator
 	 */
 	public boolean isElementEnabled(WebDriver driver, By byLocator, int maxTimeout) {
@@ -458,8 +499,9 @@ public class CommonFunctions {
 	 * @param element the {@link org.openqa.selenium.WebElement element} <br>
 	 *                This method will highlight the element and does not set back
 	 *                the original style. <br>
-	 *                <font color="blue"><b>Note:</b> Use {@link #unHighlightElement unHighlightElement}
-	 *                method to set back the original style of the element.</font>
+	 *                <font color="blue"><b>Note:</b> Use {@link #unHighlightElement
+	 *                unHighlightElement} method to set back the original style of
+	 *                the element.</font>
 	 * @return the String with original style of the element
 	 */
 	public String highlightElement(WebDriver driver, WebElement element) {
@@ -475,6 +517,24 @@ public class CommonFunctions {
 		return originalStyle;
 	}
 
+	/**
+	 * Highlights the element.
+	 *
+	 * @param driver  the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator the by locator <br>
+	 *                This method will highlight the element and does not set back
+	 *                the original style. <br>
+	 *                <font color="blue"><b>Note:</b> Use {@link #unHighlightElement
+	 *                unHighlightElement} method to set back the original style of
+	 *                the element.</font>
+	 * @return the String with original style of the element
+	 */
+	public String highlightElement(WebDriver driver, By byLocator) {
+		this.logAccess.getLogger().debug("Highlighting element :- " + byLocator);
+		// get the original
+		return highlightElement(driver, driver.findElement(byLocator));
+	}
+	
 	/**
 	 * Un-highlight element.
 	 *
@@ -495,6 +555,19 @@ public class CommonFunctions {
 		}
 	}
 
+	/**
+	 * Un-highlight element.
+	 *
+	 * @param driver        the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator     the by locator
+	 * @param originalStyle the original style
+	 * 
+	 */
+	public void unHighlightElement(WebDriver driver, By byLocator, String originalStyle) {
+		this.logAccess.getLogger().debug("Unhighlighting element  :- " + byLocator);
+		unHighlightElement(driver, driver.findElement(byLocator), originalStyle);
+	}
+	
 	/**
 	 * Flash the {@link org.openqa.selenium.WebElement element} <i>n</i> number of
 	 * times.
@@ -518,6 +591,47 @@ public class CommonFunctions {
 		} catch (Exception e) {
 			throw e;
 		}
+	}
+
+	/**
+	 * Flash the {@link org.openqa.selenium.WebElement element} <i>5</i> number of
+	 * times.
+	 *
+	 * @param driver        the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param element       the {@link org.openqa.selenium.WebElement element}
+	 * @throws Exception the exception
+	 */
+	public void flash(WebDriver driver, WebElement element) throws Exception {
+		this.logAccess.getLogger().debug("Flashing element  :- " + element);
+		flash(driver, element, 5);
+	}
+
+	
+	/**
+	 * Flash the {@link org.openqa.selenium.WebElement element} <i>n</i> number of
+	 * times.
+	 *
+	 * @param driver        the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param element       the {@link org.openqa.selenium.WebElement element}
+	 * @param numberOfTimes the number of times
+	 * @throws Exception the exception
+	 */
+	public void flash(WebDriver driver, By byLocator, int numberOfTimes) throws Exception {
+		this.logAccess.getLogger().debug("Flashing element  :- " + byLocator);
+		flash(driver, driver.findElement(byLocator), numberOfTimes);
+	}
+	/**
+	 * Flash the {@link org.openqa.selenium.WebElement element} <i>5</i> number of
+	 * times.
+	 *
+	 * @param driver        the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param element       the {@link org.openqa.selenium.WebElement element}
+	 * @param numberOfTimes the number of times
+	 * @throws Exception the exception
+	 */
+	public void flash(WebDriver driver, By byLocator) throws Exception {
+		this.logAccess.getLogger().debug("Flashing element  :- " + byLocator);
+		flash(driver, driver.findElement(byLocator), 5);
 	}
 
 	/**
@@ -609,6 +723,72 @@ public class CommonFunctions {
 	}
 
 	/**
+	 * Gets the Selected list item.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param element             the {@link org.openqa.selenium.WebElement element}
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @return selected element                           
+	 * @throws Exception the exception
+	 */
+	public WebElement getSelectedListItem(WebDriver driver, WebElement element,boolean isCaptureScreenshot, String screenShotName)  throws Exception{
+		this.logAccess.getLogger().info("Element :- " + element);
+		// highlight element
+		String originalStyle = highlightElement(driver, element);
+		// select item by index
+		Select listElement = new Select(element);
+		
+		// capture
+		if (isCaptureScreenshot) {
+			captureScreenShot(driver, screenShotName);
+		}
+		WebElement selectedItem = listElement.getFirstSelectedOption();
+		// un-highlihgt
+		unHighlightElement(driver, element, originalStyle);
+		return selectedItem;
+	}
+	
+	/**
+	 * Gets all the Selected list items.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param element             the {@link org.openqa.selenium.WebElement element}
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @return WebElent List of selected list items
+	 * @throws Exception the exception
+	 */
+	public List<WebElement> getAllSelectedListItems(WebDriver driver, WebElement element,boolean isCaptureScreenshot, String screenShotName)  throws Exception{
+		this.logAccess.getLogger().info("Element :- " + element);
+		// highlight element
+		String originalStyle = highlightElement(driver, element);
+		// select item by index
+		Select listElement = new Select(element);
+		
+		// capture
+		if (isCaptureScreenshot) {
+			captureScreenShot(driver, screenShotName);
+		}
+		List<WebElement> selectedItems = listElement.getAllSelectedOptions();
+		// un-highlihgt
+		unHighlightElement(driver, element, originalStyle);
+		return selectedItems;
+	}
+	
+	/**
 	 * Select item by index.
 	 *
 	 * @param driver              the {@link org.openqa.selenium.WebDriver
@@ -632,11 +812,12 @@ public class CommonFunctions {
 		String originalStyle = highlightElement(driver, element);
 		// select item by index
 		Select listElement = new Select(element);
-		listElement.selectByIndex(index);
+		
 		// capture
 		if (isCaptureScreenshot) {
 			captureScreenShot(driver, screenShotName);
 		}
+		listElement.selectByIndex(index);
 		// un-highlihgt
 		unHighlightElement(driver, element, originalStyle);
 	}
@@ -665,11 +846,12 @@ public class CommonFunctions {
 		String originalStyle = highlightElement(driver, element);
 		// select item by value
 		Select dropDown = new Select(element);
-		dropDown.selectByValue(value);
+		
 		// capture (private capture screenshot)
 		if (isCaptureScreenshot) {
 			captureScreenShot(driver, screenShotName);
 		}
+		dropDown.selectByValue(value);
 		// un-highlihgt
 		unHighlightElement(driver, element, originalStyle);
 	}
@@ -698,11 +880,12 @@ public class CommonFunctions {
 		String originalStyle = highlightElement(driver, element);
 		// select item by partial text
 		Select dropDown = new Select(element);
-		dropDown.selectByVisibleText(visibleText);
+		
 		// capture (private capture screenshot)
 		if (isCaptureScreenshot) {
 			captureScreenShot(driver, screenShotName);
 		}
+		dropDown.selectByVisibleText(visibleText);
 		// un-highlihgt
 		unHighlightElement(driver, element, originalStyle);
 	}
@@ -800,9 +983,10 @@ public class CommonFunctions {
 	/**
 	 * Trigger general events on the {@link org.openqa.selenium.WebElement element}.
 	 * <br>
-	 * <font color="blue"><b>Note:</b> This helps in running the tests on IE where the associated event not
-	 * triggered <br></font>
-	 * Please use {@link #jsTriggerMouseEvent} method for mouse related events.
+	 * <font color="blue"><b>Note:</b> This helps in running the tests on IE where
+	 * the associated event not triggered <br>
+	 * </font> Please use {@link #jsTriggerMouseEvent} method for mouse related
+	 * events.
 	 * 
 	 * 
 	 * @param driver    the {@link org.openqa.selenium.WebDriver WebDriver}
@@ -981,7 +1165,7 @@ public class CommonFunctions {
 	 * @param driver            the driver
 	 * @param element           the element
 	 * @param expectedCondition the expected condition
-	 * @param maxTimeout        the max timeout
+	 * @param maxTimeout        the max timeout in seconds
 	 * @return the web element
 	 */
 	private WebElement waitUntilElement(WebDriver driver, WebElement element, ExpectedConditionsEnums expectedCondition,
@@ -1008,7 +1192,7 @@ public class CommonFunctions {
 	 * @param driver            the driver
 	 * @param byLocator         the by locator
 	 * @param expectedCondition the expected condition
-	 * @param maxTimeout        the max timeout
+	 * @param maxTimeout        the max timeout in seconds
 	 * @return the web element
 	 */
 	private WebElement waitUntilElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition,

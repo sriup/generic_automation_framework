@@ -4,16 +4,17 @@ package framework.constants;
  * All the common variables related to the framework.
  */
 public class CommonVariables {
-	
+
 	/**
-	 * The browser Name
-	 * This variable will be updated based on the value provided as part of<br> 
-	 * maven command. Make sure you include <font color="blue">"-DbrowserName"</font> to set the browser name.<br>
+	 * The browser Name This variable will be updated based on the value provided as
+	 * part of<br>
+	 * maven command. Make sure you include
+	 * <font color="blue">"-DbrowserName"</font> to set the browser name.<br>
 	 * eg : <b>-DbrowserName="chrome"</b>
-	 * */
-	
-    public static String BROWSER_SELECT = System.getProperty("browserName"); 
-    
+	 */
+
+	public static String BROWSER_SELECT = System.getProperty("browserName");
+
 	/** The max timeout. */
 	public static int MAX_TIMEOUT = 120;
 
@@ -71,7 +72,7 @@ public class CommonVariables {
 	 * </tr>
 	 * </table>
 	 */
-	public static String[] TIME_FORMATS = { "yyyy:MM:dd_hh_mm_ss", "mm:dd:yy", "MM/dd/yyyy", "MM/dd/yyyy hh:mm", "hh:mm",
-			"MM/dd/yyyy h:mma", "MM/dd/yyyy mm:ss a", "MM_dd_yyyy_hh_mm_ss"};
+	public static String[] TIME_FORMATS = { "yyyy:MM:dd_hh_mm_ss", "mm:dd:yy", "MM/dd/yyyy", "MM/dd/yyyy hh:mm",
+			"hh:mm", "MM/dd/yyyy h:mma", "MM/dd/yyyy mm:ss a", "MM_dd_yyyy_hh_mm_ss" };
 
 }

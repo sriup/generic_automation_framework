@@ -88,7 +88,7 @@ public abstract class FwBaseClass {
 		if (this.screenshotPath == null || this.screenshotPath.isEmpty()) {
 			this.logAccess.getLogger().debug(
 					"Generating the screenshots folder as user not defined the screenshots location using \"createScreenshotPath\" method in \"BaseClass\" constructor.");
-			createScreenshotName("SystemGenerated_" + File.separatorChar
+			createScreensFolder("SystemGenerated_" + File.separatorChar
 					+ new DateTimeUtil(this.logAccess).getCurrentDateTime(CommonVariables.TIME_FORMATS[7]));
 		}
 		return this.screenshotPath;
@@ -106,7 +106,7 @@ public abstract class FwBaseClass {
 	public void setScreenshotPath(String folderName) {
 		// though "screenshotPath" is set with in "createScreenshotPath" method,
 		// we are just assigning the return value again in this setter to follow
-		this.screenshotPath = createScreenshotName(folderName);
+		this.screenshotPath = createScreensFolder(folderName);
 	}
 
 	/**
@@ -143,7 +143,7 @@ public abstract class FwBaseClass {
 	 * @param folderName the folder name
 	 * @return the absolute path to the screenshots folder
 	 */
-	public String createScreenshotName(String folderName) {
+	public String createScreensFolder(String folderName) {
 		String SCREENSHOT_SUBFOLDER_PATH = "";
 		fileUtils = new FolderFileUtil(this.logAccess);
 		try {
@@ -161,13 +161,15 @@ public abstract class FwBaseClass {
 
 	/**
 	 * This should be implemented in the project/application level "BaseClass"<br>
-	 * with series of steps to be performed when the test is <font color="green"><b>passed</b></font>
+	 * with series of steps to be performed when the test is
+	 * <font color="green"><b>passed</b></font>
 	 */
 	public abstract void setPositiveStatus();
 
 	/**
 	 * This should be implemented in the project/application level "BaseClass"<br>
-	 * with series of steps to be performed when the test is <font color="red"><b>failed</b></font>
+	 * with series of steps to be performed when the test is
+	 * <font color="red"><b>failed</b></font>
 	 */
 	public abstract void setNegativeStatus();
 }
