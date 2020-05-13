@@ -32,15 +32,15 @@ public class GenericUtil {
 	 * Generates random number
 	 * 
 	 * @param length Length of the digit number
-	 * @return Random number
+	 * @return Random long number
 	 */
-	public int generateRandomNumber(int length) {
+	public long generateRandomNumber(int length) {
 		String allowedChars = "0123456789";
 		String randomNumber = "";
 		String temp = RandomStringUtils.random(length, allowedChars);
 		randomNumber = temp.substring(0, temp.length());
 
-		return Integer.valueOf(randomNumber);
+		return Long.valueOf(randomNumber);
 	}
 
 	/**

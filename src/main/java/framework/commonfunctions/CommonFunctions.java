@@ -531,7 +531,7 @@ public class CommonFunctions {
 	 */
 	public String highlightElement(WebDriver driver, By byLocator) {
 		this.logAccess.getLogger().debug("Highlighting element :- " + byLocator);
-		// get the original
+		// highlight the element and return the original style
 		return highlightElement(driver, driver.findElement(byLocator));
 	}
 	

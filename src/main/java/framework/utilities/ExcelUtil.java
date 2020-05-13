@@ -53,13 +53,14 @@ public class ExcelUtil {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void createExcel(String excelFilePath, String excelFileName, String sheetName, Object[][] excelData)
-			throws IOException {
+			throws Exception {
 		this.logAccess.getLogger().info("File Path :- " + excelFilePath);
 		this.logAccess.getLogger().info("File Name :- " + excelFileName);
 		this.logAccess.getLogger().info("Sheet Name" + sheetName);
 		this.logAccess.getLogger()
 				.debug("Creating Excel File :- " + excelFilePath + File.pathSeparatorChar + excelFileName);
 		this.logAccess.getLogger().debug("Sheet Name :- " + sheetName);
+		new FolderFileUtil(this.logAccess).createFile(excelFilePath, excelFileName);
 		this.wb = openWorkBook(excelFilePath, excelFileName);
 		Sheet ws = wb.createSheet(sheetName);
 		// row index

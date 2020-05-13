@@ -126,4 +126,13 @@ public class FakeDataUtil {
 		return businessName;
 	}
 
+	/**
+	 * Get the phone number
+	 * @return phone number
+	 */
+	public String phoneNumber() {
+		String phoneNumber = this.faker.phoneNumber().toString();
+		this.logAccess.getLogger().debug("Generating phone number '" + phoneNumber + "' from faker");
+		return phoneNumber;
+	}
 }

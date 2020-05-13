@@ -88,7 +88,7 @@ public abstract class FwBaseClass {
 		if (this.screenshotPath == null || this.screenshotPath.isEmpty()) {
 			this.logAccess.getLogger().debug(
 					"Generating the screenshots folder as user not defined the screenshots location using \"createScreenshotPath\" method in \"BaseClass\" constructor.");
-			createScreensFolder("SystemGenerated_" + File.separatorChar
+			createScreenShotsFolder("SystemGenerated_" + File.separatorChar
 					+ new DateTimeUtil(this.logAccess).getCurrentDateTime(CommonVariables.TIME_FORMATS[7]));
 		}
 		return this.screenshotPath;
@@ -106,7 +106,7 @@ public abstract class FwBaseClass {
 	public void setScreenshotPath(String folderName) {
 		// though "screenshotPath" is set with in "createScreenshotPath" method,
 		// we are just assigning the return value again in this setter to follow
-		this.screenshotPath = createScreensFolder(folderName);
+		this.screenshotPath = createScreenShotsFolder(folderName);
 	}
 
 	/**
@@ -143,7 +143,7 @@ public abstract class FwBaseClass {
 	 * @param folderName the folder name
 	 * @return the absolute path to the screenshots folder
 	 */
-	public String createScreensFolder(String folderName) {
+	public String createScreenShotsFolder(String folderName) {
 		String SCREENSHOT_SUBFOLDER_PATH = "";
 		fileUtils = new FolderFileUtil(this.logAccess);
 		try {

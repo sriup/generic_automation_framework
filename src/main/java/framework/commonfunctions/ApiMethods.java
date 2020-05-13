@@ -145,7 +145,13 @@ public class ApiMethods {
 		this.logAccess.getLogger().info(response.body().prettyPrint());
 		return response;
 	}
-
+	public String getValue(Response response, String jsonPath) {
+		String result;
+		result = response.jsonPath().getString(jsonPath);
+		this.logAccess.getLogger().info("JSonPath : " + jsonPath + "\n Result : " + result);
+		return result;
+	}
+	
 	/**
 	 * @param folderPath      folder path to store file name
 	 * @param fileName        file name to store the response content

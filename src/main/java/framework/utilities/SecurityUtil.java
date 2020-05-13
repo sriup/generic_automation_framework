@@ -94,7 +94,7 @@ public class SecurityUtil {
 
 	/**
 	 * Encrypts the text <br>
-	 * <i><font color='blue'>Note : </i> Make sure to add
+	 * <font color='blue'>Note : Make sure to add
 	 * </font><b>AES_KEY</b><font color='blue'> in the User Environment
 	 * Variables<br>
 	 * Please use the same AES_KEY across all the team members, <b>otherwise tests
