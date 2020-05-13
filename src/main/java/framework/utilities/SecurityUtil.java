@@ -1,9 +1,16 @@
 package framework.utilities;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
+import java.security.AlgorithmParameters;
+import java.util.Base64;
 
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.apache.commons.lang.RandomStringUtils;
 import org.jboss.aerogear.security.otp.Totp;
 
 public class SecurityUtil {
@@ -59,6 +66,33 @@ public class SecurityUtil {
 	}
 
 	/**
+	 * Generate 32 bytes random AES_Key<br>
+	 * <font color='red'>Please don't use the separate password than your team, this
+	 * will result in failing all the tests as we have to use the same AES_KEY used
+	 * for encryption.<br>
+	 * <b>If you feel the AES_KEY is compromised please generate a new key and ask
+	 * the entire team to use the new key.</b></font><br>
+	 * <font color='blue'>If you have any password encrypted using an older AES_KEY
+	 * you have to update all of them using the new AES_KEY.</font>
+	 * <font color='brown'>Make sure to update the Environment Variable "AES_KEY",
+	 * if you decided to use new key generated.</font>
+	 * 
+	 * @return dynamically generated AES_KEY string
+	 * @throws Exception exception
+	 */
+	public String generateKey() throws Exception {
+		String keyBase = RandomStringUtils.random(64, "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+		byte[] salt = new String("1234567890").getBytes();
+		int iterationCount = 40000;
+		int keyLength = 192; // generating 32 bytes key
+		SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
+		PBEKeySpec keySpecification = new PBEKeySpec(keyBase.toCharArray(), salt, iterationCount, keyLength);
+		SecretKey tempKey = keyFactory.generateSecret(keySpecification);
+		SecretKeySpec key = new SecretKeySpec(tempKey.getEncoded(), "AES");
+		return base64Encode(key.getEncoded());
+	}
+
+	/**
 	 * Encrypts the text <br>
 	 * <i><font color='blue'>Note : </i> Make sure to add
 	 * </font><b>AES_KEY</b><font color='blue'> in the User Environment
@@ -77,13 +111,16 @@ public class SecurityUtil {
 			// Create the key
 			SecretKeySpec aesKey = new SecretKeySpec(key.getBytes(), "AES");
 			// Create cipher instance
-			Cipher cipher = Cipher.getInstance("AES");
+			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 			// initialize with encryption mode
 			cipher.init(Cipher.ENCRYPT_MODE, aesKey);
+			// initiate the algorithm parameters
+			AlgorithmParameters parameters = cipher.getParameters();
+			IvParameterSpec ivParameterSpec = parameters.getParameterSpec(IvParameterSpec.class);
 			// Get the encypted value
 			byte[] encrypted = cipher.doFinal(textToEncrypt.getBytes());
-			// Convert the value from bytes to standard text
-			encryptedtext = DatatypeConverter.printBase64Binary(encrypted);
+			// append the paramConvert the value from bytes to standard text
+			encryptedtext = base64Encode(ivParameterSpec.getIV()) + base64Encode(encrypted);
 			if (!decrypt(encryptedtext).equals(textToEncrypt)) {
 				throw new Exception("unable to decrypt the encrypted text");
 			}
@@ -107,16 +144,19 @@ public class SecurityUtil {
 	public String decrypt(String textToDecrypt) {
 		String decrypted = null;
 		try {
+			// split the sting to get the Iv and the text
+			String ivValue = textToDecrypt.substring(0, 24);
+			String text = textToDecrypt.substring(24);
 			// Get the AES_KEY from user environment variables
 			String key = System.getenv("AES_KEY");
 			// Create the key
 			SecretKeySpec aesKey = new SecretKeySpec(key.getBytes(), "AES");
 			// Create cipher instance
-			Cipher cipher = Cipher.getInstance("AES");
+			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 			// initialize with decryption mode
-			cipher.init(Cipher.DECRYPT_MODE, aesKey);
+			cipher.init(Cipher.DECRYPT_MODE, aesKey, new IvParameterSpec(base64Decode(ivValue)));
 			// Get the decypted value
-			byte[] byteText = DatatypeConverter.parseBase64Binary(textToDecrypt);
+			byte[] byteText = base64Decode(text);
 			// Convert the value from bytes to standard text
 			decrypted = new String(cipher.doFinal(byteText));
 		} catch (Exception e) {
@@ -124,5 +164,26 @@ public class SecurityUtil {
 		}
 		// return the decrypted value
 		return decrypted;
+	}
+
+	/**
+	 * convert the bytes to base 64 encoding.
+	 *
+	 * @param bytesToEncode the bytes
+	 * @return the encoded string
+	 */
+	private static String base64Encode(byte[] bytesToEncode) {
+		return Base64.getEncoder().encodeToString(bytesToEncode);
+	}
+
+	/**
+	 * decodes the string to the byte[]
+	 *
+	 * @param textToDecode the text to decode
+	 * @return the byte[]
+	 */
+	private static byte[] base64Decode(String textToDecode) {
+		return Base64.getDecoder().decode(textToDecode);
+
 	}
 }

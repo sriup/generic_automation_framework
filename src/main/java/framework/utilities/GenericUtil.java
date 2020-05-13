@@ -34,13 +34,13 @@ public class GenericUtil {
 	 * @param length Length of the digit number
 	 * @return Random number
 	 */
-	public String generateRandomNumber(int length) {
+	public int generateRandomNumber(int length) {
 		String allowedChars = "0123456789";
 		String randomNumber = "";
 		String temp = RandomStringUtils.random(length, allowedChars);
 		randomNumber = temp.substring(0, temp.length());
 
-		return randomNumber;
+		return Integer.valueOf(randomNumber);
 	}
 
 	/**
