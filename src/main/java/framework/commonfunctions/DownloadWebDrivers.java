@@ -24,10 +24,12 @@ public class DownloadWebDrivers {
 
 	/**
 	 * Download driver <br>
-	 * <font color="blue"><b>Note : </b> Driver will be downloaded only if the latest version is not available on the local machine.<br>
-	 *  If the latest driver is available, simple it will consume the existing driver rather downloading it again.
-	 *  <i>Currently this method will support <u>WINDOWS</u> platform</i></font>
-	 *  
+	 * <font color="blue"><b>Note : </b> Driver will be downloaded only if the
+	 * latest version is not available on the local machine.<br>
+	 * If the latest driver is available, simple it will consume the existing driver
+	 * rather downloading it again. <i>Currently this method will support
+	 * <u>WINDOWS</u> platform</i></font>
+	 * 
 	 * @param browserName the browser name
 	 */
 	public static synchronized void downloadDriver(String browserName) {
@@ -74,7 +76,7 @@ public class DownloadWebDrivers {
 	 */
 	private static String getChromeDriverVersion() {
 		String uri = "https://chromedriver.storage.googleapis.com/LATEST_RELEASE";
-		Response response = apiMethods.get(uri);
+		Response response = apiMethods.sendRequest("get", uri);
 		// response code
 		DownloadWebDrivers.logAccess.getLogger().debug("RESPONSE CODE: " + response.getStatusCode());
 		return response.getBody().asString();
@@ -87,7 +89,7 @@ public class DownloadWebDrivers {
 	 */
 	private static String getGeckoDriverVersion() {
 		String uri = "https://github.com/mozilla/geckodriver/releases/latest";
-		Response response = apiMethods.get(uri);
+		Response response = apiMethods.sendRequest("get", uri);
 		// response code
 		DownloadWebDrivers.logAccess.getLogger().debug("RESPONSE CODE: " + response.getStatusCode());
 		JsonPath jsonPathEvaluator = response.jsonPath();

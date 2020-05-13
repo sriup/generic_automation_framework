@@ -26,7 +26,6 @@ import io.qameta.allure.Step;
  * @see org.openqa.selenium.remote.RemoteWebDriver
  */
 public class BrowserFunctions {
-	
 
 	/**
 	 * Instantiates a new {@link BrowserFunctions} object with log access.
@@ -34,7 +33,7 @@ public class BrowserFunctions {
 	 * @param logAccess the instance of {@link LogAccess}
 	 */
 	public BrowserFunctions(LogAccess logAccess) {
-		this.logAccess = logAccess;	
+		this.logAccess = logAccess;
 	}
 
 	/** The download folder path. */
@@ -45,8 +44,11 @@ public class BrowserFunctions {
 
 	/**
 	 * Sets the download folder path.<br>
-	 * <font color="blue"><b>Note : </b></font> This will set the download folder path as part of driver capabilities.
-	 * @param downloadPath the path where the files should be download when download from browser
+	 * <font color="blue"><b>Note : </b></font> This will set the download folder
+	 * path as part of driver capabilities.
+	 * 
+	 * @param downloadPath the path where the files should be download when download
+	 *                     from browser
 	 */
 	private void setDownloadFolderPath(String downloadPath) {
 		if (downloadPath.isEmpty()) {
@@ -89,13 +91,15 @@ public class BrowserFunctions {
 	 * Launches the specified browser.
 	 *
 	 * @param browserName  provide the browser name as per the below list.<br>
-	 *                     <font color="blue"><b>Note:</b> Below is the list of currently supported browsers
+	 *                     <font color="blue"><b>Note:</b> Below is the list of
+	 *                     currently supported browsers
 	 *                     <ul>
 	 *                     <li>Chrome</li>
 	 *                     <li>Firefox</li>
 	 *                     <li>Edge</li>
 	 *                     <li>IE</li>
-	 *                     </ul></font>
+	 *                     </ul>
+	 *                     </font>
 	 * @param downloadPath the download path
 	 * @return the {@link org.openqa.selenium.WebDriver WebDriver} for the specified
 	 *         browser
@@ -105,11 +109,11 @@ public class BrowserFunctions {
 		setDownloadFolderPath(this.downloadFolderpath);
 		this.logAccess.getLogger().info("Launching browser :-  " + browserName);
 		this.logAccess.getLogger().info("Downloads folder :- " + getDownloadFilePath());
-		
-		if(browserName.equalsIgnoreCase("chrome") || browserName.equalsIgnoreCase("firefox") ) {
+
+		if (browserName.equalsIgnoreCase("chrome") || browserName.equalsIgnoreCase("firefox")) {
 			DownloadWebDrivers.downloadDriver(browserName);
 		}
-				
+
 		switch (browserName.trim().toLowerCase()) {
 		case "chrome":
 			return launchChrome();
@@ -121,7 +125,8 @@ public class BrowserFunctions {
 		case "internetexplorer":
 			return launchInternetExplorer();
 		default:
-			this.logAccess.getLogger().info("Unexpected value : " + browserName + "\n only supported browsers are: chrome, firefox, edge, ie");
+			this.logAccess.getLogger().info(
+					"Unexpected value : " + browserName + "\n only supported browsers are: chrome, firefox, edge, ie");
 			throw new IllegalArgumentException(
 					"Unexpected value : " + browserName + "\n only supported browsers are: chrome, firefox, edge, ie");
 		}
@@ -207,20 +212,20 @@ public class BrowserFunctions {
 		threadDriver.get().navigate().forward();
 	}
 
-	
 	/*
 	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!! Private Methods !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	 */
-	
+
 	/**
 	 * Launch Chrome.
 	 *
 	 * @return the web driver
 	 */
-	
+
 	private WebDriver launchChrome() {
 //		WebDriverManager.chromedriver().setup();
-		System.setProperty("webdriver.chrome.driver",System.getProperty("user.dir")+ File.separatorChar + "drivers" + File.separator  + "Chrome" + File.separator +"chromedriver.exe");
+		System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + File.separatorChar + "drivers"
+				+ File.separator + "Chrome" + File.separator + "chromedriver.exe");
 		// !! Chrome Options !!
 		HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
 		chromePrefs.put("profile.default_content_settings.popups", 0);
@@ -229,7 +234,7 @@ public class BrowserFunctions {
 		options.setExperimentalOption("prefs", chromePrefs);
 		options.setCapability("ACCEPT_SSL_CERTS", true);
 		options.setCapability("pageLoadStrategy", "none");
-		
+
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		setWebDriver(new ChromeDriver(options));
 		return getWebDriver();
@@ -242,7 +247,8 @@ public class BrowserFunctions {
 	 */
 	private WebDriver launchFirefox() {
 //		WebDriverManager.firefoxdriver().setup();
-		System.setProperty("webdriver.gecko.driver", System.getProperty("user.dir")+  File.separatorChar + "drivers" + File.separatorChar + "FireFox" +  File.separator + "geckodriver.exe");
+		System.setProperty("webdriver.gecko.driver", System.getProperty("user.dir") + File.separatorChar + "drivers"
+				+ File.separatorChar + "FireFox" + File.separator + "geckodriver.exe");
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		setWebDriver(new FirefoxDriver());
 		return getWebDriver();
@@ -282,5 +288,5 @@ public class BrowserFunctions {
 		options.introduceFlakinessByIgnoringSecurityDomains();
 		threadDriver.set(new InternetExplorerDriver(options));
 		return threadDriver.get();
-	}	
+	}
 }

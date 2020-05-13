@@ -20,6 +20,10 @@ public class FolderFileUtil {
 
 	/** The log access. */
 	private LogAccess logAccess;
+	
+	public void normalizeFilePath(String filePath) {
+		//TODO need to implement this
+	}
 
 	/**
 	 * Instantiates a new folder file utils.
@@ -44,7 +48,7 @@ public class FolderFileUtil {
 		this.logAccess.getLogger().info("FolderPath :- " + folderPath);
 		this.logAccess.getLogger().info("folderName :- " + folderName);
 
-		File folderFile = new File(folderPath + File.separatorChar +  folderName);
+		File folderFile = new File(folderPath + File.separatorChar + folderName);
 		if (!folderFile.exists()) {
 			if (folderFile.mkdir()) {
 				this.logAccess.getLogger().info("Folder is created!");
@@ -86,7 +90,7 @@ public class FolderFileUtil {
 		this.logAccess.getLogger().info("folderPath :- " + folderPath);
 		this.logAccess.getLogger().info("fileOrFolderName :- " + fileOrFolderName);
 
-		File folderFile = new File(folderPath + File.separatorChar +  fileOrFolderName);
+		File folderFile = new File(folderPath + File.separatorChar + fileOrFolderName);
 
 		if (!folderFile.exists()) {
 			if (folderFile.delete()) {
@@ -130,7 +134,7 @@ public class FolderFileUtil {
 
 		createFolder(filePath);
 
-		File file = new File(filePath + File.separatorChar +  filename);
+		File file = new File(filePath + File.separatorChar + filename);
 
 		String logMessage = (file.createNewFile()) ? "File is created!" : "File already exists.";
 
@@ -145,9 +149,9 @@ public class FolderFileUtil {
 	/**
 	 * Writing the single inputed line to the specified File.
 	 *
-	 * @param filePath  Provide the Absolute File path
-	 * @param filename  the filename
-	 * @param input the input line
+	 * @param filePath Provide the Absolute File path
+	 * @param filename the filename
+	 * @param input    the input line
 	 * @return The File object
 	 * @throws Exception the exception
 	 */
@@ -170,7 +174,6 @@ public class FolderFileUtil {
 		return file;
 	}
 
-	
 	/**
 	 * Writing Multiple lines to the file.
 	 *
@@ -221,7 +224,7 @@ public class FolderFileUtil {
 
 		return lines;
 	}
-	
+
 	/**
 	 * Fetching all the lines from the file.
 	 *
@@ -239,7 +242,6 @@ public class FolderFileUtil {
 
 		return content;
 	}
-	
 
 	/**
 	 * Fetching the single line by specified line number from the file .
@@ -272,9 +274,9 @@ public class FolderFileUtil {
 	 */
 	public File moveFile(String oldFilePath, String newFilePath, String filename) throws IOException {
 
-		File oldFile = new File(oldFilePath + File.separatorChar +  filename);
+		File oldFile = new File(oldFilePath + File.separatorChar + filename);
 
-		File newFile = new File(newFilePath + File.separatorChar +  filename);
+		File newFile = new File(newFilePath + File.separatorChar + filename);
 
 		Files.move(oldFile.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
@@ -296,9 +298,9 @@ public class FolderFileUtil {
 	 */
 	public File copyFile(String oldFilePath, String newFilePath, String filename) throws IOException {
 
-		File oldFile = new File(oldFilePath + File.separatorChar +  filename);
+		File oldFile = new File(oldFilePath + File.separatorChar + filename);
 
-		File newFile = new File(newFilePath + File.separatorChar +  filename);
+		File newFile = new File(newFilePath + File.separatorChar + filename);
 
 		Files.copy(oldFile.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
@@ -320,9 +322,9 @@ public class FolderFileUtil {
 	 */
 	public boolean renameFilename(String filePath, String oldFilename, String newFilename) throws IOException {
 
-		File oldFile = new File(filePath + File.separatorChar +  oldFilename);
+		File oldFile = new File(filePath + File.separatorChar + oldFilename);
 
-		File newFile = new File(filePath + File.separatorChar +  newFilename);
+		File newFile = new File(filePath + File.separatorChar + newFilename);
 
 		if (newFile.exists()) {
 

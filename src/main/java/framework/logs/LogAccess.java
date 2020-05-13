@@ -21,13 +21,13 @@ public class LogAccess {
 
 	/** The is initialized. */
 	private boolean isInitialized;
-	
+
 	/** The logger file name. */
 	private String loggerFileName;
-	
+
 	/** The log. */
 	private Logger log;
-	
+
 	/** The log level. */
 	private LogVerboseEnums logLevel;
 
@@ -40,13 +40,13 @@ public class LogAccess {
 	public LogAccess(String filename, LogVerboseEnums logLevel) {
 		// TODO Auto-generated constructor stub
 		this.logLevel = logLevel;
-		
+
 		this.setLoggerFileName(filename);
 
 		this.setIsInitialized(false);
 
 	}
-	
+
 	/**
 	 * Creating the Console Appender and File Appender.
 	 */
@@ -66,17 +66,17 @@ public class LogAccess {
 
 		appender.setAppend(true);
 
-		String filePath = System.getProperty("user.dir") + File.separator + "target" + File.separator + "logs" ;
+		String filePath = System.getProperty("user.dir") + File.separator + "target" + File.separator + "logs";
 
 		try {
-			
+
 			File folderFile = new File(filePath);
 			if (!folderFile.exists()) {
 				if (folderFile.mkdir()) {
 					System.out.println("Folder is created");
 				}
 			}
-			
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -84,7 +84,6 @@ public class LogAccess {
 
 		appender.setFile(filePath + File.separator + loggerFileName + ".log");
 
-		
 		appender.setThreshold(Level.ALL);
 
 		PatternLayout layOut = new PatternLayout();
@@ -97,6 +96,7 @@ public class LogAccess {
 
 	/**
 	 * Initializing the logger if the initializationFlag is false.
+	 * 
 	 * @return Logger object
 	 */
 	public Logger getLogger() {
@@ -154,7 +154,7 @@ public class LogAccess {
 		System.out.println("Filename in LogAccess setLoggerFileName() is: " + this.loggerFileName);
 
 	}
-	
+
 	/**
 	 * Fetching the Log Level from the CommonVariables.
 	 *
@@ -163,7 +163,7 @@ public class LogAccess {
 	public Level getLogLevel() {
 
 		switch (this.logLevel) {
-		//We are getting ENUMS from LogVerboseEnums class
+		// We are getting ENUMS from LogVerboseEnums class
 		case DEBUG:
 			return Level.DEBUG;
 
