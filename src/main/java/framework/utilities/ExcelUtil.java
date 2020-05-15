@@ -49,6 +49,54 @@ public class ExcelUtil {
 	}
 
 	/**
+	 * Gets the work book based on the excel file path and name.
+	 *
+	 * @param excelFilePath the excel file path
+	 * @param excelFileName the excel file name
+	 * @return the work book
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public Workbook openWorkBook(String excelFilePath, String excelFileName) throws IOException {
+
+		Workbook wb = openWorkBook(excelFilePath + File.separatorChar + excelFileName);
+
+		return wb;
+	}
+
+	/**
+	 * Gets the work book based on the excel file path and name.
+	 *
+	 * @param excelFilePath the excel file path
+	 * @return the work book
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public Workbook openWorkBook(String excelFilePath) throws IOException {
+		// Create an object of File class to open xlsx file
+		File file = new File(excelFilePath);
+
+		// Gets the filename
+		String excelFileName = file.getName();
+
+		// Create an object of FileInputStream class to read excel file
+		FileInputStream inputStream = new FileInputStream(file);
+		Workbook wb = null;
+
+		// get the excel file extension
+		String fileExtensionName = excelFileName.substring(excelFileName.indexOf("."));
+
+		// return the work book based on the excel file extension
+		if (fileExtensionName.equals(".xlsx")) {
+			// return xlsx workbook (Microsoft Excel 2007 file or later)
+			wb = new XSSFWorkbook(inputStream);
+		} else if (fileExtensionName.equals(".xls")) {
+			// return xls workbook (Microsoft Excel 2003 file)
+			wb = new HSSFWorkbook(inputStream);
+		}
+		setWb(wb);
+		return wb;
+	}
+
+	/**
 	 * Creates the excel.
 	 *
 	 * @param excelFilePath the excel file path
@@ -533,18 +581,25 @@ public class ExcelUtil {
 		}
 		return map;
 	}
-	
+
 	/**
 	 * Gets the filtered row if it matches all the column values
-	 * @param sheetName			Name of the work sheet
-	 * @param filtersDataMap	Column values in the HashMap to filter the row 
-	 * 							<br><font color="blue"><b>Example:</b> Below is the example for the filtersDataMap
-	 *                     <ul>
-	 *                     <li>filtersDataMap.put("Column1", "FirstColumnName");</li>
-	 *                     <li>filtersDataMap.put("Column2", "SecondColumnName");</li>
-	 *                     <li>filtersDataMap.put("Column3", "ThirdColumnName");</li>
-	 *                     </ul>
-	 *                     </font>
+	 * 
+	 * @param sheetName      Name of the work sheet
+	 * @param filtersDataMap Column values in the HashMap to filter the row <br>
+	 *                       <font color="blue"><b>Example:</b> Below is the example
+	 *                       for the filtersDataMap to get all the rows which match
+	 *                       the specified k,v in the HashMap<br>
+	 * 
+	 *                       <pre>
+	 *                       HashMap<String, String> filtersDataMap = new
+	 *                       HashMap<String, String>();
+	 *                       filtersDataMap.put("TestMethod", "Test_001");
+	 *                       filtersDataMap.put("ExecutionFlag", "Y");
+	 *                       filtersDataMap.put("Role", "Admin");
+	 * 
+	 *                       <pre>
+	 *                       </font>
 	 * @return The filtered row if it matches all the expected column values
 	 */
 	public Row getFilteredRow(String sheetName, HashMap<String, String> filtersDataMap) {
@@ -585,21 +640,29 @@ public class ExcelUtil {
 
 	/**
 	 * Gets the list of filtered rows if it matches all the column values
-	 * @param sheetName			Name of the work sheet
-	 * @param filtersDataMap	Column values in the HashMap to filter the row 
-	 * 							<br><font color="blue"><b>Example:</b> Below is the example for the filtersDataMap
-	 *                     <ul>
-	 *                     <li>filtersDataMap.put("Column1", "FirstColumnName");</li>
-	 *                     <li>filtersDataMap.put("Column2", "SecondColumnName");</li>
-	 *                     <li>filtersDataMap.put("Column3", "ThirdColumnName");</li>
-	 *                     </ul>
-	 *                     </font>
-	 * @return The list of filtered rows if it matches all the expected column values
+	 * 
+	 * @param sheetName      Name of the work sheet
+	 * @param filtersDataMap Column values in the HashMap to filter the row <br>
+	 *                       <font color="blue"><b>Example:</b> Below is the example
+	 *                       for the filtersDataMap to get all the rows which match
+	 *                       the specified k,v in the HashMap<br>
+	 * 
+	 *                       <pre>
+	 *                       HashMap<String, String> filtersDataMap = new
+	 *                       HashMap<String, String>();
+	 *                       filtersDataMap.put("TestMethod", "Test_001");
+	 *                       filtersDataMap.put("ExecutionFlag", "Y");
+	 *                       filtersDataMap.put("Role", "Admin");
+	 * 
+	 *                       <pre>
+	 *                       </font>
+	 * @return The list of filtered rows if it matches all the expected column
+	 *         values
 	 */
 	public List<Row> getFilteredRows(String sheetName, HashMap<String, String> filtersDataMap) {
 
 		List<Row> filteredRows = new ArrayList<Row>();
-		
+
 		Sheet sheet = this.wb.getSheet(sheetName);
 
 		for (Row currentRow : sheet) {
@@ -630,7 +693,7 @@ public class ExcelUtil {
 		return filteredRows;
 
 	}
-	
+
 	/*
 	 * Write
 	 */
@@ -643,21 +706,138 @@ public class ExcelUtil {
 	 * @param rowNumber     the row number (starts with 0)
 	 * @param columnNumber  the column number (starts with 0)
 	 * @param value         the value
-	 * @param indexColor Index of the color
-	 * 					 <br><font color="blue"><b>Example:</b> IndexedColors.GREEN
-	 *                     </font>
-	 * @param patternType Fill Pattern
-	 * 					<br><font color="blue"><b>Example:</b> FillPatternType.LESS_DOTS
-	 *                     </font>
+	 * @param indexColor    Index of the color <br>
+	 *                      <font color="blue"><b>Example:</b> IndexedColors.GREEN
+	 *                      </font>
+	 * @param patternType   Fill Pattern <br>
+	 *                      <font color="blue"><b>Example:</b>
+	 *                      FillPatternType.LESS_DOTS </font>
+	 * @return the cell
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	// write value in cell
-	public void writeCellData(String excelFilePath, String excelFileName, String sheetName, int rowNumber,
+	public Cell writeCellData(String excelFilePath, String excelFileName, String sheetName, int rowNumber,
 			int columnNumber, Object value, IndexedColors indexColor, FillPatternType patternType) throws IOException {
-		Cell cell;
-		
+
 		CellStyle cellStyle = createCellStyle(indexColor, patternType);
-		
+
+		Cell cell = writeCellData(excelFilePath, excelFileName, sheetName, rowNumber, columnNumber, value);
+
+		cell.setCellStyle(cellStyle);
+
+		saveWorkBook(excelFilePath, excelFileName);
+		return cell;
+	}
+
+	/**
+	 * Write cell data.
+	 *
+	 * @param excelFilePath the excel file path
+	 * @param excelFileName the excel file name
+	 * @param sheetIndex    the index of the sheet number (0-based physical and
+	 *                      logical)
+	 * @param rowNumber     the row number (starts with 0)
+	 * @param columnNumber  the column number (starts with 0)
+	 * @param value         the value
+	 * @param indexColor    Index of the color <br>
+	 *                      <font color="blue"><b>Example:</b> IndexedColors.GREEN
+	 *                      </font>
+	 * @param patternType   Fill Pattern <br>
+	 *                      <font color="blue"><b>Example:</b>
+	 *                      FillPatternType.LESS_DOTS </font>
+	 * @return the cell
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public Cell writeCellData(String excelFilePath, String excelFileName, int sheetIndex, int rowNumber,
+			int columnNumber, Object value, IndexedColors indexColor, FillPatternType patternType) throws IOException {
+
+		CellStyle cellStyle = createCellStyle(indexColor, patternType);
+
+		Cell cell = writeCellData(excelFilePath, excelFileName, sheetIndex, rowNumber, columnNumber, value);
+
+		cell.setCellStyle(cellStyle);
+
+		saveWorkBook(excelFilePath, excelFileName);
+		return cell;
+	}
+
+	/**
+	 * Write cell data.
+	 *
+	 * @param excelFilePath the excel file path
+	 * @param excelFileName the excel file name
+	 * @param sheetName     Name of the work sheet
+	 * @param rowNumber     the row number (starts with 0)
+	 * @param columnName    the column name
+	 * @param value         the value
+	 * @param indexColor    Index of the color <br>
+	 *                      <font color="blue"><b>Example:</b> IndexedColors.GREEN
+	 *                      </font>
+	 * @param patternType   Fill Pattern <br>
+	 *                      <font color="blue"><b>Example:</b>
+	 *                      FillPatternType.LESS_DOTS </font>
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public Cell writeCellData(String excelFilePath, String excelFileName, String sheetName, int rowNumber,
+			String columnName, Object value, IndexedColors indexColor, FillPatternType patternType) throws IOException {
+
+		CellStyle cellStyle = createCellStyle(indexColor, patternType);
+
+		Cell cell = writeCellData(excelFilePath, excelFileName, sheetName, rowNumber, columnName, value);
+		cell.setCellStyle(cellStyle);
+
+		saveWorkBook(excelFilePath, excelFileName);
+
+		return cell;
+	}
+
+	/**
+	 * Write cell data.
+	 *
+	 * @param excelFilePath the excel file path
+	 * @param excelFileName the excel file name
+	 * @param sheetIndex    the index of the sheet number (0-based physical and
+	 *                      logical)
+	 * @param rowNumber     the row number (starts with 0)
+	 * @param columnName    the column name
+	 * @param value         the value
+	 * @param indexColor    Index of the color <br>
+	 *                      <font color="blue"><b>Example:</b> IndexedColors.GREEN
+	 *                      </font>
+	 * @param patternType   Fill Pattern <br>
+	 *                      <font color="blue"><b>Example:</b>
+	 *                      FillPatternType.LESS_DOTS </font>
+	 * @return the cell
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public Cell writeCellData(String excelFilePath, String excelFileName, int sheetIndex, int rowNumber,
+			String columnName, Object value, IndexedColors indexColor, FillPatternType patternType) throws IOException {
+
+		CellStyle cellStyle = createCellStyle(indexColor, patternType);
+
+		Cell cell = writeCellData(excelFilePath, excelFileName, sheetIndex, rowNumber, columnName, value);
+
+		cell.setCellStyle(cellStyle);
+
+		saveWorkBook(excelFilePath, excelFileName);
+		return cell;
+	}
+
+	/**
+	 * Write cell data.
+	 *
+	 * @param excelFilePath the excel file path
+	 * @param excelFileName the excel file name
+	 * @param sheetName     the sheet name
+	 * @param rowNumber     the row number
+	 * @param columnNumber  the column number
+	 * @param value         the value
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	// write value in cell
+	public Cell writeCellData(String excelFilePath, String excelFileName, String sheetName, int rowNumber,
+			int columnNumber, Object value) throws IOException {
+		Cell cell;
 		if (rowNumber > getRowCount(sheetName)) {
 			// create a new row and append the data
 			cell = getSheet(sheetName).createRow(rowNumber).createCell(columnNumber);
@@ -671,10 +851,9 @@ public class ExcelUtil {
 			// set value as String for anything other than Integer
 			cell.setCellValue((String) value);
 		}
-		
-		cell.setCellStyle(cellStyle);
-		
+
 		saveWorkBook(excelFilePath, excelFileName);
+		return cell;
 	}
 
 	/**
@@ -687,20 +866,13 @@ public class ExcelUtil {
 	 * @param rowNumber     the row number (starts with 0)
 	 * @param columnNumber  the column number (starts with 0)
 	 * @param value         the value
-	 * @param indexColor Index of the color
-	 * 					 <br><font color="blue"><b>Example:</b> IndexedColors.GREEN
-	 *                     </font>
-	 * @param patternType Fill Pattern
-	 * 					<br><font color="blue"><b>Example:</b> FillPatternType.LESS_DOTS
-	 *                     </font>
+	 * @return the cell
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public void writeCellData(String excelFilePath, String excelFileName, int sheetIndex, int rowNumber,
-			int columnNumber, Object value, IndexedColors indexColor, FillPatternType patternType) throws IOException {
+	public Cell writeCellData(String excelFilePath, String excelFileName, int sheetIndex, int rowNumber,
+			int columnNumber, Object value) throws IOException {
 		Cell cell;
-		
-		CellStyle cellStyle = createCellStyle(indexColor, patternType);
-		
+
 		if (rowNumber > getRowCount(sheetIndex)) {
 			// create a new row and append the data
 			cell = getSheet(sheetIndex).createRow(rowNumber).createCell(columnNumber);
@@ -714,10 +886,9 @@ public class ExcelUtil {
 			// set value as String for anything other than Integer
 			cell.setCellValue((String) value);
 		}
-		
-		cell.setCellStyle(cellStyle);
 
 		saveWorkBook(excelFilePath, excelFileName);
+		return cell;
 	}
 
 	/**
@@ -729,19 +900,13 @@ public class ExcelUtil {
 	 * @param rowNumber     the row number (starts with 0)
 	 * @param columnName    the column name
 	 * @param value         the value
-	 * @param indexColor Index of the color
-	 * 					 <br><font color="blue"><b>Example:</b> IndexedColors.GREEN
-	 *                     </font>
-	 * @param patternType Fill Pattern
-	 * 					<br><font color="blue"><b>Example:</b> FillPatternType.LESS_DOTS
-	 *                     </font>
+	 * @return the cell
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public void writeCellData(String excelFilePath, String excelFileName, String sheetName, int rowNumber,
-			String columnName, Object value, IndexedColors indexColor, FillPatternType patternType) throws IOException {
+	public Cell writeCellData(String excelFilePath, String excelFileName, String sheetName, int rowNumber,
+			String columnName, Object value) throws IOException {
 		Cell cell;
-		CellStyle cellStyle = createCellStyle(indexColor, patternType);
-		
+
 		if (rowNumber > getRowCount(sheetName)) {
 			// create a new row and append the data
 			cell = getSheet(sheetName).createRow(rowNumber).createCell(getColumnHeaderIndex(sheetName, columnName));
@@ -755,10 +920,9 @@ public class ExcelUtil {
 			// set value as String for anything other than Integer
 			cell.setCellValue((String) value);
 		}
-		
-		cell.setCellStyle(cellStyle);
-		
+
 		saveWorkBook(excelFilePath, excelFileName);
+		return cell;
 	}
 
 	/**
@@ -771,20 +935,13 @@ public class ExcelUtil {
 	 * @param rowNumber     the row number (starts with 0)
 	 * @param columnName    the column name
 	 * @param value         the value
-	 * @param indexColor Index of the color
-	 * 					 <br><font color="blue"><b>Example:</b> IndexedColors.GREEN
-	 *                     </font>
-	 * @param patternType Fill Pattern
-	 * 					<br><font color="blue"><b>Example:</b> FillPatternType.LESS_DOTS
-	 *                     </font>
+	 * @return the cell
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public void writeCellData(String excelFilePath, String excelFileName, int sheetIndex, int rowNumber,
-			String columnName, Object value, IndexedColors indexColor, FillPatternType patternType) throws IOException {
+	public Cell writeCellData(String excelFilePath, String excelFileName, int sheetIndex, int rowNumber,
+			String columnName, Object value) throws IOException {
 		Cell cell;
-		
-		CellStyle cellStyle = createCellStyle(indexColor, patternType);
-		
+
 		if (rowNumber > getRowCount(sheetIndex)) {
 			// create a new row and append the data
 			cell = getSheet(sheetIndex).createRow(rowNumber).createCell(getColumnHeaderIndex(sheetIndex, columnName));
@@ -798,20 +955,21 @@ public class ExcelUtil {
 			// set value as String for anything other than Integer
 			cell.setCellValue((String) value);
 		}
-		
-		cell.setCellStyle(cellStyle);
-		
+
 		saveWorkBook(excelFilePath, excelFileName);
+
+		return cell;
 	}
-	
+
 	/**
 	 * Creating the style for the cells
-	 * @param indexColor Index of the color
-	 * 					 <br><font color="blue"><b>Example:</b> IndexedColors.GREEN
-	 *                     </font>
-	 * @param patternType Fill Pattern
-	 * 					<br><font color="blue"><b>Example:</b> FillPatternType.LESS_DOTS
-	 *                     </font>
+	 * 
+	 * @param indexColor  Index of the color <br>
+	 *                    <font color="blue"><b>Example:</b> IndexedColors.GREEN
+	 *                    </font>
+	 * @param patternType Fill Pattern <br>
+	 *                    <font color="blue"><b>Example:</b>
+	 *                    FillPatternType.LESS_DOTS </font>
 	 * @return
 	 */
 	private CellStyle createCellStyle(IndexedColors indexColor, FillPatternType patternType) {
@@ -824,7 +982,7 @@ public class ExcelUtil {
 
 		cellStyle.setFillBackgroundColor(indexColor.getIndex());
 		cellStyle.setFillPattern(patternType);
-		
+
 		return cellStyle;
 
 	}
@@ -965,55 +1123,6 @@ public class ExcelUtil {
 	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Private methods
 	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	 */
-
-	/**
-	 * Gets the work book based on the excel file path and name.
-	 *
-	 * @param excelFilePath the excel file path
-	 * @param excelFileName the excel file name
-	 * @return the work book
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public Workbook openWorkBook(String excelFilePath, String excelFileName) throws IOException {
-		
-		Workbook wb = openWorkBook(excelFilePath + File.separatorChar + excelFileName);
-		
-		return wb;
-	}
-	
-	/**
-	 * Gets the work book based on the excel file path and name.
-	 *
-	 * @param excelFilePath the excel file path
-	 * @return the work book
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public Workbook openWorkBook(String excelFilePath) throws IOException {
-		// Create an object of File class to open xlsx file
-		File file = new File(excelFilePath );
-		
-		//Gets the filename
-		String excelFileName = file.getName();
-		
-		// Create an object of FileInputStream class to read excel file
-		FileInputStream inputStream = new FileInputStream(file);
-		Workbook wb = null;
-
-		// get the excel file extension
-		String fileExtensionName = excelFileName.substring(excelFileName.indexOf("."));
-
-		// return the work book based on the excel file extension
-		if (fileExtensionName.equals(".xlsx")) {
-			// return xlsx workbook (Microsoft Excel 2007 file or later)
-			wb = new XSSFWorkbook(inputStream);
-		} else if (fileExtensionName.equals(".xls")) {
-			// return xls workbook (Microsoft Excel 2003 file)
-			wb = new HSSFWorkbook(inputStream);
-		}
-		setWb(wb);
-		return wb;
-	}
-
 	/**
 	 * Delete column and retain column width.
 	 *
