@@ -6,6 +6,7 @@ import org.apache.log4j.LogManager;
 
 import framework.commonfunctions.BrowserFunctions;
 import framework.constants.CommonVariables;
+import framework.enums.BrowserEnums;
 import framework.enums.LogVerboseEnums;
 import framework.logs.LogAccess;
 import framework.utilities.DateTimeUtil;
@@ -45,12 +46,16 @@ public abstract class FwBaseClass {
 	 * <b>supersedes</b> the browser specified from test.</font>
 	 * 
 	 *
-	 * @param browserName  The browser Name
+	 * @param browserEnum  Select the browser name from the <b>BrowserEnums</b> class
 	 * @param downloadPath The download path
 	 * @throws Exception The exception
 	 */
-	public void init(String browserName, String downloadPath) throws Exception {
-		if (CommonVariables.BROWSER_SELECT == null || CommonVariables.BROWSER_SELECT.isEmpty()) {
+	public void init(BrowserEnums browserEnum, String downloadPath) throws Exception {
+		
+		String browserName = "";
+		
+		if (CommonVariables.BROWSER_SELECT == null || CommonVariables.BROWSER_SELECT.isEmpty()) {	
+			browserName = browserEnum.toString();
 			this.getLogAccess().getLogger()
 					.warn("maven command is having empty value for Browser selection.\nSo, we are using local browser '"
 							+ browserName + "' from test case.\nIf you want to specify the browser in the maven command"
