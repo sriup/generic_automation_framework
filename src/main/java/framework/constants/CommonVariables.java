@@ -9,11 +9,11 @@ public class CommonVariables {
 	 * The browser Name This variable will be updated based on the value provided as
 	 * part of<br>
 	 * maven command. Make sure you include
-	 * <font color="blue">"-DbrowserName"</font> to set the browser name.<br>
-	 * eg : <b>-DbrowserName="chrome"</b>
+	 * <font color="blue">"-Dbrowser"</font> to set the browser name.<br>
+	 * eg : <b>-Dbrowser="chrome"</b>
 	 */
 
-	public static String BROWSER_SELECT = System.getProperty("browserName");
+	public static String BROWSER_SELECT = System.getProperty("browser");
 
 	/** The max timeout. */
 	public static int MAX_TIMEOUT = 120;

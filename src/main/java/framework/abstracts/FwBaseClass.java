@@ -30,19 +30,19 @@ public abstract class FwBaseClass {
 
 	/**
 	 * This method will launch the browser.<br>
-	 * <font color="blue"><b>Note : </b> browserName will be decided based on the
-	 * value provided in the maven command.<br>
-	 * If browserName is provided in the maven command it will be updated in the
+	 * <font color="blue"><b>Note : </b> browser will be decided based on the value
+	 * provided in the maven command.<br>
+	 * If browser is provided in the maven command it will be updated in the
 	 * {@link CommonVariables#BROWSER_SELECT} and same will be used while launching
 	 * the browser.<br>
 	 * <br>
-	 * browserName will be picked from the test case, if "browserName" is not
-	 * specified or empty in the maven commond. <br>
-	 * This gives the flexibility to run the tests from pom.xml, test or
+	 * browser will be picked from the test case, if "browser" is not specified or
+	 * empty in the maven commond. <br>
+	 * This gives the flexibility to run the tests from maven command, test or
 	 * TestNg.xml<br>
 	 * </font> <br>
-	 * <font color="red">browserName specified in the maven command will
-	 * <b>supersedes</b> the browserName from test.</font>
+	 * <font color="red">browser specified in the maven command will
+	 * <b>supersedes</b> the browser specified from test.</font>
 	 * 
 	 *
 	 * @param browserName  The browser Name
@@ -51,13 +51,14 @@ public abstract class FwBaseClass {
 	 */
 	public void init(String browserName, String downloadPath) throws Exception {
 		if (CommonVariables.BROWSER_SELECT == null || CommonVariables.BROWSER_SELECT.isEmpty()) {
-			this.getLogAccess().getLogger().warn("POM.xml is having empty value for Browser selection");
 			this.getLogAccess().getLogger()
-					.info("So, we are using local browser '" + browserName + "' from test case ");
+					.warn("maven command is having empty value for Browser selection.\nSo, we are using local browser '"
+							+ browserName + "' from test case.\nIf you want to specify the browser in the maven command"
+									+ "please use \"browser\" property to specify the browser name.");
 		} else {
 			browserName = CommonVariables.BROWSER_SELECT;
 			this.getLogAccess().getLogger()
-					.info("Using Browser selection from POM.xml '" + CommonVariables.BROWSER_SELECT + "'");
+					.info("Using Browser selection from maven command '" + CommonVariables.BROWSER_SELECT + "'");
 		}
 
 		this.browserFunctions = new BrowserFunctions(this.logAccess);
