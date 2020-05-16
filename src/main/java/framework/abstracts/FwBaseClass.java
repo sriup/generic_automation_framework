@@ -6,6 +6,7 @@ import org.apache.log4j.LogManager;
 
 import framework.commonfunctions.BrowserFunctions;
 import framework.constants.CommonVariables;
+import framework.enums.BrowserEnums;
 import framework.enums.LogVerboseEnums;
 import framework.logs.LogAccess;
 import framework.utilities.DateTimeUtil;
@@ -45,12 +46,18 @@ public abstract class FwBaseClass {
 	 * <b>supersedes</b> the browserName from test.</font>
 	 * 
 	 *
-	 * @param browserName  The browser Name
+	 * @param browserNameEnum  Select the browser name from the <b>BrowserEnums</b> class
 	 * @param downloadPath The download path
 	 * @throws Exception The exception
 	 */
-	public void init(String browserName, String downloadPath) throws Exception {
+	public void init(BrowserEnums browserNameEnum, String downloadPath) throws Exception {
+		
+		String browserName = "";
+		
 		if (CommonVariables.BROWSER_SELECT == null || CommonVariables.BROWSER_SELECT.isEmpty()) {
+			
+			browserName = browserNameEnum.toString();
+			
 			this.getLogAccess().getLogger().warn("POM.xml is having empty value for Browser selection");
 			this.getLogAccess().getLogger()
 					.info("So, we are using local browser '" + browserName + "' from test case ");
