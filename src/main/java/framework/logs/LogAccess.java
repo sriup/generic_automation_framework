@@ -38,7 +38,6 @@ public class LogAccess {
 	 * @param logLevel the log level
 	 */
 	public LogAccess(String filename, LogVerboseEnums logLevel) {
-		// TODO Auto-generated constructor stub
 		this.logLevel = logLevel;
 
 		this.setLoggerFileName(filename);
@@ -72,13 +71,12 @@ public class LogAccess {
 
 			File folderFile = new File(filePath);
 			if (!folderFile.exists()) {
-				if (folderFile.mkdir()) {
+				if (folderFile.mkdirs()) {
 					System.out.println("Folder is created");
 				}
 			}
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

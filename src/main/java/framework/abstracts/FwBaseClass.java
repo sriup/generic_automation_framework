@@ -158,7 +158,6 @@ public abstract class FwBaseClass {
 					folderName);
 			SCREENSHOT_SUBFOLDER_PATH = folderObj.getAbsolutePath();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		this.screenshotPath = SCREENSHOT_SUBFOLDER_PATH;

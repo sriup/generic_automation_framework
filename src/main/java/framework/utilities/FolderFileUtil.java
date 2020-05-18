@@ -12,7 +12,6 @@ import org.apache.commons.io.FileUtils;
 
 import framework.logs.LogAccess;
 
-// TODO: Auto-generated Javadoc
 /**
  * All methods related to the file and folder.
  */
@@ -50,7 +49,7 @@ public class FolderFileUtil {
 
 		File folderFile = new File(folderPath + File.separatorChar + folderName);
 		if (!folderFile.exists()) {
-			if (folderFile.mkdir()) {
+			if (folderFile.mkdirs()) {
 				this.logAccess.getLogger().info("Folder is created!");
 			}
 		}
@@ -71,7 +70,7 @@ public class FolderFileUtil {
 
 		File folderFile = new File(folderPath);
 		if (!folderFile.exists()) {
-			if (folderFile.mkdir()) {
+			if (folderFile.mkdirs()) {
 				this.logAccess.getLogger().info("Folder is created!");
 			}
 		}
@@ -91,13 +90,29 @@ public class FolderFileUtil {
 		this.logAccess.getLogger().info("fileOrFolderName :- " + fileOrFolderName);
 
 		File folderFile = new File(folderPath + File.separatorChar + fileOrFolderName);
-
-		if (!folderFile.exists()) {
-			if (folderFile.delete()) {
+		
+		FileUtils.deleteDirectory(folderFile);
+		
+		if (folderFile.exists()) {
 				this.logAccess.getLogger().info("Folder is deleted!");
-			}
 		}
 	}
+	
+
+	/**
+	 * It deletes the file or folder if it exists.
+	 *
+	 * @param folderFile       Provide the Absolute Folder or File path
+	 * @throws Exception the exception
+	 */
+	public void deleteFileOrFolder(File folderFile) throws Exception {
+		FileUtils.deleteDirectory(folderFile);
+		
+		if (!folderFile.exists()) {
+				this.logAccess.getLogger().info("Folder is deleted!");
+		}
+	}
+
 
 	/**
 	 * It deletes the file or folder if it exists.
@@ -110,11 +125,9 @@ public class FolderFileUtil {
 		this.logAccess.getLogger().info("folderPath :- " + folderPath);
 
 		File folderFile = new File(folderPath);
-
-		if (!folderFile.exists()) {
-			if (folderFile.delete()) {
+		FileUtils.deleteDirectory(folderFile);
+		if (folderFile.exists()) {
 				this.logAccess.getLogger().info("Folder is deleted!");
-			}
 		}
 	}
 

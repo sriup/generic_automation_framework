@@ -2,6 +2,7 @@ package framework.commonfunctions;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -13,7 +14,6 @@ import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import framework.logs.LogAccess;
-import framework.utilities.FolderFileUtil;
 import io.github.bonigarcia.wdm.Architecture;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.qameta.allure.Step;
@@ -142,8 +142,8 @@ public class BrowserFunctions {
 	@Step("Navigating to \"{URL}\"")
 	public void navigate(String URL) {
 		logAccess.getLogger().info("Navigating to URL :- " + URL);
-		threadDriver.get().manage().window().maximize();
-		threadDriver.get().get(URL);
+		this.threadDriver.get().manage().window().maximize();
+		this.threadDriver.get().get(URL);
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class BrowserFunctions {
 	 */
 	@Step("Getting current URL")
 	public String getCurrentURL() {
-		String currentURL = threadDriver.get().getCurrentUrl();
+		String currentURL = this.threadDriver.get().getCurrentUrl();
 		logAccess.getLogger().info("Current URL :- " + currentURL);
 		return currentURL;
 	}
@@ -168,7 +168,7 @@ public class BrowserFunctions {
 	@Step("Closing browser")
 	public void close() {
 		logAccess.getLogger().info("Closing browser");
-		threadDriver.get().close();
+		this.threadDriver.get().close();
 	}
 
 	/**
@@ -179,7 +179,7 @@ public class BrowserFunctions {
 	@Step("Quiting the browser")
 	public void quit() {
 		logAccess.getLogger().info("Quiting the browser");
-		threadDriver.get().quit();
+		this.threadDriver.get().quit();
 	}
 
 	/**
@@ -190,7 +190,7 @@ public class BrowserFunctions {
 	@Step("Refreshing the browser")
 	public void refresh() {
 		logAccess.getLogger().info("Refreshing the browser");
-		threadDriver.get().navigate().refresh();
+		this.threadDriver.get().navigate().refresh();
 	}
 
 	/**
@@ -200,7 +200,7 @@ public class BrowserFunctions {
 	@Step("Navigating back in browser")
 	public void navigateBack() {
 		logAccess.getLogger().info("Navigating back in browser");
-		threadDriver.get().navigate().back();
+		this.threadDriver.get().navigate().back();
 	}
 
 	/**
@@ -209,7 +209,7 @@ public class BrowserFunctions {
 	@Step("Navigating forward in browser")
 	public void navigateForward() {
 		logAccess.getLogger().info("Navigating forward in browser");
-		threadDriver.get().navigate().forward();
+		this.threadDriver.get().navigate().forward();
 	}
 
 	/*
@@ -237,6 +237,7 @@ public class BrowserFunctions {
 
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		setWebDriver(new ChromeDriver(options));
+		getWebDriver().manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
 		return getWebDriver();
 	}
 
@@ -251,6 +252,7 @@ public class BrowserFunctions {
 				+ File.separatorChar + "FireFox" + File.separator + "geckodriver.exe");
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		setWebDriver(new FirefoxDriver());
+		getWebDriver().manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
 		return getWebDriver();
 
 	}
@@ -264,6 +266,7 @@ public class BrowserFunctions {
 		WebDriverManager.edgedriver().setup();
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		setWebDriver(new EdgeDriver());
+		getWebDriver().manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
 		return getWebDriver();
 
 	}
@@ -287,6 +290,7 @@ public class BrowserFunctions {
 		options.requireWindowFocus();
 		options.introduceFlakinessByIgnoringSecurityDomains();
 		threadDriver.set(new InternetExplorerDriver(options));
+		getWebDriver().manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
 		return threadDriver.get();
 	}
 }
