@@ -3,6 +3,7 @@ package framework.commonfunctions;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
@@ -497,21 +498,22 @@ public class CommonFunctions {
 	}
 
 	/**
-	 * Checks if is element enabled by locator.
-	 *
+	 * Checks if is element enabled by locator.<br>
+	 *<font color='blue'>Note :<br>This method will keep checking for max of {@link CommonVariables#MED_TIMEOUT} seconds<
 	 * @param driver    the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param byLocator the by locator
 	 * @return true, if is element enabled by locator
 	 */
 	public boolean isElementEnabled(WebDriver driver, By byLocator) {
 		this.logAccess.getLogger().info("checking if element is enabled  :- " + byLocator);
-		if (driver.findElement(byLocator).isEnabled()) {
+		long currentTimestamp = (new Date()).getTime();
+		long endTimestamp = currentTimestamp + CommonVariables.MED_TIMEOUT * 1000;
+		Boolean conditionalCheck = false;
+		while ((new Date()).getTime() < endTimestamp && !conditionalCheck) {
 			// return true if the element is enabled
-			return true;
-		} else {
-			// return false if the element is disabled
-			return false;
-		}
+			conditionalCheck = driver.findElement(byLocator).isEnabled();
+		} 
+		return conditionalCheck;
 	}
 
 	/**
@@ -1173,8 +1175,9 @@ public class CommonFunctions {
 	 * @throws Exception
 	 */
 	public void captureFullPageScreenShot(WebDriver driver, String screenShotName) throws Exception {
-		capturePageChunks(driver, screenShotName);
-		mergeImagesToSingleImage(screenShotName, screenShotName + ".png");
+		String tempScreenShotsFolderName = getScreenShotTime() + "_" + screenShotName;
+		capturePageChunks(driver, tempScreenShotsFolderName);
+		mergeImagesToSingleImage(tempScreenShotsFolderName, screenShotName + ".png");
 	}
 
 	/**
@@ -1198,9 +1201,9 @@ public class CommonFunctions {
 	 */
 	public void captureFullPageScreenShot(WebDriver driver, WebElement headerElement, boolean notIncludeHeader,
 			String screenShotName) throws Exception {
-
-		capturePageChunks(driver, screenShotName, headerElement, true);
-		mergeImagesToSingleImage(screenShotName, screenShotName + ".png");
+		String tempScreenShotsFolderName = getScreenShotTime() + "_" + screenShotName;
+		capturePageChunks(driver, tempScreenShotsFolderName, headerElement, true);
+		mergeImagesToSingleImage(tempScreenShotsFolderName, screenShotName + ".png");
 
 	}
 
@@ -1312,7 +1315,7 @@ public class CommonFunctions {
 		}
 	}
 
-	private void capturePageChunks(WebDriver driver, String tempImagesFolderName, WebElement headerElement,
+	private void capturePageChunks(WebDriver driver, String tempImagesFolderPath, WebElement headerElement,
 			boolean notIncludeHeader) throws Exception {
 		JavascriptExecutor js = ((JavascriptExecutor) driver);
 		// get the current scroll position
@@ -1342,9 +1345,8 @@ public class CommonFunctions {
 		}
 		for (int screenshotIndex = 0; screenshotIndex < fullShots; screenshotIndex++) {
 			File tmpFile = screenCapture.getScreenshotAs(OutputType.FILE);
-			FileUtils.copyFile(tmpFile, new File(tempImagesFolderName + File.separatorChar
+			folderFileUtil.copyFile(tmpFile, new File(tempImagesFolderPath + File.separatorChar
 					+ String.valueOf(screenshotIndex * windowHeight) + ".png"));
-
 			// scroll to the next chunk
 			js.executeScript(script);
 			Thread.sleep(500);
@@ -1366,7 +1368,7 @@ public class CommonFunctions {
 				lastPageBufferImage.getWidth(), (int) (lastChunkHeight * pxRatio));
 
 		ImageIO.write(lastChunk, "png", tmpFile);
-		FileUtils.copyFile(tmpFile, new File(tempImagesFolderName + File.separatorChar + "lastScreenshot.png"));
+		folderFileUtil.copyFile(tmpFile, new File(tempImagesFolderPath + File.separatorChar + "lastScreenshot.png"));
 		if (notIncludeHeader) {
 			String javaScript = "arguments[0].setAttribute('style', '" + originalStyle + "');";
 			js.executeScript(javaScript, headerElement);
@@ -1377,7 +1379,7 @@ public class CommonFunctions {
 
 	}
 
-	private void capturePageChunks(WebDriver driver, String tempImagesFoderPath) throws Exception {
+	private void capturePageChunks(WebDriver driver, String tempImagesFolderPath) throws Exception {
 		JavascriptExecutor js = ((JavascriptExecutor) driver);
 		// get the current scroll position
 		int currentXPosition = ((Number) js.executeScript("return window.pageXOffset")).intValue();
@@ -1402,7 +1404,7 @@ public class CommonFunctions {
 
 		for (int screenshotIndex = 0; screenshotIndex <= fullShots; screenshotIndex++) {
 			File tmpFile = screenCapture.getScreenshotAs(OutputType.FILE);
-			FileUtils.copyFile(tmpFile, new File(tempImagesFoderPath + File.separatorChar
+			folderFileUtil.copyFile(tmpFile, new File(tempImagesFolderPath + File.separatorChar
 					+ String.valueOf(screenshotIndex * windowHeight) + ".png"));
 
 			// scroll to the next chunk
@@ -1421,7 +1423,7 @@ public class CommonFunctions {
 				lastPageBufferImage.getWidth(), (int) (lastChunkHeight * pxRatio));
 
 		ImageIO.write(lastChunk, "png", tmpFile);
-		FileUtils.copyFile(tmpFile, new File(tempImagesFoderPath + File.separatorChar + "lastScreenshot.png"));
+		folderFileUtil.copyFile(tmpFile, new File(tempImagesFolderPath + File.separatorChar + "lastScreenshot.png"));
 
 		// set back to the original position
 		js.executeScript(
@@ -1479,7 +1481,7 @@ public class CommonFunctions {
 		// Save the the final Buffered Image build with graphics to output file
 		ImageIO.write(finalBufferedImage, "png",
 				new File(this.screenShotsPath + File.separatorChar + getScreenShotTime() + "_" + outputPNGFileName));
-		FileUtils.deleteDirectory(folder);
+		folderFileUtil.deleteFileOrFolder(folder);
 
 	}
 

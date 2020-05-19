@@ -19,9 +19,9 @@ public class FolderFileUtil {
 
 	/** The log access. */
 	private LogAccess logAccess;
-	
+
 	public void normalizeFilePath(String filePath) {
-		//TODO need to implement this
+		// TODO need to implement this
 	}
 
 	/**
@@ -84,35 +84,32 @@ public class FolderFileUtil {
 	 * @param fileOrFolderName Provide the Filename or the Foldername
 	 * @throws Exception the exception
 	 */
-	public void deleteFileOrFolder(String folderPath, String fileOrFolderName) throws Exception {
+	public boolean deleteFileOrFolder(String folderPath, String fileOrFolderName) throws Exception {
 
 		this.logAccess.getLogger().info("folderPath :- " + folderPath);
 		this.logAccess.getLogger().info("fileOrFolderName :- " + fileOrFolderName);
 
 		File folderFile = new File(folderPath + File.separatorChar + fileOrFolderName);
-		
-		FileUtils.deleteDirectory(folderFile);
-		
-		if (folderFile.exists()) {
-				this.logAccess.getLogger().info("Folder is deleted!");
-		}
+		return deleteFileOrFolder(folderFile);
 	}
-	
 
 	/**
 	 * It deletes the file or folder if it exists.
 	 *
-	 * @param folderFile       Provide the Absolute Folder or File path
+	 * @param folderFile Provide the Absolute Folder or File path
 	 * @throws Exception the exception
 	 */
-	public void deleteFileOrFolder(File folderFile) throws Exception {
+	public boolean deleteFileOrFolder(File folderFile) throws Exception {
+		String folderFilePath = folderFile.getAbsolutePath();
 		FileUtils.deleteDirectory(folderFile);
-		
-		if (!folderFile.exists()) {
-				this.logAccess.getLogger().info("Folder is deleted!");
+		File deletedFolderFile = new File(folderFilePath);
+		if (!deletedFolderFile.exists()) {
+			this.logAccess.getLogger().info("Folder is deleted!");
+			return true;
+		}else {
+			return false;
 		}
 	}
-
 
 	/**
 	 * It deletes the file or folder if it exists.
@@ -127,7 +124,7 @@ public class FolderFileUtil {
 		File folderFile = new File(folderPath);
 		FileUtils.deleteDirectory(folderFile);
 		if (folderFile.exists()) {
-				this.logAccess.getLogger().info("Folder is deleted!");
+			this.logAccess.getLogger().info("Folder is deleted!");
 		}
 	}
 
@@ -309,18 +306,58 @@ public class FolderFileUtil {
 	 * @return It will return the New File object
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public File copyFile(String oldFilePath, String newFilePath, String filename) throws IOException {
+	public File copyFile(String oldFilePath, String newFilePath, String filename, StandardCopyOption standardCopyOption) throws IOException {
 
 		File oldFile = new File(oldFilePath + File.separatorChar + filename);
 
 		File newFile = new File(newFilePath + File.separatorChar + filename);
 
-		Files.copy(oldFile.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		return copyFile(oldFile, newFile, standardCopyOption);
+	}
 
-		this.logAccess.getLogger().info("The file '" + filename + "' got copied from '" + oldFilePath
-				+ "' to target location '" + newFilePath + "'");
+	/**
+	 * Copying the File from one location to the other location.
+	 * 
+	 * @param oldFile The object of the old file
+	 * @param newFile The object of the new file
+	 * @return It will return the New File object
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public File copyFile(File oldFile, File newFile, StandardCopyOption standardOption) throws IOException {
+
+		Files.copy(oldFile.toPath(), newFile.toPath(), standardOption);
+
+		this.logAccess.getLogger().info("The file '" + oldFile.getName() + "' got copied from '"
+				+ oldFile.getAbsolutePath() + "' to target location '" + newFile.getAbsolutePath() + "'");
 
 		return newFile;
+
+	}
+	
+	/**
+	 * Copying the File from one location to the other location.
+	 *
+	 * @param oldFilePath Provide the Old Absolute source File path
+	 * @param newFilePath Provide the New Absolute target File path
+	 * @param filename    the filename
+	 * @return It will return the New File object
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public File copyFile(String oldFilePath, String newFilePath, String filename) throws IOException {
+		return copyFile(oldFilePath, newFilePath, filename, StandardCopyOption.REPLACE_EXISTING);
+
+	}
+
+	/**
+	 * Copying the File from one location to the other location.
+	 * 
+	 * @param oldFile The object of the old file
+	 * @param newFile The object of the new file
+	 * @return It will return the New File object
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public File copyFile(File oldFile, File newFile) throws IOException {
+		return copyFile(oldFile, newFile, StandardCopyOption.REPLACE_EXISTING);
 
 	}
 
