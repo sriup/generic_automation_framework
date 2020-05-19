@@ -1,8 +1,15 @@
 package framework.commonfunctions;
 
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
@@ -36,14 +43,14 @@ public class CommonFunctions {
 	/** Folder path where the captured screenshots should be stored. */
 	private String screenShotsPath;
 
-	/** LogAccess object */
+	/** LogAccess object. */
 	private LogAccess logAccess;
 
-	/** DateTimeUtil object */
+	/** DateTimeUtil object. */
 	private DateTimeUtil dateTimeUtil;
 
 	/**
-	 * Gets the dateTimeUtil object
+	 * Gets the dateTimeUtil object.
 	 *
 	 * @return the instance of DateTimeUtils
 	 */
@@ -51,11 +58,11 @@ public class CommonFunctions {
 		return dateTimeUtil;
 	}
 
-	/** FolderFileUtil object */
+	/** FolderFileUtil object. */
 	private FolderFileUtil folderFileUtil;
 
 	/**
-	 * Gets the folderFileUtil object
+	 * Gets the folderFileUtil object.
 	 *
 	 * @return the folderFileUtil
 	 */
@@ -63,7 +70,7 @@ public class CommonFunctions {
 		return folderFileUtil;
 	}
 
-	/** The Excel Utility */
+	/** The Excel Utility. */
 	private ExcelUtil excelUtil;
 
 	/**
@@ -75,7 +82,7 @@ public class CommonFunctions {
 		return excelUtil;
 	}
 
-	/** The Fake Data Utility */
+	/** The Fake Data Utility. */
 	private FakeDataUtil fakeDataUtil;
 
 	/**
@@ -87,7 +94,7 @@ public class CommonFunctions {
 		return fakeDataUtil;
 	}
 
-	/** The Security Utility */
+	/** The Security Utility. */
 	private SecurityUtil securityUtil;
 
 	/**
@@ -99,7 +106,7 @@ public class CommonFunctions {
 		return securityUtil;
 	}
 
-	/** The Zip Utility */
+	/** The Zip Utility. */
 	private ZipUtil zipUtil;
 
 	/**
@@ -153,7 +160,7 @@ public class CommonFunctions {
 	 * @throws Exception the exception
 	 */
 	public String getScreenShotTime() throws Exception {
-		return dateTimeUtil.getCurrentDateTime(CommonVariables.TIME_FORMATS[7]);
+		return dateTimeUtil.getCurrentDateTime(CommonVariables.TIME_FORMATS[8]);
 	}
 
 	/**
@@ -168,7 +175,7 @@ public class CommonFunctions {
 	public WebElement waitForElement(WebDriver driver, WebElement element, ExpectedConditionsEnums expectedCondition) {
 		this.logAccess.getLogger()
 				.debug("waiting for element to be " + expectedCondition.toString() + " :- " + element);
-		return waitUntilElement(driver, element, expectedCondition, CommonVariables.MAX_TIMEOUT);
+		return waitUntilElement(driver, element, expectedCondition, CommonVariables.MED_TIMEOUT);
 	}
 
 	/**
@@ -198,7 +205,7 @@ public class CommonFunctions {
 	public WebElement waitForElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition) {
 		this.logAccess.getLogger()
 				.debug("waiting for element to be " + expectedCondition.toString() + " :- " + byLocator);
-		return waitUntilElement(driver, byLocator, expectedCondition, CommonVariables.MAX_TIMEOUT);
+		return waitUntilElement(driver, byLocator, expectedCondition, CommonVariables.MED_TIMEOUT);
 	}
 
 	/**
@@ -218,11 +225,11 @@ public class CommonFunctions {
 	}
 
 	/**
-	 * Wait for element(s) visible
-	 * 
+	 * Wait for element(s) visible.
+	 *
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param elements   the {@link org.openqa.selenium.WebElement element}
-	 * @param maxTimeOut Maximium time to wait for the element(s) visible
+	 * @param maxTimeOut Maximum time to wait for the element(s) visible
 	 * @return List of WebElements
 	 */
 	public List<WebElement> waitForElementsToVisible(WebDriver driver, List<WebElement> elements, int maxTimeOut) {
@@ -325,8 +332,8 @@ public class CommonFunctions {
 	/**
 	 * Checks if is element present by locator.
 	 *
-	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param byLocator  the by locator
+	 * @param driver    the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator the by locator
 	 * @return true, if is element present by locator
 	 */
 	public boolean isElementPresent(WebDriver driver, By byLocator) {
@@ -366,6 +373,7 @@ public class CommonFunctions {
 			return false;
 		}
 	}
+
 	/**
 	 * Checks if is element displayed by locator.
 	 *
@@ -421,6 +429,26 @@ public class CommonFunctions {
 	public boolean isElementDisplayed(WebDriver driver, WebElement element, int maxTimeout) {
 		this.logAccess.getLogger().info("checking if element is displayed  :- " + element);
 		try {
+			waitForElement(driver, element, ExpectedConditionsEnums.VISIBLE, maxTimeout);
+			// return true if the element is visible
+			return true;
+		} catch (Exception e) {
+			// return false if the element is not
+			// visible
+			return false;
+		}
+	}
+
+	/**
+	 * Checks if is element displayed.
+	 *
+	 * @param driver  the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param element the {@link org.openqa.selenium.WebElement element}
+	 * @return true, if is element displayed
+	 */
+	public boolean isElementDisplayed(WebDriver driver, WebElement element) {
+		this.logAccess.getLogger().info("checking if element is displayed  :- " + element);
+		try {
 			waitForElement(driver, element, ExpectedConditionsEnums.VISIBLE, CommonVariables.MED_TIMEOUT);
 			// return true if the element is visible
 			return true;
@@ -460,15 +488,32 @@ public class CommonFunctions {
 	 */
 	public boolean isElementEnabled(WebDriver driver, WebElement element, int maxTimeout) {
 		this.logAccess.getLogger().info("checking if element is enabled  :- " + element);
-		// TODO Need to implement the logic to keep checking until the specified time is
-		// elapsed
-		if (element.isEnabled()) {
-			// return true if the element is enabled
-			return true;
-		} else {
-			// return false if the element is disabled
-			return false;
+		long currentTimestamp = (new Date()).getTime();
+		long endTimestamp = currentTimestamp + maxTimeout * 1000;
+		Boolean conditionalCheck = false;
+		while ((new Date()).getTime() < endTimestamp && !conditionalCheck) {
+			conditionalCheck = element.isEnabled();
 		}
+		return conditionalCheck;
+	}
+
+	/**
+	 * Checks if is element enabled by locator.<br>
+	 *<font color='blue'>Note :<br>This method will keep checking for max of {@link CommonVariables#MED_TIMEOUT} seconds<
+	 * @param driver    the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator the by locator
+	 * @return true, if is element enabled by locator
+	 */
+	public boolean isElementEnabled(WebDriver driver, By byLocator) {
+		this.logAccess.getLogger().info("checking if element is enabled  :- " + byLocator);
+		long currentTimestamp = (new Date()).getTime();
+		long endTimestamp = currentTimestamp + CommonVariables.MED_TIMEOUT * 1000;
+		Boolean conditionalCheck = false;
+		while ((new Date()).getTime() < endTimestamp && !conditionalCheck) {
+			// return true if the element is enabled
+			conditionalCheck = driver.findElement(byLocator).isEnabled();
+		} 
+		return conditionalCheck;
 	}
 
 	/**
@@ -478,18 +523,18 @@ public class CommonFunctions {
 	 * @param byLocator  the by locator
 	 * @param maxTimeout the max timeout in seconds
 	 * @return true, if is element enabled by locator
+	 * @throws Exception
 	 */
-	public boolean isElementEnabled(WebDriver driver, By byLocator, int maxTimeout) {
+	public boolean isElementEnabled(WebDriver driver, By byLocator, int maxTimeout) throws Exception {
 		this.logAccess.getLogger().info("checking if element is enabled  :- " + byLocator);
-		// TODO Need to implement the logic to keep checking until the specified time is
-		// elapsed
-		if (driver.findElement(byLocator).isEnabled()) {
-			// return true if the element is enabled
-			return true;
-		} else {
-			// return false if the element is disabled
-			return false;
+		long currentTimestamp = (new Date()).getTime();
+		long endTimestamp = currentTimestamp + maxTimeout * 1000;
+		Boolean conditionalCheck = false;
+		while ((new Date()).getTime() < endTimestamp && !conditionalCheck) {
+			conditionalCheck = driver.findElement(byLocator).isEnabled();
+			Thread.sleep(500);
 		}
+		return conditionalCheck;
 	}
 
 	/**
@@ -520,13 +565,13 @@ public class CommonFunctions {
 	/**
 	 * Highlights the element.
 	 *
-	 * @param driver  the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param driver    the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param byLocator the by locator <br>
-	 *                This method will highlight the element and does not set back
-	 *                the original style. <br>
-	 *                <font color="blue"><b>Note:</b> Use {@link #unHighlightElement
-	 *                unHighlightElement} method to set back the original style of
-	 *                the element.</font>
+	 *                  This method will highlight the element and does not set back
+	 *                  the original style. <br>
+	 *                  <font color="blue"><b>Note:</b> Use
+	 *                  {@link #unHighlightElement unHighlightElement} method to set
+	 *                  back the original style of the element.</font>
 	 * @return the String with original style of the element
 	 */
 	public String highlightElement(WebDriver driver, By byLocator) {
@@ -534,7 +579,7 @@ public class CommonFunctions {
 		// highlight the element and return the original style
 		return highlightElement(driver, driver.findElement(byLocator));
 	}
-	
+
 	/**
 	 * Un-highlight element.
 	 *
@@ -567,7 +612,7 @@ public class CommonFunctions {
 		this.logAccess.getLogger().debug("Unhighlighting element  :- " + byLocator);
 		unHighlightElement(driver, driver.findElement(byLocator), originalStyle);
 	}
-	
+
 	/**
 	 * Flash the {@link org.openqa.selenium.WebElement element} <i>n</i> number of
 	 * times.
@@ -597,8 +642,8 @@ public class CommonFunctions {
 	 * Flash the {@link org.openqa.selenium.WebElement element} <i>5</i> number of
 	 * times.
 	 *
-	 * @param driver        the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param element       the {@link org.openqa.selenium.WebElement element}
+	 * @param driver  the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param element the {@link org.openqa.selenium.WebElement element}
 	 * @throws Exception the exception
 	 */
 	public void flash(WebDriver driver, WebElement element) throws Exception {
@@ -606,13 +651,12 @@ public class CommonFunctions {
 		flash(driver, element, 5);
 	}
 
-	
 	/**
 	 * Flash the {@link org.openqa.selenium.WebElement element} <i>n</i> number of
 	 * times.
 	 *
 	 * @param driver        the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param element       the {@link org.openqa.selenium.WebElement element}
+	 * @param byLocator     the by locator
 	 * @param numberOfTimes the number of times
 	 * @throws Exception the exception
 	 */
@@ -620,13 +664,13 @@ public class CommonFunctions {
 		this.logAccess.getLogger().debug("Flashing element  :- " + byLocator);
 		flash(driver, driver.findElement(byLocator), numberOfTimes);
 	}
+
 	/**
 	 * Flash the {@link org.openqa.selenium.WebElement element} <i>5</i> number of
 	 * times.
 	 *
-	 * @param driver        the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param element       the {@link org.openqa.selenium.WebElement element}
-	 * @param numberOfTimes the number of times
+	 * @param driver    the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator the by locator
 	 * @throws Exception the exception
 	 */
 	public void flash(WebDriver driver, By byLocator) throws Exception {
@@ -666,11 +710,22 @@ public class CommonFunctions {
 		// capture after (private capture screenshot)
 		if (isCaptureScreenShot && !captureBefore) {
 			// take screenshot
+			captureScreenShot(driver, screenShotName);
 		}
 		// un-highlihgt
 		unHighlightElement(driver, element, originalStyle);
 	}
 
+	/**
+	 * Click on element.
+	 *
+	 * @param driver              the driver
+	 * @param byLocator           the by locator
+	 * @param isCaptureScreenShot the is capture screen shot
+	 * @param captureBefore       the capture before
+	 * @param screenShotName      the screen shot name
+	 * @throws Exception the exception
+	 */
 	public void clickOnElement(WebDriver driver, By byLocator, boolean isCaptureScreenShot, boolean captureBefore,
 			String screenShotName) throws Exception {
 		WebElement element = driver.findElement(byLocator);
@@ -716,6 +771,16 @@ public class CommonFunctions {
 		unHighlightElement(driver, element, originalStyle);
 	}
 
+	/**
+	 * Input value.
+	 *
+	 * @param driver              the driver
+	 * @param byLocator           the by locator
+	 * @param value               the value
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screen shot name
+	 * @throws Exception the exception
+	 */
 	public void inputValue(WebDriver driver, By byLocator, String value, boolean isCaptureScreenshot,
 			String screenShotName) throws Exception {
 		WebElement element = driver.findElement(byLocator);
@@ -735,16 +800,17 @@ public class CommonFunctions {
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
-	 * @return selected element                           
+	 * @return selected element
 	 * @throws Exception the exception
 	 */
-	public WebElement getSelectedListItem(WebDriver driver, WebElement element,boolean isCaptureScreenshot, String screenShotName)  throws Exception{
+	public WebElement getSelectedListItem(WebDriver driver, WebElement element, boolean isCaptureScreenshot,
+			String screenShotName) throws Exception {
 		this.logAccess.getLogger().info("Element :- " + element);
 		// highlight element
 		String originalStyle = highlightElement(driver, element);
 		// select item by index
 		Select listElement = new Select(element);
-		
+
 		// capture
 		if (isCaptureScreenshot) {
 			captureScreenShot(driver, screenShotName);
@@ -754,7 +820,7 @@ public class CommonFunctions {
 		unHighlightElement(driver, element, originalStyle);
 		return selectedItem;
 	}
-	
+
 	/**
 	 * Gets all the Selected list items.
 	 *
@@ -771,13 +837,14 @@ public class CommonFunctions {
 	 * @return WebElent List of selected list items
 	 * @throws Exception the exception
 	 */
-	public List<WebElement> getAllSelectedListItems(WebDriver driver, WebElement element,boolean isCaptureScreenshot, String screenShotName)  throws Exception{
+	public List<WebElement> getAllSelectedListItems(WebDriver driver, WebElement element, boolean isCaptureScreenshot,
+			String screenShotName) throws Exception {
 		this.logAccess.getLogger().info("Element :- " + element);
 		// highlight element
 		String originalStyle = highlightElement(driver, element);
 		// select item by index
 		Select listElement = new Select(element);
-		
+
 		// capture
 		if (isCaptureScreenshot) {
 			captureScreenShot(driver, screenShotName);
@@ -787,7 +854,7 @@ public class CommonFunctions {
 		unHighlightElement(driver, element, originalStyle);
 		return selectedItems;
 	}
-	
+
 	/**
 	 * Select item by index.
 	 *
@@ -812,7 +879,7 @@ public class CommonFunctions {
 		String originalStyle = highlightElement(driver, element);
 		// select item by index
 		Select listElement = new Select(element);
-		
+
 		// capture
 		if (isCaptureScreenshot) {
 			captureScreenShot(driver, screenShotName);
@@ -846,7 +913,7 @@ public class CommonFunctions {
 		String originalStyle = highlightElement(driver, element);
 		// select item by value
 		Select dropDown = new Select(element);
-		
+
 		// capture (private capture screenshot)
 		if (isCaptureScreenshot) {
 			captureScreenShot(driver, screenShotName);
@@ -880,7 +947,7 @@ public class CommonFunctions {
 		String originalStyle = highlightElement(driver, element);
 		// select item by partial text
 		Select dropDown = new Select(element);
-		
+
 		// capture (private capture screenshot)
 		if (isCaptureScreenshot) {
 			captureScreenShot(driver, screenShotName);
@@ -1094,15 +1161,53 @@ public class CommonFunctions {
 	 * Capture full page screen shot.
 	 *
 	 * @param driver         the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param screenshotName the screenshot name <br>
+	 * @param screenShotName the screenshot name <br>
 	 *                       Date time Stamp will be <i>prepended</i> to the
 	 *                       screenshot name by default.<br>
 	 *                       Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                       setter to set the path where you want to store the
-	 *                       screenshots.
+	 *                       screenshots.<br>
+	 *                       <font color='blue'>Note :<br>
+	 *                       Please use
+	 *                       {@link #captureFullPageScreenShot(WebDriver, WebElement, boolean, String)}
+	 *                       method to show the header only once in the full page
+	 *                       screenshot</font>
+	 * @throws Exception
 	 */
-	public void captureFullPageScreenShot(WebDriver driver, String screenshotName) {
-		// TODO: Need to implement the logic to capture the entire page screenshot
+	public void captureFullPageScreenShot(WebDriver driver, String screenShotName) throws Exception {
+		String tempScreenShotsFolderName = System.getProperty("user.dir")+ File.separatorChar + "TempFolder" + File.separatorChar + getScreenShotTime() + "_" + screenShotName;
+		folderFileUtil.createFolder(tempScreenShotsFolderName);
+		capturePageChunks(driver, tempScreenShotsFolderName);
+		mergeImagesToSingleImage(tempScreenShotsFolderName, screenShotName + ".png");
+	}
+
+	/**
+	 * Capture full page screen shot.
+	 *
+	 * @param driver           the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param headerElement    the header element
+	 * @param notIncludeHeader true/false<br>
+	 *                         <font color='blue'>Note: <br>
+	 *                         If you want to show any specific header only one full
+	 *                         screenshot page mark it as true<br>
+	 *                         If this is false, you will see the static header
+	 *                         multiple times in the full screenshot</font>
+	 * @param screenShotName   the screenshot name <br>
+	 *                         Date time Stamp will be <i>prepended</i> to the
+	 *                         screenshot name by default.<br>
+	 *                         Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                         setter to set the path where you want to store the
+	 *                         screenshots.
+	 * @throws Exception
+	 */
+	public void captureFullPageScreenShot(WebDriver driver, WebElement headerElement, boolean notIncludeHeader,
+			String screenShotName) throws Exception {
+		String tempScreenShotsFolderName = System.getProperty("user.dir")+ File.separatorChar + "TempFolder" + File.separatorChar + getScreenShotTime() + "_" + screenShotName;
+		folderFileUtil.createFolder(tempScreenShotsFolderName);
+		
+		capturePageChunks(driver, tempScreenShotsFolderName, headerElement, true);
+		mergeImagesToSingleImage(tempScreenShotsFolderName, screenShotName + ".png");
+
 	}
 
 	/*
@@ -1175,10 +1280,10 @@ public class CommonFunctions {
 		case CLICKABLE:
 			return wait.until(ExpectedConditions.elementToBeClickable(element));
 		case VISIBLE:
-			return (new WebDriverWait(driver, CommonVariables.MAX_TIMEOUT))
+			return (new WebDriverWait(driver, CommonVariables.MED_TIMEOUT))
 					.until(ExpectedConditions.visibilityOf(element));
 		case PRESENCE:
-			return (new WebDriverWait(driver, CommonVariables.MAX_TIMEOUT)).until((WebDriver lDriver) -> element);
+			return (new WebDriverWait(driver, CommonVariables.MED_TIMEOUT)).until((WebDriver lDriver) -> element);
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + expectedCondition + ".\n This method supports "
 					+ ExpectedConditionsEnums.CLICKABLE.toString() + " and " + ExpectedConditionsEnums.VISIBLE
@@ -1211,6 +1316,176 @@ public class CommonFunctions {
 			throw new IllegalArgumentException("Unexpected value: " + expectedCondition
 					+ ".\n Please refer to  ExpectedConditionsEnums for the available optoins.");
 		}
+	}
+
+	private void capturePageChunks(WebDriver driver, String tempImagesFolderPath, WebElement headerElement,
+			boolean notIncludeHeader) throws Exception {
+		JavascriptExecutor js = ((JavascriptExecutor) driver);
+		// get the current scroll position
+		int currentXPosition = ((Number) js.executeScript("return window.pageXOffset")).intValue();
+		int currentYPosition = ((Number) js.executeScript("return window.pageYOffset")).intValue();
+
+		// Scroll right to the top
+		js.executeScript("window.scrollTo(0,0)");
+		TakesScreenshot screenCapture = ((TakesScreenshot) driver);
+
+		// Get the height of browser window
+		int windowHeight = ((Number) js.executeScript("return window.innerHeight")).intValue();
+
+		// Get the total height of the page
+		int pageHeight = ((Number) js.executeScript("return document.body.scrollHeight")).intValue();
+
+		// Calculate the number of full screen shots
+		double fullFraction = pageHeight / windowHeight;
+		int fullShots = (int) fullFraction; // this simply removes the decimals
+
+		// Calculate our scroll script
+		String script = "window.scrollBy(0," + String.valueOf(windowHeight - 5) + ")";
+		// get the header element style
+		String originalStyle = null;
+		if (headerElement != null) {
+			originalStyle = headerElement.getAttribute("style");
+		}
+		for (int screenshotIndex = 0; screenshotIndex < fullShots; screenshotIndex++) {
+			File tmpFile = screenCapture.getScreenshotAs(OutputType.FILE);
+			folderFileUtil.copyFile(tmpFile, new File(tempImagesFolderPath + File.separatorChar
+					+ String.valueOf(screenshotIndex * windowHeight) + ".png"));
+			// scroll to the next chunk
+			js.executeScript(script);
+			Thread.sleep(500);
+			if (headerElement != null && screenshotIndex == 0 && notIncludeHeader) {
+				// hide the header
+				String javaScript = "arguments[0].setAttribute('style', 'display:none;');";
+				js.executeScript(javaScript, headerElement);
+			}
+		}
+		// get last page chunk
+		int lastChunkHeight = pageHeight - (windowHeight * (fullShots));
+		File tmpFile = screenCapture.getScreenshotAs(OutputType.FILE);
+		BufferedImage lastPageBufferImage = ImageIO.read(tmpFile);
+		// get the image vs window px ratio
+		double pxRatio = Math.round(((double) lastPageBufferImage.getHeight() / (double) windowHeight) * 100.0) / 100.0;
+		// capture the small chunk
+		BufferedImage lastChunk = lastPageBufferImage.getSubimage(0,
+				lastPageBufferImage.getHeight() - (lastPageBufferImage.getHeight() * lastChunkHeight) / windowHeight,
+				lastPageBufferImage.getWidth(), (int) (lastChunkHeight * pxRatio));
+
+		ImageIO.write(lastChunk, "png", tmpFile);
+		folderFileUtil.copyFile(tmpFile, new File(tempImagesFolderPath + File.separatorChar + "lastScreenshot.png"));
+		if (notIncludeHeader) {
+			String javaScript = "arguments[0].setAttribute('style', '" + originalStyle + "');";
+			js.executeScript(javaScript, headerElement);
+		}
+		// set back to the original position
+		js.executeScript(
+				"window.scrollTo(" + String.valueOf(currentXPosition) + "," + String.valueOf(currentYPosition) + ");");
+
+	}
+
+	private void capturePageChunks(WebDriver driver, String tempImagesFolderPath) throws Exception {
+		JavascriptExecutor js = ((JavascriptExecutor) driver);
+		// get the current scroll position
+		int currentXPosition = ((Number) js.executeScript("return window.pageXOffset")).intValue();
+		int currentYPosition = ((Number) js.executeScript("return window.pageYOffset")).intValue();
+
+		// Scroll right to the top
+		js.executeScript("window.scrollTo(0,0)");
+		TakesScreenshot screenCapture = ((TakesScreenshot) driver);
+
+		// Get the height of browser window
+		int windowHeight = ((Number) js.executeScript("return window.innerHeight")).intValue();
+
+		// Get the total height of the page
+		int pageHeight = ((Number) js.executeScript("return document.body.scrollHeight")).intValue();
+
+		// Calculate the number of full screen shots
+		double fullFraction = pageHeight / windowHeight;
+		int fullShots = (int) fullFraction; // this simply removes the decimals
+
+		// Calculate our scroll script
+		String script = "window.scrollBy(0," + String.valueOf(windowHeight - 5) + ")";
+
+		for (int screenshotIndex = 0; screenshotIndex <= fullShots; screenshotIndex++) {
+			File tmpFile = screenCapture.getScreenshotAs(OutputType.FILE);
+			folderFileUtil.copyFile(tmpFile, new File(tempImagesFolderPath + File.separatorChar
+					+ String.valueOf(screenshotIndex * windowHeight) + ".png"));
+
+			// scroll to the next chunk
+			js.executeScript(script);
+			Thread.sleep(500);
+		}
+		// get last page chunk
+		int lastChunkHeight = pageHeight - (windowHeight * (fullShots));
+		File tmpFile = screenCapture.getScreenshotAs(OutputType.FILE);
+		BufferedImage lastPageBufferImage = ImageIO.read(tmpFile);
+		// get the image vs window px ratio
+		double pxRatio = Math.round(((double) lastPageBufferImage.getHeight() / (double) windowHeight) * 100.0) / 100.0;
+		// capture the small chunk
+		BufferedImage lastChunk = lastPageBufferImage.getSubimage(0,
+				lastPageBufferImage.getHeight() - (lastPageBufferImage.getHeight() * lastChunkHeight) / windowHeight,
+				lastPageBufferImage.getWidth(), (int) (lastChunkHeight * pxRatio));
+
+		ImageIO.write(lastChunk, "png", tmpFile);
+		folderFileUtil.copyFile(tmpFile, new File(tempImagesFolderPath + File.separatorChar + "lastScreenshot.png"));
+
+		// set back to the original position
+		js.executeScript(
+				"window.scrollTo(" + String.valueOf(currentXPosition) + "," + String.valueOf(currentYPosition) + ");");
+	}
+
+	private void mergeImagesToSingleImage(String tempImagesFolderPath, String outputPNGFileName) throws Exception {
+
+		// access the images folder
+		File folder = new File(tempImagesFolderPath);
+		// get all images from folder
+		File[] imagesList = folder.listFiles();
+		// sort the images based on created time stamp
+		Arrays.sort(imagesList, Comparator.comparingLong(File::lastModified));
+		// get the first image (need this to get the width and height of each image)
+		BufferedImage firstImage = ImageIO.read(imagesList[0]);
+		// get image width
+		int imageWidth = firstImage.getWidth();
+		// get image height (need this to build the BufferedImage)
+		int imageHeight = firstImage.getHeight();
+
+		// get the final Buffer Image height
+		// bufferedImageHeight = ((Number Of Images-1) * Image Height)+ LastImageHeight
+
+		// get last image to get it's height
+		int bufferedImageHeight;
+		if (imagesList.length > 0) {
+			BufferedImage lastImage = ImageIO.read(imagesList[imagesList.length - 1]);
+			bufferedImageHeight = ((imagesList.length - 1) * imageHeight) + lastImage.getHeight();
+		} else {
+			bufferedImageHeight = firstImage.getHeight();
+		}
+
+		// create Buffered Image
+
+		BufferedImage finalBufferedImage = new BufferedImage(imageWidth, bufferedImageHeight,
+				BufferedImage.TYPE_INT_RGB);
+		Graphics graphics = finalBufferedImage.getGraphics();
+		// X axis where the image should be incorporated
+		int imageXOfffset = 0;
+		// Y axis where the image should be incorporated (this will get updated after
+		// each image added to the Bufferred Image.
+		int imageYOfffset = 0;
+		// loop through all images and append them to buffered image
+		for (File image : imagesList) {
+			// read image into the temporary Bufferred Image
+			BufferedImage tempBufferedImage = ImageIO.read(image);
+			// add the image to the final Bufferred Image graphics
+			graphics.drawImage(tempBufferedImage, imageXOfffset, imageYOfffset, null);
+			// update Y axis value (so that the next image will be added at the end)
+			// moving the next image 10 pixels up to make sure the images does not show
+			// any gap
+			imageYOfffset += tempBufferedImage.getHeight() - 10;
+		}
+		// Save the the final Buffered Image build with graphics to output file
+		ImageIO.write(finalBufferedImage, "png",
+				new File(this.screenShotsPath + File.separatorChar + getScreenShotTime() + "_" + outputPNGFileName));
+		folderFileUtil.deleteFileOrFolder(folder);
+
 	}
 
 }

@@ -540,17 +540,12 @@ public class ExcelUtil {
 	 */
 	public Map<String, String> getRowData(String sheetName, int rowNumber) {
 		Map<String, String> map = new HashMap<String, String>();
-		// Row row = getRow(sheetName, rowNumber); //TODO - Remove this line if not
-		// using the row
-		// get column headers information
 		String[] headers = getColumnHeaders(sheetName);
 		String columnName, value;
 		for (int columnIndex = 0; columnIndex < headers.length; columnIndex++) {
 			// Print Excel data in console
 			columnName = headers[columnIndex];
 			value = getCellData(sheetName, rowNumber, columnIndex);
-			// value = row.getCell(columnIndex).toString(); //TODO - need to check the
-			// resources usage using row approach
 			map.put(columnName, value);
 		}
 		return map;
@@ -566,17 +561,12 @@ public class ExcelUtil {
 	 */
 	public Map<String, String> getRowData(int sheetIndex, int rowNumber) {
 		Map<String, String> map = new HashMap<String, String>();
-		// Row row = getRow(sheetName, rowNumber); //TODO - Remove this line if not
-		// using the row
-		// get column headers information
 		String[] headers = getColumnHeaders(sheetIndex);
 		String columnName, value;
 		for (int columnIndex = 0; columnIndex < headers.length; columnIndex++) {
 			// Print Excel data in console
 			columnName = headers[columnIndex];
 			value = getCellData(sheetIndex, rowNumber, columnIndex);
-			// value = row.getCell(columnIndex).toString(); //TODO - need to check the
-			// resources usage using row approach
 			map.put(columnName, value);
 		}
 		return map;

@@ -145,6 +145,8 @@ public class ApiMethods {
 		this.logAccess.getLogger().info(response.body().prettyPrint());
 		return response;
 	}
+	
+	
 	public String getValue(Response response, String jsonPath) {
 		String result;
 		result = response.jsonPath().getString(jsonPath);

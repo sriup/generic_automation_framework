@@ -70,9 +70,12 @@ public class CommonVariables {
 	 * <td>7</td>
 	 * <td>MM_dd_yyyy_hh_mm_ss</td>
 	 * </tr>
+	 * * <td>8</td>
+	 * <td>MM_dd_yyyy_hh_mm_ss_SS</td>
+	 * </tr>
 	 * </table>
 	 */
 	public static String[] TIME_FORMATS = { "yyyy:MM:dd_hh_mm_ss", "mm:dd:yy", "MM/dd/yyyy", "MM/dd/yyyy hh:mm",
-			"hh:mm", "MM/dd/yyyy h:mma", "MM/dd/yyyy mm:ss a", "MM_dd_yyyy_hh_mm_ss" };
+			"hh:mm", "MM/dd/yyyy h:mma", "MM/dd/yyyy mm:ss a", "MM_dd_yyyy_hh_mm_ss",  "MM_dd_yyyy_hh_mm_ss_SS"};
 
 }
