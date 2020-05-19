@@ -1175,7 +1175,8 @@ public class CommonFunctions {
 	 * @throws Exception
 	 */
 	public void captureFullPageScreenShot(WebDriver driver, String screenShotName) throws Exception {
-		String tempScreenShotsFolderName = getScreenShotTime() + "_" + screenShotName;
+		String tempScreenShotsFolderName = System.getProperty("user.dir")+ File.separatorChar + "TempFolder" + File.separatorChar + getScreenShotTime() + "_" + screenShotName;
+		folderFileUtil.createFolder(tempScreenShotsFolderName);
 		capturePageChunks(driver, tempScreenShotsFolderName);
 		mergeImagesToSingleImage(tempScreenShotsFolderName, screenShotName + ".png");
 	}
@@ -1201,7 +1202,9 @@ public class CommonFunctions {
 	 */
 	public void captureFullPageScreenShot(WebDriver driver, WebElement headerElement, boolean notIncludeHeader,
 			String screenShotName) throws Exception {
-		String tempScreenShotsFolderName = getScreenShotTime() + "_" + screenShotName;
+		String tempScreenShotsFolderName = System.getProperty("user.dir")+ File.separatorChar + "TempFolder" + File.separatorChar + getScreenShotTime() + "_" + screenShotName;
+		folderFileUtil.createFolder(tempScreenShotsFolderName);
+		
 		capturePageChunks(driver, tempScreenShotsFolderName, headerElement, true);
 		mergeImagesToSingleImage(tempScreenShotsFolderName, screenShotName + ".png");
 
