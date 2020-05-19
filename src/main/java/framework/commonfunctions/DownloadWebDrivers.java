@@ -7,6 +7,8 @@ import org.apache.commons.io.FileUtils;
 
 import com.jayway.jsonpath.DocumentContext;
 
+import framework.constants.CommonVariables;
+import framework.enums.BrowserEnums;
 import framework.enums.LogVerboseEnums;
 import framework.logs.LogAccess;
 import framework.utilities.DateTimeUtil;
@@ -32,7 +34,7 @@ public class DownloadWebDrivers {
 	 * 
 	 * @param browserName the browser name
 	 */
-	public static synchronized void downloadDriver(String browserName) {
+	public static synchronized void downloadDriver(BrowserEnums browserName) {
 		apiMethods = new ApiMethods(logAccess);
 		dateTimeUtil = new DateTimeUtil(logAccess);
 		zipUtil = new ZipUtil(logAccess);
@@ -40,20 +42,20 @@ public class DownloadWebDrivers {
 
 		try {
 			String downloadUrl = null;
-			switch (browserName.toLowerCase()) {
+			switch (browserName.toString().toLowerCase()) {
 			case "chrome":
 				String latestChromeVersion = getChromeDriverVersion();
 				downloadUrl = "https://chromedriver.storage.googleapis.com/" + latestChromeVersion
 						+ "/chromedriver_win32.zip";
-				downloadWebDriver(browserName.toLowerCase(), latestChromeVersion, downloadUrl,
-						"drivers" + File.separatorChar + "Chrome");
+				downloadWebDriver(browserName.toString(), latestChromeVersion, downloadUrl, "drivers"
+						+ File.separatorChar + "Chrome" + File.separatorChar + latestChromeVersion.replace(".", "_"));
 				break;
 			case "firefox":
 				String latestGeckoVersion = getGeckoDriverVersion();
 				downloadUrl = "https://github.com/mozilla/geckodriver/releases/download/" + latestGeckoVersion
 						+ "/geckodriver-" + latestGeckoVersion + "-win64.zip";
-				downloadWebDriver(browserName.toLowerCase(), latestGeckoVersion, downloadUrl,
-						"drivers" + File.separatorChar + "FireFox");
+				downloadWebDriver(browserName.toString(), latestGeckoVersion, downloadUrl, "drivers"
+						+ File.separatorChar + "FireFox" + File.separatorChar + latestGeckoVersion.replace(".", "_"));
 				break;
 			case "ie":
 			case "internetexplorer":
@@ -123,7 +125,7 @@ public class DownloadWebDrivers {
 		} catch (Exception e) {
 			DownloadWebDrivers.logAccess.getLogger()
 					.debug("DriverInfo.json file doesn't, hence creating the json file with default template.");
-			String templateJson = "{\"chrome\":{\"version\":\"0.00\"},\"firefox\":{\"version\":\"0.00\"},\"edge\":{\"version\":\"0.00\"},\"ie\":{\"version\":\"0.00\"}}";
+			String templateJson = "{\""+ BrowserEnums.Chrome.toString() + "\":{\"version\":\"0.00\"},\"" + BrowserEnums.Firefox.toString() +  "\":{\"version\":\"0.00\"},\"" + BrowserEnums.Edge.toString() +  "\":{\"version\":\"0.00\"},\"" + BrowserEnums.IE.toString() +  "\":{\"version\":\"0.00\"}}";
 			folderFileUtil.writeToTextFile(driversFolderPath, "DriversInfo.json", templateJson);
 
 			jPathDocCon = com.jayway.jsonpath.JsonPath
@@ -135,8 +137,7 @@ public class DownloadWebDrivers {
 			String destinationFilePath = new File(destinationFolder).getAbsolutePath();
 			DownloadWebDrivers.logAccess.getLogger().debug("Latest webdriver is not availble for " + browserName
 					+ " on the local machine. Downloading latest version # " + laterVersion);
-			String originalZipPath = System.getenv("temp") + browserName + "_" + dateTimeUtil.getCurrentDateTime()
-					+ ".zip";
+			String originalZipPath = destinationFilePath + dateTimeUtil.getCurrentDateTime(CommonVariables.TIME_FORMATS[7]) + ".zip";
 			DownloadWebDrivers.logAccess.getLogger().debug("Downing the driver zip and storing as " + originalZipPath);
 			File tempZipFile = new File(originalZipPath);
 			// donwload the zip file to temp directory
@@ -146,7 +147,7 @@ public class DownloadWebDrivers {
 			zipUtil.unzip(originalZipPath, destinationFilePath);
 
 			// delet the zip from temp directory
-			folderFileUtil.deleteFileOrFolder(tempZipFile.getAbsolutePath());
+			folderFileUtil.deleteFile(tempZipFile);
 			DownloadWebDrivers.logAccess.getLogger()
 					.debug("Successfully downloaded driver for " + browserName.toUpperCase());
 

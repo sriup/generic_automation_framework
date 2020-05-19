@@ -1,6 +1,7 @@
 package framework.commonfunctions;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -13,7 +14,10 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import framework.constants.CommonVariables;
+import framework.enums.BrowserEnums;
 import framework.logs.LogAccess;
+import framework.utilities.JsonUtil;
 import io.github.bonigarcia.wdm.Architecture;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.qameta.allure.Step;
@@ -103,21 +107,20 @@ public class BrowserFunctions {
 	 * @param downloadPath the download path
 	 * @return the {@link org.openqa.selenium.WebDriver WebDriver} for the specified
 	 *         browser
+	 * @throws Exception
 	 */
 	@Step("Lauching \"{browserName}\" browser")
-	public WebDriver launch(String browserName, String downloadPath) {
+	public WebDriver launch(String browserName, String downloadPath) throws Exception {
 		setDownloadFolderPath(this.downloadFolderpath);
 		this.logAccess.getLogger().info("Launching browser :-  " + browserName);
 		this.logAccess.getLogger().info("Downloads folder :- " + getDownloadFilePath());
 
-		if (browserName.equalsIgnoreCase("chrome") || browserName.equalsIgnoreCase("firefox")) {
-			DownloadWebDrivers.downloadDriver(browserName);
-		}
-
 		switch (browserName.trim().toLowerCase()) {
 		case "chrome":
+			DownloadWebDrivers.downloadDriver(BrowserEnums.Chrome);
 			return launchChrome();
 		case "firefox":
+			DownloadWebDrivers.downloadDriver(BrowserEnums.Firefox);
 			return launchFirefox();
 		case "edge":
 			return launchEdge();
@@ -220,12 +223,16 @@ public class BrowserFunctions {
 	 * Launch Chrome.
 	 *
 	 * @return the web driver
+	 * @throws Exception
 	 */
 
-	private WebDriver launchChrome() {
+	private WebDriver launchChrome() throws Exception {
 //		WebDriverManager.chromedriver().setup();
-		System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + File.separatorChar + "drivers"
-				+ File.separator + "Chrome" + File.separator + "chromedriver.exe");
+		System.setProperty("webdriver.chrome.driver",
+				System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
+						+ BrowserEnums.Chrome.toString() + File.separatorChar
+						+ getWebDriverLocation(BrowserEnums.Chrome).replace(".", "_") + File.separatorChar
+						+ "chromedriver.exe");
 		// !! Chrome Options !!
 		HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
 		chromePrefs.put("profile.default_content_settings.popups", 0);
@@ -237,7 +244,7 @@ public class BrowserFunctions {
 
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		setWebDriver(new ChromeDriver(options));
-		getWebDriver().manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
+		//getWebDriver().manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT, TimeUnit.SECONDS);
 		return getWebDriver();
 	}
 
@@ -245,14 +252,17 @@ public class BrowserFunctions {
 	 * Launch firefox.
 	 *
 	 * @return the web driver
+	 * @throws Exception
 	 */
-	private WebDriver launchFirefox() {
+	private WebDriver launchFirefox() throws Exception {
 //		WebDriverManager.firefoxdriver().setup();
-		System.setProperty("webdriver.gecko.driver", System.getProperty("user.dir") + File.separatorChar + "drivers"
-				+ File.separatorChar + "FireFox" + File.separator + "geckodriver.exe");
+		System.setProperty("webdriver.gecko.driver", System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
+				+ BrowserEnums.Firefox.toString() + File.separatorChar
+				+ getWebDriverLocation(BrowserEnums.Firefox).replace(".", "_") + File.separatorChar
+				+ "geckodriver.exe");
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		setWebDriver(new FirefoxDriver());
-		getWebDriver().manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
+		//getWebDriver().manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT, TimeUnit.SECONDS);
 		return getWebDriver();
 
 	}
@@ -266,7 +276,7 @@ public class BrowserFunctions {
 		WebDriverManager.edgedriver().setup();
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		setWebDriver(new EdgeDriver());
-		getWebDriver().manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
+		//getWebDriver().manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT, TimeUnit.SECONDS);
 		return getWebDriver();
 
 	}
@@ -290,7 +300,15 @@ public class BrowserFunctions {
 		options.requireWindowFocus();
 		options.introduceFlakinessByIgnoringSecurityDomains();
 		threadDriver.set(new InternetExplorerDriver(options));
-		getWebDriver().manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
+		//getWebDriver().manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT, TimeUnit.SECONDS);
 		return threadDriver.get();
+	}
+
+	private String getWebDriverLocation(BrowserEnums browserName) throws Exception {
+
+		JsonUtil jsonUtil = new JsonUtil(logAccess);
+
+		return jsonUtil.getValue(System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
+				+ "DriversInfo.json", browserName.toString() + ".version");
 	}
 }

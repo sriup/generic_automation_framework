@@ -1051,19 +1051,6 @@ public class ExcelUtil {
 	}
 
 	/**
-	 * Delete file.
-	 *
-	 * @param excelFilePath the excel file path
-	 * @param excelFileName the excel file name
-	 * @throws Exception the exception
-	 */
-	// delete file
-	public void deleteFile(String excelFilePath, String excelFileName) throws Exception {
-		FolderFileUtil ffUtils = new FolderFileUtil(this.logAccess);
-		ffUtils.deleteFileOrFolder(excelFilePath, excelFileName);
-	}
-
-	/**
 	 * Delete sheet based on the sheet name.
 	 *
 	 * @param sheetName Name of the work sheet

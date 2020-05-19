@@ -78,54 +78,95 @@ public class FolderFileUtil {
 	}
 
 	/**
-	 * It deletes the file or folder if it exists.
+	 * It deletes the file if it exists.
 	 *
-	 * @param folderPath       Provide the Absolute Folder path
-	 * @param fileOrFolderName Provide the Filename or the Foldername
+	 * @param fileObject Provide the file object
 	 * @throws Exception the exception
 	 */
-	public boolean deleteFileOrFolder(String folderPath, String fileOrFolderName) throws Exception {
-
-		this.logAccess.getLogger().info("folderPath :- " + folderPath);
-		this.logAccess.getLogger().info("fileOrFolderName :- " + fileOrFolderName);
-
-		File folderFile = new File(folderPath + File.separatorChar + fileOrFolderName);
-		return deleteFileOrFolder(folderFile);
-	}
-
-	/**
-	 * It deletes the file or folder if it exists.
-	 *
-	 * @param folderFile Provide the Absolute Folder or File path
-	 * @throws Exception the exception
-	 */
-	public boolean deleteFileOrFolder(File folderFile) throws Exception {
-		String folderFilePath = folderFile.getAbsolutePath();
-		FileUtils.deleteDirectory(folderFile);
-		File deletedFolderFile = new File(folderFilePath);
-		if (!deletedFolderFile.exists()) {
-			this.logAccess.getLogger().info("Folder is deleted!");
+	public boolean deleteFile(File fileObject) throws Exception {
+		String filePath = fileObject.getAbsolutePath();
+		fileObject.delete();
+		File deletedFile = new File(filePath);
+		if (!deletedFile.exists()) {
+			this.logAccess.getLogger().info("File is deleted!");
 			return true;
-		}else {
+		} else {
 			return false;
 		}
 	}
 
 	/**
-	 * It deletes the file or folder if it exists.
+	 * It deletes the file if it exists.
+	 *
+	 * @param filePath Provide the Absolute File path
+	 * @throws Exception the exception
+	 */
+	public boolean deleteFile(String filePath) throws Exception {
+		this.logAccess.getLogger().info("file Path :- " + filePath);
+		return deleteFile(new File(filePath));
+	}
+
+	/**
+	 * It deletes the file if it exists.
+	 *
+	 * @param folderPath Provide the Absolute folder path
+	 * @param fileName   Provide the file name
+	 * @return
+	 * @throws Exception the exception
+	 */
+	public boolean deleteFile(String folderPath, String fileName) throws Exception {
+
+		this.logAccess.getLogger().info("folder Path :- " + folderPath);
+		this.logAccess.getLogger().info("file Name :- " + fileName);
+		return deleteFile(new File(folderPath + File.separatorChar + fileName));
+	}
+
+	/**
+	 * It deletes the folder if it exists.
+	 *
+	 * @param folderPath Provide the Absolute Folder path
+	 * @param folderName Provide the Folder name
+	 * @throws Exception the exception
+	 */
+	public boolean deleteFolder(String folderPath, String folderName) throws Exception {
+
+		this.logAccess.getLogger().info("folder Path :- " + folderPath);
+		this.logAccess.getLogger().info("folder Name :- " + folderName);
+
+		File folderFile = new File(folderPath + File.separatorChar + folderName);
+		return deleteFolder(folderFile);
+	}
+
+	/**
+	 * It deletes the folder if it exists.
+	 *
+	 * @param folderObject Provide the Folder object
+	 * @throws Exception the exception
+	 */
+	public boolean deleteFolder(File folderObject) throws Exception {
+		String folderPath = folderObject.getAbsolutePath();
+		FileUtils.deleteDirectory(folderObject);
+		File deletedFolder = new File(folderPath);
+		if (!deletedFolder.exists()) {
+			this.logAccess.getLogger().info("Folder is deleted!");
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * It deletes the folder if it exists.
 	 *
 	 * @param folderPath Provide the Absolute Folder path
 	 * @throws Exception the exception
 	 */
-	public void deleteFileOrFolder(String folderPath) throws Exception {
+	public boolean deleteFolder(String folderPath) throws Exception {
 
-		this.logAccess.getLogger().info("folderPath :- " + folderPath);
+		this.logAccess.getLogger().info("folder Path :- " + folderPath);
 
 		File folderFile = new File(folderPath);
-		FileUtils.deleteDirectory(folderFile);
-		if (folderFile.exists()) {
-			this.logAccess.getLogger().info("Folder is deleted!");
-		}
+		return deleteFolder(folderFile);
 	}
 
 	// create file
@@ -306,7 +347,8 @@ public class FolderFileUtil {
 	 * @return It will return the New File object
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public File copyFile(String oldFilePath, String newFilePath, String filename, StandardCopyOption standardCopyOption) throws IOException {
+	public File copyFile(String oldFilePath, String newFilePath, String filename, StandardCopyOption standardCopyOption)
+			throws IOException {
 
 		File oldFile = new File(oldFilePath + File.separatorChar + filename);
 
@@ -333,7 +375,7 @@ public class FolderFileUtil {
 		return newFile;
 
 	}
-	
+
 	/**
 	 * Copying the File from one location to the other location.
 	 *
