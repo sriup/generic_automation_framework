@@ -5,6 +5,8 @@ package framework.constants;
  */
 public class CommonVariables {
 
+	
+
 	/**
 	 * The browser Name This variable will be updated based on the value provided as
 	 * part of<br>
@@ -14,7 +16,10 @@ public class CommonVariables {
 	 */
 
 	public static String BROWSER_SELECT = System.getProperty("browser");
-
+	
+	/** The implicit wait time */
+	//public static int IMPLICIT_WAIT = 15;
+	
 	/** The max timeout. */
 	public static int MAX_TIMEOUT = 120;
 

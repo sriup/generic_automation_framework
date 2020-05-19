@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
@@ -16,6 +17,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -168,8 +170,14 @@ public class CommonFunctions {
 	 *
 	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param element           the {@link org.openqa.selenium.WebElement element}
-	 * @param expectedCondition the expected condition from
-	 *                          {@link ExpectedConditionsEnums}
+	 * @param expectedCondition the expected condition <br>
+	 *                          <font color='blue'>Note : Below is the list of
+	 *                          options supported for this method
+	 *                          <ul>
+	 *                          <li>CLICKABLE</li>
+	 *                          <li>VISIBLE</li>
+	 *                          </ul>
+	 *                          </font>
 	 * @return the {@link org.openqa.selenium.WebElement element}
 	 */
 	public WebElement waitForElement(WebDriver driver, WebElement element, ExpectedConditionsEnums expectedCondition) {
@@ -183,7 +191,14 @@ public class CommonFunctions {
 	 *
 	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param element           the {@link org.openqa.selenium.WebElement element}
-	 * @param expectedCondition the expected condition
+	 * @param expectedCondition the expected condition<br>
+	 *                          * * <font color='blue'>Note : Below is the list of
+	 *                          options supported for this method
+	 *                          <ul>
+	 *                          <li>CLICKABLE</li>
+	 *                          <li>VISIBLE</li>
+	 *                          </ul>
+	 *                          </font>
 	 * @param maxTimeout        the max timeout in seconds
 	 * @return the {@link org.openqa.selenium.WebElement element}
 	 */
@@ -199,7 +214,14 @@ public class CommonFunctions {
 	 *
 	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param byLocator         the by locator
-	 * @param expectedCondition the expected condition
+	 * @param expectedCondition the expected condition<br>
+	 *                          <font color='blue'>Note : Below is the list of
+	 *                          options supported for this method
+	 *                          <ul>
+	 *                          <li>CLICKABLE</li>
+	 *                          <li>PRESENCE</li>
+	 *                          </ul>
+	 *                          </font>
 	 * @return the web element
 	 */
 	public WebElement waitForElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition) {
@@ -213,7 +235,14 @@ public class CommonFunctions {
 	 *
 	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param byLocator         the by locator
-	 * @param expectedCondition the expected condition
+	 * @param expectedCondition the expected condition<br>
+	 *                          <font color='blue'>Note : Below is the list of
+	 *                          options supported for this method
+	 *                          <ul>
+	 *                          <li>CLICKABLE</li>
+	 *                          <li>PRESENCE</li>
+	 *                          </ul>
+	 *                          </font>
 	 * @param maxTimeout        the max timeout in seconds
 	 * @return the web element
 	 */
@@ -275,12 +304,15 @@ public class CommonFunctions {
 			WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
 			wait.until(ExpectedConditions.invisibilityOfElementLocated(byLocator));
 		} catch (Exception e) {
+			// driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
 			if (driver.findElements(byLocator).size() == 0
 					&& e.getClass().toString().equals("org.openqa.selenium.TimeoutException")) {
 				// ignore the exception as the element is not present which means it's not
 				// visible
 				// this issue will be taken care in later version of selenium
 			}
+			// driver.manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
+			// TimeUnit.SECONDS);
 		}
 	}
 
@@ -499,21 +531,18 @@ public class CommonFunctions {
 
 	/**
 	 * Checks if is element enabled by locator.<br>
-	 *<font color='blue'>Note :<br>This method will keep checking for max of {@link CommonVariables#MED_TIMEOUT} seconds<
+	 * <font color='blue'>Note :<br>
+	 * This method will keep checking for max of {@link CommonVariables#MED_TIMEOUT}
+	 * seconds<
+	 * 
 	 * @param driver    the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param byLocator the by locator
 	 * @return true, if is element enabled by locator
+	 * @throws Exception
 	 */
-	public boolean isElementEnabled(WebDriver driver, By byLocator) {
-		this.logAccess.getLogger().info("checking if element is enabled  :- " + byLocator);
-		long currentTimestamp = (new Date()).getTime();
-		long endTimestamp = currentTimestamp + CommonVariables.MED_TIMEOUT * 1000;
-		Boolean conditionalCheck = false;
-		while ((new Date()).getTime() < endTimestamp && !conditionalCheck) {
-			// return true if the element is enabled
-			conditionalCheck = driver.findElement(byLocator).isEnabled();
-		} 
-		return conditionalCheck;
+	public boolean isElementEnabled(WebDriver driver, By byLocator) throws Exception {
+
+		return isElementEnabled(driver, byLocator, CommonVariables.MED_TIMEOUT);
 	}
 
 	/**
@@ -593,7 +622,7 @@ public class CommonFunctions {
 		// set element original style
 		try {
 			setOriginalStyle(driver, element, originalStyle);
-		} catch (NoSuchElementException NSE) {
+		} catch (NoSuchElementException | StaleElementReferenceException ignoreException) {
 			// we don't have to either print the trace or throw the exception
 			// here as there are situations where the element might not present
 			// after performing some actions like click
@@ -1175,7 +1204,8 @@ public class CommonFunctions {
 	 * @throws Exception
 	 */
 	public void captureFullPageScreenShot(WebDriver driver, String screenShotName) throws Exception {
-		String tempScreenShotsFolderName = System.getProperty("user.dir")+ File.separatorChar + "TempFolder" + File.separatorChar + getScreenShotTime() + "_" + screenShotName;
+		String tempScreenShotsFolderName = System.getProperty("user.dir") + File.separatorChar + "TempFolder"
+				+ File.separatorChar + getScreenShotTime() + "_" + screenShotName;
 		folderFileUtil.createFolder(tempScreenShotsFolderName);
 		capturePageChunks(driver, tempScreenShotsFolderName);
 		mergeImagesToSingleImage(tempScreenShotsFolderName, screenShotName + ".png");
@@ -1202,9 +1232,10 @@ public class CommonFunctions {
 	 */
 	public void captureFullPageScreenShot(WebDriver driver, WebElement headerElement, boolean notIncludeHeader,
 			String screenShotName) throws Exception {
-		String tempScreenShotsFolderName = System.getProperty("user.dir")+ File.separatorChar + "TempFolder" + File.separatorChar + getScreenShotTime() + "_" + screenShotName;
+		String tempScreenShotsFolderName = System.getProperty("user.dir") + File.separatorChar + "TempFolder"
+				+ File.separatorChar + getScreenShotTime() + "_" + screenShotName;
 		folderFileUtil.createFolder(tempScreenShotsFolderName);
-		
+
 		capturePageChunks(driver, tempScreenShotsFolderName, headerElement, true);
 		mergeImagesToSingleImage(tempScreenShotsFolderName, screenShotName + ".png");
 
@@ -1269,26 +1300,39 @@ public class CommonFunctions {
 	 *
 	 * @param driver            the driver
 	 * @param element           the element
-	 * @param expectedCondition the expected condition
+	 * @param expectedCondition the expected condition<br>
+	 *                          * <font color='blue'>Note : Below is the list of
+	 *                          options supported for this method
+	 *                          <ul>
+	 *                          <li>CLICKABLE</li>
+	 *                          <li>VISIBLE</li>
+	 *                          </ul>
+	 *                          </font>
 	 * @param maxTimeout        the max timeout in seconds
 	 * @return the web element
 	 */
 	private WebElement waitUntilElement(WebDriver driver, WebElement element, ExpectedConditionsEnums expectedCondition,
 			int maxTimeout) {
+		// driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
 		WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
+
+		WebElement returnElement = null;
 		switch (expectedCondition) {
 		case CLICKABLE:
-			return wait.until(ExpectedConditions.elementToBeClickable(element));
+			returnElement = wait.until(ExpectedConditions.elementToBeClickable(element));
+			// driver.manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
+			// TimeUnit.SECONDS);
+			break;
 		case VISIBLE:
-			return (new WebDriverWait(driver, CommonVariables.MED_TIMEOUT))
-					.until(ExpectedConditions.visibilityOf(element));
-		case PRESENCE:
-			return (new WebDriverWait(driver, CommonVariables.MED_TIMEOUT)).until((WebDriver lDriver) -> element);
+			returnElement = wait.until(ExpectedConditions.visibilityOf(element));
+			// driver.manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
+			// TimeUnit.SECONDS);
+			break;
 		default:
-			throw new IllegalArgumentException("Unexpected value: " + expectedCondition + ".\n This method supports "
-					+ ExpectedConditionsEnums.CLICKABLE.toString() + " and " + ExpectedConditionsEnums.VISIBLE
-					+ ".  Please use waitUntilElementByLocator method for available options from ExpectedConditionsEnums.");
+			throw new IllegalArgumentException("??? Unexpected value: " + expectedCondition
+					+ ". This method supports clickable and Vislble options. Please use waitUntilElement by locator method for PRESENCE. ???");
 		}
+		return returnElement;
 	}
 
 	/**
@@ -1296,26 +1340,39 @@ public class CommonFunctions {
 	 *
 	 * @param driver            the driver
 	 * @param byLocator         the by locator
-	 * @param expectedCondition the expected condition
+	 * @param expectedCondition the expected condition<br>
+	 *                          <font color='blue'>Note : Below is the list of
+	 *                          options supported for this method
+	 *                          <ul>
+	 *                          <li>CLICKABLE</li>
+	 *                          <li>PRESENCE</li>
+	 *                          </ul>
+	 *                          </font>
 	 * @param maxTimeout        the max timeout in seconds
 	 * @return the web element
 	 */
 	private WebElement waitUntilElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition,
 			int maxTimeout) {
+		// driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
 		WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
+
+		WebElement returnElement = null;
 		switch (expectedCondition) {
 		case CLICKABLE:
-			return wait.until(ExpectedConditions.elementToBeClickable(byLocator));
-		case VISIBLE:
-//			return (WebElement) wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(byLocator));
-			return (new WebDriverWait(driver, CommonVariables.MAX_TIMEOUT))
-					.until(ExpectedConditions.visibilityOf(driver.findElement(byLocator)));
+			returnElement = wait.until(ExpectedConditions.elementToBeClickable(byLocator));
+			// driver.manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
+			// TimeUnit.SECONDS);
+			break;
 		case PRESENCE:
-			return wait.until(ExpectedConditions.presenceOfElementLocated(byLocator));
+			returnElement = wait.until(ExpectedConditions.presenceOfElementLocated(byLocator));
+			// driver.manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
+			// TimeUnit.SECONDS);
+			break;
 		default:
-			throw new IllegalArgumentException("Unexpected value: " + expectedCondition
-					+ ".\n Please refer to  ExpectedConditionsEnums for the available optoins.");
+			throw new IllegalArgumentException("????Unexpected value: " + expectedCondition
+					+ ". This method supports clickable and Presence options. Please use waitUntilElement by locator method for VISIBLE.");
 		}
+		return returnElement;
 	}
 
 	private void capturePageChunks(WebDriver driver, String tempImagesFolderPath, WebElement headerElement,
@@ -1484,7 +1541,7 @@ public class CommonFunctions {
 		// Save the the final Buffered Image build with graphics to output file
 		ImageIO.write(finalBufferedImage, "png",
 				new File(this.screenShotsPath + File.separatorChar + getScreenShotTime() + "_" + outputPNGFileName));
-		folderFileUtil.deleteFileOrFolder(folder);
+		folderFileUtil.deleteFolder(folder);
 
 	}
 
