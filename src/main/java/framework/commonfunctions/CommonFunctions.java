@@ -274,6 +274,7 @@ public class CommonFunctions {
 	 */
 	public void waitForInvisibilityOfElement(WebDriver driver, WebElement element, int maxTimeout) {
 		this.logAccess.getLogger().info("waiting for element to be invisible  :- " + element);
+
 		long currentTimestamp = (new Date()).getTime();
 		int waitingSeconds = maxTimeout * 1000;
 		long endTimestamp = currentTimestamp + waitingSeconds;
@@ -289,6 +290,7 @@ public class CommonFunctions {
 				if (isElementInvisible) {
 					// Checking if element is visible though it is in the DOM.
 					isElementInvisible = element.isDisplayed();
+
 				}
 			}
 		} catch (NoSuchElementException | StaleElementReferenceException ignoreException) {
@@ -1091,6 +1093,7 @@ public class CommonFunctions {
 		unHighlightElement(driver, tempElement, originalStyle);
 	}
 
+
 	/**
 	 * Get the visible (i.e. not hidden by CSS) text of this element, including
 	 * sub-elements.
@@ -1358,10 +1361,8 @@ public class CommonFunctions {
 	/**
 	 * gets the element based on the by locater
 	 * 
-	 * @param driver 
-	 * the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param byLocator
-	 * the by locator
+	 * @param driver    the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator the by locator
 	 * @return WebElement
 	 */
 	private WebElement getElement(WebDriver driver, By byLocator) {
@@ -1371,12 +1372,9 @@ public class CommonFunctions {
 	/**
 	 * gets the element based on the by locater and max timeout
 	 * 
-	 * @param driver
-	 * the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param byLocator
-	 * the by locator
-	 * @param maxTimeOut
-	 * maximum time to wait for WebElement
+	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator  the by locator
+	 * @param maxTimeOut maximum time to wait for WebElement
 	 * @return WebElement
 	 */
 	private WebElement getElement(WebDriver driver, By byLocator, int maxTimeOut) {
@@ -1386,10 +1384,8 @@ public class CommonFunctions {
 	/**
 	 * gets the element based on the element
 	 * 
-	 * @param driver
-	 * the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param element
-	 * the WebElement
+	 * @param driver  the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param element the WebElement
 	 * @return WebElement
 	 */
 	private WebElement getElement(WebDriver driver, WebElement element) {
@@ -1399,12 +1395,9 @@ public class CommonFunctions {
 	/**
 	 * gets the element based on the element and max timeout
 	 * 
-	 * @param driver
-	 * the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param element
-	 * the WebElement
-	 * @param maxTimeOut
-	 * maximum time to wait for the element
+	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param element    the WebElement
+	 * @param maxTimeOut maximum time to wait for the element
 	 * @return WebElement
 	 */
 	private WebElement getElement(WebDriver driver, WebElement element, int maxTimeOut) {
@@ -1542,18 +1535,20 @@ public class CommonFunctions {
 	}
 
 	/**
-	 * Capture multiple images in chunks one per each window height
-	 * and then capture last screenshot if any part is left over. This will also handle the element to be hidden.
-	 * @param driver
-	 * the driver
-	 * @param tempImagesFolderPath
-	 * temporary folder where the images should be stored
-	 * @param hideElement
-	 * header element that need to hidden based on the notIncludeHeader flag
-	 * @param notIncludeHeader
-	 * not included the header based on this<br>
-	 * <font color='blue'>Note : First screenshot will show the header and will be hidden in the subsequent 
-	 * screenshots if you choose <b>true</b> and oppositive holds good too</font>
+	 * Capture multiple images in chunks one per each window height and then capture
+	 * last screenshot if any part is left over. This will also handle the element
+	 * to be hidden.
+	 * 
+	 * @param driver               the driver
+	 * @param tempImagesFolderPath temporary folder where the images should be
+	 *                             stored
+	 * @param hideElement          header element that need to hidden based on the
+	 *                             notIncludeHeader flag
+	 * @param notIncludeHeader     not included the header based on this<br>
+	 *                             <font color='blue'>Note : First screenshot will
+	 *                             show the header and will be hidden in the
+	 *                             subsequent screenshots if you choose <b>true</b>
+	 *                             and oppositive holds good too</font>
 	 * @throws Exception exception
 	 */
 	private void capturePageChunks(WebDriver driver, String tempImagesFolderPath, WebElement hideElement,
@@ -1628,13 +1623,14 @@ public class CommonFunctions {
 				"window.scrollTo(" + String.valueOf(currentXPosition) + "," + String.valueOf(currentYPosition) + ");");
 
 	}
+
 	/**
-	 *  * Capture multiple images in chunks one per each window height
-	 * and then capture last screenshot if any part is left over
-	 * @param driver
-	 * the driver
-	 * @param tempImagesFolderPath
-	 * temporary folder where the images should be stored
+	 * * Capture multiple images in chunks one per each window height and then
+	 * capture last screenshot if any part is left over
+	 * 
+	 * @param driver               the driver
+	 * @param tempImagesFolderPath temporary folder where the images should be
+	 *                             stored
 	 * @throws Exception exception
 	 */
 
