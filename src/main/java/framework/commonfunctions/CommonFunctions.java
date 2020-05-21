@@ -275,18 +275,37 @@ public class CommonFunctions {
 	 */
 	public void waitForInvisibilityOfElement(WebDriver driver, WebElement element, int maxTimeout) {
 		this.logAccess.getLogger().info("waiting for element to be invisible  :- " + element);
+		
+		long currentTimestamp = (new Date()).getTime();
+		int waitingSeconds = maxTimeout * 1000;
+		long endTimestamp = currentTimestamp + waitingSeconds;
 
-		try {
-			WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
-			wait.until(ExpectedConditions.invisibilityOf(element));
-		} catch (Exception e) {
-			if (!isElementPresent(driver, element)
-					&& e.getClass().toString().equals("org.openqa.selenium.TimeoutException")) {
-				// ignore the exception as the element is not present which means it's not
-				// visible
-				// this issue will be taken care in later version of selenium
+		boolean isElementInvisible = true;
+		
+		this.logAccess.getLogger().info("End timestamp for Invisibility of an Element is " + endTimestamp);
+		
+		while((new Date()).getTime() < endTimestamp && isElementInvisible) {
+			
+			isElementInvisible = isElementPresent(driver, element, CommonVariables.MIN_TIMEOUT);
+			
+			if(isElementInvisible) {
+				//Checking if element is visible though it is in the DOM.
+				isElementInvisible = element.isDisplayed();
 			}
 		}
+
+		//Its under investigation
+//		try {
+//			WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
+//			wait.until(ExpectedConditions.invisibilityOf(element));
+//		} catch (Exception e) {
+//			if (!isElementPresent(driver, element)
+//					&& e.getClass().toString().equals("org.openqa.selenium.TimeoutException")) {
+//				// ignore the exception as the element is not present which means it's not
+//				// visible
+//				// this issue will be taken care in later version of selenium
+//			}
+//		}
 
 	}
 
@@ -982,6 +1001,42 @@ public class CommonFunctions {
 			captureScreenShot(driver, screenShotName);
 		}
 		dropDown.selectByVisibleText(visibleText);
+		// un-highlihgt
+		unHighlightElement(driver, element, originalStyle);
+	}
+
+	/**
+	 * Select list item based on the partial visible text.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param element             the {@link org.openqa.selenium.WebElement element}
+	 * @param partialVisibleText  the partial visible text of the list item
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @throws Exception the exception
+	 */
+	public void selectItemByPartialVisibleText(WebDriver driver, WebElement element, String partialVisibleText,
+			boolean isCaptureScreenshot, String screenShotName) throws Exception {
+		this.logAccess.getLogger().info("Partial visible Text :-  " + partialVisibleText);
+		this.logAccess.getLogger().info("Element :- " + element);
+		// highlight element
+		String originalStyle = highlightElement(driver, element);
+
+		// capture (private capture screenshot)
+		if (isCaptureScreenshot) {
+			captureScreenShot(driver, screenShotName);
+		}
+
+		//Select the option with partial text
+		WebElement option = element.findElement(By.xpath("//option[contains(text(),'" + partialVisibleText + "')]"));
+		option.click();
+		
 		// un-highlihgt
 		unHighlightElement(driver, element, originalStyle);
 	}
