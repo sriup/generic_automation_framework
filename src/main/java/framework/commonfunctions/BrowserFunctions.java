@@ -17,6 +17,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import framework.constants.CommonVariables;
 import framework.enums.BrowserEnums;
 import framework.logs.LogAccess;
+import framework.utilities.FolderFileUtil;
 import framework.utilities.JsonUtil;
 import io.github.bonigarcia.wdm.Architecture;
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -53,11 +54,16 @@ public class BrowserFunctions {
 	 * 
 	 * @param downloadPath the path where the files should be download when download
 	 *                     from browser
+	 * @throws Exception 
 	 */
-	private void setDownloadFolderPath(String downloadPath) {
+	private void setDownloadFolderPath(String downloadPath) throws Exception {
 		if (downloadPath.isEmpty()) {
 			this.downloadFolderpath = System.getProperty("user.dir") + File.separatorChar + "Download_File";
+			
+		}else {
+			this.downloadFolderpath = downloadPath;
 		}
+		new FolderFileUtil(this.logAccess).createFolder(this.downloadFolderpath);
 	}
 
 	/**
@@ -65,7 +71,7 @@ public class BrowserFunctions {
 	 *
 	 * @return the download folder path
 	 */
-	private String getDownloadFilePath() {
+	public String getDownloadFilePath() {
 		return this.downloadFolderpath;
 	}
 
@@ -111,7 +117,7 @@ public class BrowserFunctions {
 	 */
 	@Step("Lauching \"{browserName}\" browser")
 	public WebDriver launch(String browserName, String downloadPath) throws Exception {
-		setDownloadFolderPath(this.downloadFolderpath);
+		setDownloadFolderPath(downloadPath);
 		this.logAccess.getLogger().info("Launching browser :-  " + browserName);
 		this.logAccess.getLogger().info("Downloads folder :- " + getDownloadFilePath());
 

@@ -266,14 +266,18 @@ public class CommonFunctions {
 	}
 
 	/**
-	 * Wait for invisibility of element.
+	 * Wait for invisibility of element. Method will wait for {@link CommonVariables#MIN_TIMEOUT} before
+	 * checking for element invisibility.
 	 *
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param element    the {@link org.openqa.selenium.WebElement element}
 	 * @param maxTimeout the max timeout in seconds
+	 * @throws Exception
 	 */
-	public void waitForInvisibilityOfElement(WebDriver driver, WebElement element, int maxTimeout) {
+	public void waitForInvisibilityOfElement(WebDriver driver, WebElement element, int maxTimeout) throws Exception {
 		this.logAccess.getLogger().info("waiting for element to be invisible  :- " + element);
+
+		Thread.sleep(CommonVariables.MIN_TIMEOUT * 1000);
 
 		long currentTimestamp = (new Date()).getTime();
 		int waitingSeconds = maxTimeout * 1000;
@@ -282,7 +286,9 @@ public class CommonFunctions {
 		boolean isElementInvisible = true;
 
 		this.logAccess.getLogger().info("End timestamp for Invisibility of an Element is " + endTimestamp);
+
 		try {
+
 			while ((new Date()).getTime() < endTimestamp && isElementInvisible) {
 
 				isElementInvisible = isElementPresent(driver, element, CommonVariables.MIN_TIMEOUT);
@@ -314,14 +320,18 @@ public class CommonFunctions {
 	}
 
 	/**
-	 * Wait for invisibility of element by locator.
+	 * Wait for invisibility of element by locator. Method will wait for {@link CommonVariables#MIN_TIMEOUT} before
+	 * checking for element invisibility.
 	 *
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param byLocator  the by locator
 	 * @param maxTimeout the max timeout in seconds
+	 * @throws Exception
 	 */
-	public void waitForInvisibilityOfElement(WebDriver driver, By byLocator, int maxTimeout) {
+	public void waitForInvisibilityOfElement(WebDriver driver, By byLocator, int maxTimeout) throws Exception {
 		this.logAccess.getLogger().info("waiting for element to be invisible  :- " + byLocator);
+
+		Thread.sleep(CommonVariables.MIN_TIMEOUT * 1000);
 
 		long currentTimestamp = (new Date()).getTime();
 		int waitingSeconds = maxTimeout * 1000;
@@ -774,6 +784,9 @@ public class CommonFunctions {
 		if (isCaptureScreenShot && captureBefore) {
 			// take screenshot
 			captureScreenShot(driver, screenShotName);
+
+			// un-highlihgt
+			unHighlightElement(driver, tempElement, originalStyle);
 		}
 		// click
 		tempElement.click();
@@ -781,9 +794,11 @@ public class CommonFunctions {
 		if (isCaptureScreenShot && !captureBefore) {
 			// take screenshot
 			captureScreenShot(driver, screenShotName);
+
+			// un-highlihgt
+			unHighlightElement(driver, tempElement, originalStyle);
 		}
-		// un-highlihgt
-		unHighlightElement(driver, tempElement, originalStyle);
+
 	}
 
 	/**
@@ -1092,7 +1107,6 @@ public class CommonFunctions {
 		// un-highlihgt
 		unHighlightElement(driver, tempElement, originalStyle);
 	}
-
 
 	/**
 	 * Get the visible (i.e. not hidden by CSS) text of this element, including
