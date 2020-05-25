@@ -1,20 +1,20 @@
 package framework.commonfunctions;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import framework.constants.CommonVariables;
 import framework.enums.BrowserEnums;
 import framework.logs.LogAccess;
 import framework.utilities.FolderFileUtil;
@@ -71,7 +71,7 @@ public class BrowserFunctions {
 	 *
 	 * @return the download folder path
 	 */
-	public String getDownloadFilePath() {
+	public String getDownloadFolderPath() {
 		return this.downloadFolderpath;
 	}
 
@@ -119,7 +119,7 @@ public class BrowserFunctions {
 	public WebDriver launch(String browserName, String downloadPath) throws Exception {
 		setDownloadFolderPath(downloadPath);
 		this.logAccess.getLogger().info("Launching browser :-  " + browserName);
-		this.logAccess.getLogger().info("Downloads folder :- " + getDownloadFilePath());
+		this.logAccess.getLogger().info("Downloads folder :- " + getDownloadFolderPath());
 
 		switch (browserName.trim().toLowerCase()) {
 		case "chrome":
@@ -242,7 +242,7 @@ public class BrowserFunctions {
 		// !! Chrome Options !!
 		HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
 		chromePrefs.put("profile.default_content_settings.popups", 0);
-		chromePrefs.put("download.default_directory", this.getDownloadFilePath());
+		chromePrefs.put("download.default_directory", this.getDownloadFolderPath());
 		ChromeOptions options = new ChromeOptions();
 		options.setExperimentalOption("prefs", chromePrefs);
 		options.setCapability("ACCEPT_SSL_CERTS", true);
@@ -255,8 +255,10 @@ public class BrowserFunctions {
 	}
 
 	/**
-	 * Launch firefox.
+	 * Launch firefox.<br><br>
 	 *
+	 * Refer to <a href = 'http://kb.mozillazine.org/Firefox_:_FAQs_:_About:config_Entries'>Firefox Configuration Details</a> for detailed information about
+	 * each configuration setting.
 	 * @return the web driver
 	 * @throws Exception
 	 */
@@ -267,7 +269,43 @@ public class BrowserFunctions {
 				+ getWebDriverLocation(BrowserEnums.Firefox).replace(".", "_") + File.separatorChar
 				+ "geckodriver.exe");
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
-		setWebDriver(new FirefoxDriver());
+		
+		
+		FirefoxProfile profile = new FirefoxProfile();
+		
+		// set the download folder directory
+		profile.setPreference("browser.download.dir", this.getDownloadFolderPath());
+		
+		// the last folder specified for a download
+		profile.setPreference("browser.download.folderList", 2); 
+		
+		// hide Download Manager window when a download begins
+		profile.setPreference("browser.download.manager.showWhenStarting", false); 
+		
+		// A comma-separated list of MIME types to save to disk without asking what to use to open the file.
+		profile.setPreference("browser.helperApps.neverAsk.saveToDisk",
+				"application/pdf,application/zip,text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;octet/stream");
+		
+		// A comma-separated list of MIME types to open directly without asking for confirmation.
+		profile.setPreference("browser.helperApps.neverAsk.openFile",
+				"application/pdf,application/zip,text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;octet/stream");
+		
+		// Do not ask what to do with an unknown MIME type
+		profile.setPreference("browser.helperApps.alwaysAsk.force", false);
+		
+		// Leave the window in the background when starting a download (Default Setting is false)
+		profile.setPreference("browser.download.manager.focusWhenStarting", false);
+		
+		//popup window at bottom right corner of the screen will not appear once all downloads are finished.
+		profile.setPreference("browser.download.manager.showAlertOnComplete", true);
+		
+		// Close the Download Manager when all downloads are complete
+		profile.setPreference("browser.download.manager.closeWhenDone", true);
+		
+		FirefoxOptions options = new FirefoxOptions();
+		options.setProfile(profile);
+		
+		setWebDriver(new FirefoxDriver(options));
 		//getWebDriver().manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT, TimeUnit.SECONDS);
 		return getWebDriver();
 

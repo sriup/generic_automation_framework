@@ -3,6 +3,7 @@ package framework.commonfunctions;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
@@ -266,8 +267,8 @@ public class CommonFunctions {
 	}
 
 	/**
-	 * Wait for invisibility of element. Method will wait for {@link CommonVariables#MIN_TIMEOUT} before
-	 * checking for element invisibility.
+	 * Wait for invisibility of element. Method will wait for
+	 * {@link CommonVariables#MIN_TIMEOUT} before checking for element invisibility.
 	 *
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param element    the {@link org.openqa.selenium.WebElement element}
@@ -320,8 +321,8 @@ public class CommonFunctions {
 	}
 
 	/**
-	 * Wait for invisibility of element by locator. Method will wait for {@link CommonVariables#MIN_TIMEOUT} before
-	 * checking for element invisibility.
+	 * Wait for invisibility of element by locator. Method will wait for
+	 * {@link CommonVariables#MIN_TIMEOUT} before checking for element invisibility.
 	 *
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param byLocator  the by locator
@@ -784,17 +785,19 @@ public class CommonFunctions {
 		if (isCaptureScreenShot && captureBefore) {
 			// take screenshot
 			captureScreenShot(driver, screenShotName);
-
-			// un-highlihgt
-			unHighlightElement(driver, tempElement, originalStyle);
 		}
+		// un-highlihgt
+		unHighlightElement(driver, tempElement, originalStyle);
 		// click
 		tempElement.click();
 		// capture after (private capture screenshot)
 		if (isCaptureScreenShot && !captureBefore) {
+
+			// highlight element
+			originalStyle = highlightElement(driver, tempElement);
+
 			// take screenshot
 			captureScreenShot(driver, screenShotName);
-
 			// un-highlihgt
 			unHighlightElement(driver, tempElement, originalStyle);
 		}
@@ -1364,6 +1367,99 @@ public class CommonFunctions {
 
 		capturePageChunks(driver, tempScreenShotsFolderName, headerElement, true);
 		mergeImagesToSingleImage(tempScreenShotsFolderName, screenShotName + ".png");
+
+	}
+
+	/**
+	 * This method will wait until the file download is completed and waits for
+	 * specified max time
+	 * 
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param downloadFolderPath  the download folder path
+	 *                            {@link BrowserFunctions#getDownloadFolderPath()
+	 *                            getDownloadFolderPath}
+	 * @param expectedFileName    the expected file name
+	 * @param maxTimeOutInSeconds the maximum time script should wait for the
+	 *                            download to complete
+	 * @throws IOException the exception
+	 */
+	public void waitUntilDonwloadCompleted(WebDriver driver, String downloadFolderPath, String expectedFileName,
+			int maxTimeOutInSeconds) throws IOException {
+		WebDriverWait wait = new WebDriverWait(driver, maxTimeOutInSeconds);
+		File fileToCheck = new File(downloadFolderPath).toPath().resolve(expectedFileName).toFile();
+
+		wait.until((WebDriver wd) -> fileToCheck.exists());
+
+	}	
+
+	/**
+	 * This method will wait until the file download is completed and waits for
+	 * specified max time
+	 * 
+	 * @param driver the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @return the down loaded file path
+	 * @throws Exception the exception
+	 */
+	public String waitUntilDonwloadCompleted(WebDriver driver, int maxTimeoutInSeconds) throws Exception {
+		// Store the current window handle
+		String mainWindow = driver.getWindowHandle();
+		String fileName = null;
+		try {
+			// open a new tab
+			((JavascriptExecutor) driver).executeScript("window.open()");
+			// switch to new tab
+			// Switch to new window opened
+			for (String winHandle : driver.getWindowHandles()) {
+				driver.switchTo().window(winHandle);
+			}
+			if (CommonVariables.BROWSER_SELECT.equalsIgnoreCase("chrome")) {
+				// navigate to chrome downloads
+				driver.get("chrome://downloads");
+				Thread.sleep(2000);
+				new WebDriverWait(driver, maxTimeoutInSeconds)
+						.until(ExpectedConditions.visibilityOf((WebElement) ((JavascriptExecutor) driver).executeScript(
+								"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item')")));
+				new WebDriverWait(driver, maxTimeoutInSeconds).until(
+						ExpectedConditions.elementToBeClickable((WebElement) ((JavascriptExecutor) driver).executeScript(
+								"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('a#show')")));
+				//get the file name
+				fileName = (String) ((JavascriptExecutor) driver).executeScript("return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('div#content #file-link').text");
+				
+				
+				// file downloaded location
+				//donwloadedAt = (String) ((JavascriptExecutor) driver).executeScript(
+				//		"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('div.is-active.focus-row-active #file-icon-wrapper img').src");
+			} else if (CommonVariables.BROWSER_SELECT.equalsIgnoreCase("firefox")) {
+				
+				// navigate to chrome downloads
+				driver.get("about:downloads");
+				Thread.sleep(2000);
+				new WebDriverWait(driver, maxTimeoutInSeconds).until(ExpectedConditions.attributeContains(
+						(WebElement) ((JavascriptExecutor) driver).executeScript(
+								"return document.querySelector('#contentAreaDownloadsView .downloadMainArea .downloadContainer progress')"),"value","100"));
+				//get the file name
+				fileName = (String) ((JavascriptExecutor) driver).executeScript("return document.querySelector('#contentAreaDownloadsView .downloadMainArea .downloadContainer description:nth-of-type(1)').value");
+				
+				
+				
+				// file downloaded location
+				//donwloadedAt = (String) ((JavascriptExecutor) driver).executeScript(
+				//	"return document.querySelector('#contentAreaDownloadsView .downloadMainArea .downloadTypeIcon').src");
+			}
+			
+			// close the downloads tab2
+			driver.close();
+			// switch back to main window
+			driver.switchTo().window(mainWindow);
+			
+		} catch (Exception e) {
+			// switch back to main window
+			driver.switchTo().window(mainWindow);
+			throw e;
+
+		}
+		return fileName;
 
 	}
 

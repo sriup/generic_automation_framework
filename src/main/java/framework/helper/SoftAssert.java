@@ -4,10 +4,11 @@ import java.util.Map;
 
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.testng.asserts.IAssert;
 import org.testng.collections.Maps;
 
-import framework.commonfunctions.BrowserFunctions;
+import framework.abstracts.FwBaseClass;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import io.qameta.allure.model.Status;
@@ -27,14 +28,16 @@ import io.qameta.allure.model.Status;
 public class SoftAssert extends org.testng.asserts.SoftAssert {
 
 	private final Map<AssertionError, IAssert<?>> m_errors = Maps.newLinkedHashMap();
-	private BrowserFunctions browserFunctions;
+	private FwBaseClass fwBaseClass;
+	private WebDriver driver;
 	
 	/**
 	 * SoftAssert constructor
-	 * @param browserFunctions {@link framework.commonfunctions.BrowserFunctions BrowserFunctions} instance
+	 * @param fwBaseClass {@link framework.commonfunctions.BrowserFunctions BrowserFunctions} instance
 	 */
-	public SoftAssert(BrowserFunctions browserFunctions) {
-		this.browserFunctions = browserFunctions;
+	public SoftAssert(FwBaseClass fwBaseClass) {
+		this.fwBaseClass = fwBaseClass;
+		this.driver = fwBaseClass.getBrowserFunctions().getWebDriver();
 	}
 
 	/**
@@ -87,8 +90,8 @@ public class SoftAssert extends org.testng.asserts.SoftAssert {
 				sb.append(ae.getKey().getMessage());
 			}
 			// if the failure count >0 then quit the browser here
-			if (browserFunctions.getWebDriver() != null) {
-				browserFunctions.quit();
+			if (driver != null) {
+				driver.quit();
 			}
 			// throw Assertion Error to Fail the test
 			throw new AssertionError(sb.toString());
@@ -111,7 +114,7 @@ public class SoftAssert extends org.testng.asserts.SoftAssert {
 	public byte[] addScreenshotInAllureReport(String message, Status status) throws Exception {
 		byte[] screenshot = null;
 
-		screenshot = ((TakesScreenshot) browserFunctions.getWebDriver()).getScreenshotAs(OutputType.BYTES);
+		screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
 		// this will mark the sub-step status to fail(red arrow)/passed(green arrow)
 		Allure.getLifecycle().updateStep(stepResult -> stepResult.setStatus(status));
 		// attaches the screenshot to the sub-step

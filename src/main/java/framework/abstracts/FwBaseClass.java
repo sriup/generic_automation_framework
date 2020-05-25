@@ -5,9 +5,11 @@ import java.io.File;
 import org.apache.log4j.LogManager;
 
 import framework.commonfunctions.BrowserFunctions;
+import framework.commonfunctions.CommonFunctions;
 import framework.constants.CommonVariables;
 import framework.enums.BrowserEnums;
 import framework.enums.LogVerboseEnums;
+import framework.helper.SoftAssert;
 import framework.logs.LogAccess;
 import framework.utilities.DateTimeUtil;
 import framework.utilities.FolderFileUtil;
@@ -28,6 +30,12 @@ public abstract class FwBaseClass {
 
 	/** The screenshot path. */
 	private String screenshotPath;
+	
+	/** SoftAssert Object */
+	private SoftAssert softAssert;
+	
+	/** Common Functions*/
+	private CommonFunctions commonFunctions;
 
 	/**
 	 * This method will launch the browser.<br>
@@ -69,6 +77,12 @@ public abstract class FwBaseClass {
 		this.browserFunctions = new BrowserFunctions(this.logAccess);
 		browserFunctions.launch(browserName, downloadPath);
 
+		// Initialize the common functions
+		 this.commonFunctions = new CommonFunctions(getScreenshotPath(), getLogAccess());
+		
+		// initializing the SoftAssert
+		this.softAssert = new SoftAssert(this);
+
 	}
 
 	/**
@@ -77,9 +91,26 @@ public abstract class FwBaseClass {
 	 * @return the instance of {@link BrowserFunctions BrowserFunctions}
 	 */
 	public BrowserFunctions getBrowserFunctions() {
-		return browserFunctions;
+		return this.browserFunctions;
+	}
+	
+	/**
+	 * Gets the instance of {@link BrowserFunctions BrowserFunctions}
+	 *
+	 * @return the instance of {@link BrowserFunctions BrowserFunctions}
+	 */
+	public CommonFunctions getCommonFunctions() {
+		return this.commonFunctions;
 	}
 
+	/**
+	 * Gets the instance of {@link BrowserFunctions BrowserFunctions}
+	 *
+	 * @return the instance of {@link BrowserFunctions BrowserFunctions}
+	 */
+	public SoftAssert getSoftAssert() {
+		return this.softAssert;
+	}
 	/**
 	 * Gets the screenshot path.<br>
 	 * <font color="blue"><b>Note : </b>This method will create "SystemGenerated_"
