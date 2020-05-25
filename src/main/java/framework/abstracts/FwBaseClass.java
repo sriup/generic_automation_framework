@@ -34,8 +34,6 @@ public abstract class FwBaseClass {
 	/** SoftAssert Object */
 	private SoftAssert softAssert;
 	
-	/** Common Functions*/
-	private CommonFunctions commonFunctions;
 
 	/**
 	 * This method will launch the browser.<br>
@@ -77,9 +75,6 @@ public abstract class FwBaseClass {
 		this.browserFunctions = new BrowserFunctions(this.logAccess);
 		browserFunctions.launch(browserName, downloadPath);
 
-		// Initialize the common functions
-		 this.commonFunctions = new CommonFunctions(getScreenshotPath(), getLogAccess());
-		
 		// initializing the SoftAssert
 		this.softAssert = new SoftAssert(this);
 
@@ -94,14 +89,7 @@ public abstract class FwBaseClass {
 		return this.browserFunctions;
 	}
 	
-	/**
-	 * Gets the instance of {@link BrowserFunctions BrowserFunctions}
-	 *
-	 * @return the instance of {@link BrowserFunctions BrowserFunctions}
-	 */
-	public CommonFunctions getCommonFunctions() {
-		return this.commonFunctions;
-	}
+	
 
 	/**
 	 * Gets the instance of {@link BrowserFunctions BrowserFunctions}

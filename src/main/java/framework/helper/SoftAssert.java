@@ -89,10 +89,6 @@ public class SoftAssert extends org.testng.asserts.SoftAssert {
 				sb.append("\n\t");
 				sb.append(ae.getKey().getMessage());
 			}
-			// if the failure count >0 then quit the browser here
-			if (driver != null) {
-				driver.quit();
-			}
 			// throw Assertion Error to Fail the test
 			throw new AssertionError(sb.toString());
 		}

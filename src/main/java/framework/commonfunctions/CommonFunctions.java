@@ -1257,15 +1257,17 @@ public class CommonFunctions {
 	 *                       screenshots.
 	 * @throws Exception the exception
 	 */
-	public void captureScreenShotWithHighlight(WebDriver driver, WebElement element, String screenshotName)
+	public String captureScreenShotWithHighlight(WebDriver driver, WebElement element, String screenshotName)
 			throws Exception {
 		this.logAccess.getLogger().debug("Capturing screenshot for element :- " + element);
 		// highlight
 		String originalStyle = highlightElement(driver, element);
+
 		// capture screenshot
-		captureScreenShot(driver, screenshotName);
+		String tempScreenshotName = captureScreenShot(driver, screenshotName);
 		// un-highlight
 		setOriginalStyle(driver, element, originalStyle);
+		return tempScreenshotName;
 	}
 
 	/**
@@ -1282,16 +1284,16 @@ public class CommonFunctions {
 	 *                       screenshots.
 	 * @throws Exception the exception
 	 */
-	public void captureScreenShotWithHighlight(WebDriver driver, By byLocator, String screenshotName) throws Exception {
+	public String captureScreenShotWithHighlight(WebDriver driver, By byLocator, String screenshotName) throws Exception {
 		this.logAccess.getLogger().debug("Capturing screenshot for element :- " + byLocator.toString());
 		WebElement element = waitForElement(driver, byLocator, ExpectedConditionsEnums.CLICKABLE);
 		// highlight
 		String originalStyle = highlightElement(driver, element);
 		// capture screenshot
-		captureScreenShot(driver, screenshotName);
+		String tempScreenshotName = captureScreenShot(driver, screenshotName);
 		// un-highlight
 		setOriginalStyle(driver, element, originalStyle);
-		Thread.sleep(2000);
+		return tempScreenshotName;
 	}
 
 	/**
@@ -1307,11 +1309,12 @@ public class CommonFunctions {
 	 * @throws Exception the exception
 	 */
 	// screenshots
-	public void captureScreenShot(WebDriver driver, String screenshotName) throws Exception {
+	public String captureScreenShot(WebDriver driver, String screenshotName) throws Exception {
 		this.logAccess.getLogger().debug("Capturing screenshot");
 		File scrrenShot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-		FileUtils.copyFile(scrrenShot,
-				new File(this.screenShotsPath + "\\" + getScreenShotTime() + "_" + screenshotName + ".png"));
+		String tempScreenshotName = this.screenShotsPath + "\\" + getScreenShotTime() + "_" + screenshotName + ".png";
+		FileUtils.copyFile(scrrenShot, new File(tempScreenshotName));
+		return tempScreenshotName;
 
 	}
 
@@ -1330,14 +1333,15 @@ public class CommonFunctions {
 	 *                       {@link #captureFullPageScreenShot(WebDriver, WebElement, boolean, String)}
 	 *                       method to show the header only once in the full page
 	 *                       screenshot</font>
+	 * @return
 	 * @throws Exception
 	 */
-	public void captureFullPageScreenShot(WebDriver driver, String screenShotName) throws Exception {
+	public String captureFullPageScreenShot(WebDriver driver, String screenShotName) throws Exception {
 		String tempScreenShotsFolderName = System.getProperty("user.dir") + File.separatorChar + "TempFolder"
 				+ File.separatorChar + getScreenShotTime() + "_" + screenShotName;
 		folderFileUtil.createFolder(tempScreenShotsFolderName);
 		capturePageChunks(driver, tempScreenShotsFolderName);
-		mergeImagesToSingleImage(tempScreenShotsFolderName, screenShotName + ".png");
+		return mergeImagesToSingleImage(tempScreenShotsFolderName, screenShotName + ".png");
 	}
 
 	/**
@@ -1357,16 +1361,17 @@ public class CommonFunctions {
 	 *                         Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                         setter to set the path where you want to store the
 	 *                         screenshots.
+	 * @return
 	 * @throws Exception
 	 */
-	public void captureFullPageScreenShot(WebDriver driver, WebElement headerElement, boolean notIncludeHeader,
+	public String captureFullPageScreenShot(WebDriver driver, WebElement headerElement, boolean notIncludeHeader,
 			String screenShotName) throws Exception {
 		String tempScreenShotsFolderName = System.getProperty("user.dir") + File.separatorChar + "TempFolder"
 				+ File.separatorChar + getScreenShotTime() + "_" + screenShotName;
 		folderFileUtil.createFolder(tempScreenShotsFolderName);
 
 		capturePageChunks(driver, tempScreenShotsFolderName, headerElement, true);
-		mergeImagesToSingleImage(tempScreenShotsFolderName, screenShotName + ".png");
+		return mergeImagesToSingleImage(tempScreenShotsFolderName, screenShotName + ".png");
 
 	}
 
@@ -1391,7 +1396,7 @@ public class CommonFunctions {
 
 		wait.until((WebDriver wd) -> fileToCheck.exists());
 
-	}	
+	}
 
 	/**
 	 * This method will wait until the file download is completed and waits for
@@ -1420,39 +1425,43 @@ public class CommonFunctions {
 				new WebDriverWait(driver, maxTimeoutInSeconds)
 						.until(ExpectedConditions.visibilityOf((WebElement) ((JavascriptExecutor) driver).executeScript(
 								"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item')")));
-				new WebDriverWait(driver, maxTimeoutInSeconds).until(
-						ExpectedConditions.elementToBeClickable((WebElement) ((JavascriptExecutor) driver).executeScript(
+				new WebDriverWait(driver, maxTimeoutInSeconds).until(ExpectedConditions
+						.elementToBeClickable((WebElement) ((JavascriptExecutor) driver).executeScript(
 								"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('a#show')")));
-				//get the file name
-				fileName = (String) ((JavascriptExecutor) driver).executeScript("return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('div#content #file-link').text");
-				
-				
+				// get the file name
+				fileName = (String) ((JavascriptExecutor) driver).executeScript(
+						"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('div#content #file-link').text");
+
 				// file downloaded location
-				//donwloadedAt = (String) ((JavascriptExecutor) driver).executeScript(
-				//		"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('div.is-active.focus-row-active #file-icon-wrapper img').src");
+				// donwloadedAt = (String) ((JavascriptExecutor) driver).executeScript(
+				// "return
+				// document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList
+				// downloads-item').shadowRoot.querySelector('div.is-active.focus-row-active
+				// #file-icon-wrapper img').src");
 			} else if (CommonVariables.BROWSER_SELECT.equalsIgnoreCase("firefox")) {
-				
+
 				// navigate to chrome downloads
 				driver.get("about:downloads");
 				Thread.sleep(2000);
 				new WebDriverWait(driver, maxTimeoutInSeconds).until(ExpectedConditions.attributeContains(
 						(WebElement) ((JavascriptExecutor) driver).executeScript(
-								"return document.querySelector('#contentAreaDownloadsView .downloadMainArea .downloadContainer progress')"),"value","100"));
-				//get the file name
-				fileName = (String) ((JavascriptExecutor) driver).executeScript("return document.querySelector('#contentAreaDownloadsView .downloadMainArea .downloadContainer description:nth-of-type(1)').value");
-				
-				
-				
+								"return document.querySelector('#contentAreaDownloadsView .downloadMainArea .downloadContainer progress')"),
+						"value", "100"));
+				// get the file name
+				fileName = (String) ((JavascriptExecutor) driver).executeScript(
+						"return document.querySelector('#contentAreaDownloadsView .downloadMainArea .downloadContainer description:nth-of-type(1)').value");
+
 				// file downloaded location
-				//donwloadedAt = (String) ((JavascriptExecutor) driver).executeScript(
-				//	"return document.querySelector('#contentAreaDownloadsView .downloadMainArea .downloadTypeIcon').src");
+				// donwloadedAt = (String) ((JavascriptExecutor) driver).executeScript(
+				// "return document.querySelector('#contentAreaDownloadsView .downloadMainArea
+				// .downloadTypeIcon').src");
 			}
-			
+
 			// close the downloads tab2
 			driver.close();
 			// switch back to main window
 			driver.switchTo().window(mainWindow);
-			
+
 		} catch (Exception e) {
 			// switch back to main window
 			driver.switchTo().window(mainWindow);
@@ -1692,12 +1701,14 @@ public class CommonFunctions {
 		if (hideElement != null) {
 			originalStyle = hideElement.getAttribute("style");
 		}
+		int coveredHeight = 0;
 		for (int screenshotIndex = startIndex; screenshotIndex < fullShots; screenshotIndex++) {
 			File tmpFile = screenCapture.getScreenshotAs(OutputType.FILE);
 			folderFileUtil.copyFile(tmpFile, new File(tempImagesFolderPath + File.separatorChar
 					+ String.valueOf(screenshotIndex * windowHeight) + ".png"));
 			// scroll to the next chunk
 			js.executeScript(script);
+			coveredHeight = coveredHeight + (windowHeight - 5);
 			Thread.sleep(500);
 			if (hideElement != null && screenshotIndex == 0 && notIncludeHeader) {
 				// hide the header
@@ -1706,9 +1717,9 @@ public class CommonFunctions {
 			}
 		}
 		// get last page chunk
-		int lastChunkHeight = pageHeight - (windowHeight * (fullShots));
+		int lastChunkHeight = pageHeight - coveredHeight;
 		// get the last part of the page if there is any chunk left over
-		if (lastChunkHeight != 0) {
+		if (lastChunkHeight > 0) {
 			File tmpFile = screenCapture.getScreenshotAs(OutputType.FILE);
 			BufferedImage lastPageBufferImage = ImageIO.read(tmpFile);
 			// get the image vs window px ratio
@@ -1768,20 +1779,20 @@ public class CommonFunctions {
 		int startIndex = (pageHeight == windowHeight) ? 1 : 0;
 		// Calculate our scroll script
 		String script = "window.scrollBy(0," + String.valueOf(windowHeight - 5) + ")";
-
+		int coveredHeight = 0;
 		for (int screenshotIndex = startIndex; screenshotIndex <= fullShots; screenshotIndex++) {
 			File tmpFile = screenCapture.getScreenshotAs(OutputType.FILE);
 			folderFileUtil.copyFile(tmpFile, new File(tempImagesFolderPath + File.separatorChar
 					+ String.valueOf(screenshotIndex * windowHeight) + ".png"));
-
+			coveredHeight = coveredHeight + (windowHeight - 5);
 			// scroll to the next chunk
 			js.executeScript(script);
 			Thread.sleep(500);
 		}
 		// get last page chunk
-		int lastChunkHeight = pageHeight - (windowHeight * (fullShots));
+		int lastChunkHeight = pageHeight - coveredHeight;
 		// get the last part of the page if there is any chunk left over
-		if (lastChunkHeight != 0) {
+		if (lastChunkHeight > 0) {
 			File tmpFile = screenCapture.getScreenshotAs(OutputType.FILE);
 			BufferedImage lastPageBufferImage = ImageIO.read(tmpFile);
 			// get the image vs window px ratio
@@ -1808,9 +1819,10 @@ public class CommonFunctions {
 	 * 
 	 * @param tempImagesFolderPath temporary images folder path
 	 * @param outputPNGFileName    output .png image file name
+	 * @return
 	 * @throws Exception exception
 	 */
-	private void mergeImagesToSingleImage(String tempImagesFolderPath, String outputPNGFileName) throws Exception {
+	private String mergeImagesToSingleImage(String tempImagesFolderPath, String outputPNGFileName) throws Exception {
 
 		// access the images folder
 		File folder = new File(tempImagesFolderPath);
@@ -1838,29 +1850,34 @@ public class CommonFunctions {
 
 		// create Buffered Image
 
-		BufferedImage finalBufferedImage = new BufferedImage(imageWidth, bufferedImageHeight,
+		BufferedImage finalBufferedImage = new BufferedImage(imageWidth - 30, bufferedImageHeight,
 				BufferedImage.TYPE_INT_RGB);
 		Graphics graphics = finalBufferedImage.getGraphics();
 		// X axis where the image should be incorporated
 		int imageXOfffset = 0;
 		// Y axis where the image should be incorporated (this will get updated after
-		// each image added to the Bufferred Image.
+		// each image added to the Buffered Image.
 		int imageYOfffset = 0;
 		// loop through all images and append them to buffered image
 		for (File image : imagesList) {
-			// read image into the temporary Bufferred Image
-			BufferedImage tempBufferedImage = ImageIO.read(image);
-			// add the image to the final Bufferred Image graphics
-			graphics.drawImage(tempBufferedImage, imageXOfffset, imageYOfffset, null);
+			// read image into the temporary Buffered Image
+			BufferedImage bufferedImage = ImageIO.read(image);
+
+			// add the image to the final Buffered Image graphics
+			graphics.drawImage(
+					bufferedImage.getSubimage(0, 0, bufferedImage.getWidth() - 30, bufferedImage.getHeight()),
+					imageXOfffset, imageYOfffset, null);
 			// update Y axis value (so that the next image will be added at the end)
 			// moving the next image 10 pixels up to make sure the images does not show
 			// any gap
-			imageYOfffset += tempBufferedImage.getHeight() - 10;
+			imageYOfffset += bufferedImage.getHeight() - 5;
 		}
+		String failedScreenShotPath = this.screenShotsPath + File.separatorChar + getScreenShotTime() + "_"
+				+ outputPNGFileName;
 		// Save the the final Buffered Image build with graphics to output file
-		ImageIO.write(finalBufferedImage, "png",
-				new File(this.screenShotsPath + File.separatorChar + getScreenShotTime() + "_" + outputPNGFileName));
+		ImageIO.write(finalBufferedImage, "png", new File(failedScreenShotPath));
 		folderFileUtil.deleteFolder(folder);
+		return failedScreenShotPath;
 
 	}
 
