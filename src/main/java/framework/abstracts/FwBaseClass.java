@@ -92,9 +92,9 @@ public abstract class FwBaseClass {
 	
 
 	/**
-	 * Gets the instance of {@link BrowserFunctions BrowserFunctions}
+	 * Gets the instance of {@link framework.helper.SoftAssert SoftAssert}
 	 *
-	 * @return the instance of {@link BrowserFunctions BrowserFunctions}
+	 * @return the instance of {@link framework.helper.SoftAssert SoftAssert}
 	 */
 	public SoftAssert getSoftAssert() {
 		return this.softAssert;

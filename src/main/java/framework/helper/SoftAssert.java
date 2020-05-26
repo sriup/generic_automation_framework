@@ -33,7 +33,7 @@ public class SoftAssert extends org.testng.asserts.SoftAssert {
 	
 	/**
 	 * SoftAssert constructor
-	 * @param fwBaseClass {@link framework.commonfunctions.BrowserFunctions BrowserFunctions} instance
+	 * @param fwBaseClass {@link framework.abstracts.FwBaseClass FwBaseClass} instance
 	 */
 	public SoftAssert(FwBaseClass fwBaseClass) {
 		this.fwBaseClass = fwBaseClass;

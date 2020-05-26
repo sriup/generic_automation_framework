@@ -21,11 +21,13 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import framework.constants.CommonVariables;
+import framework.enums.BrowserEnums;
 import framework.enums.ExpectedConditionsEnums;
 import framework.logs.LogAccess;
 import framework.utilities.DateTimeUtil;
@@ -1284,7 +1286,8 @@ public class CommonFunctions {
 	 *                       screenshots.
 	 * @throws Exception the exception
 	 */
-	public String captureScreenShotWithHighlight(WebDriver driver, By byLocator, String screenshotName) throws Exception {
+	public String captureScreenShotWithHighlight(WebDriver driver, By byLocator, String screenshotName)
+			throws Exception {
 		this.logAccess.getLogger().debug("Capturing screenshot for element :- " + byLocator.toString());
 		WebElement element = waitForElement(driver, byLocator, ExpectedConditionsEnums.CLICKABLE);
 		// highlight
@@ -1300,7 +1303,7 @@ public class CommonFunctions {
 	 * Capture screen shot.
 	 *
 	 * @param driver         the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param screenshotName the screenshot name <br>
+	 * @param screenShotName the screenshot name <br>
 	 *                       Date time Stamp will be <i>prepended</i> to the
 	 *                       screenshot name by default.<br>
 	 *                       Note: Use {@link #screenShotsPath screenShotsPath}
@@ -1309,10 +1312,10 @@ public class CommonFunctions {
 	 * @throws Exception the exception
 	 */
 	// screenshots
-	public String captureScreenShot(WebDriver driver, String screenshotName) throws Exception {
+	public String captureScreenShot(WebDriver driver, String screenShotName) throws Exception {
 		this.logAccess.getLogger().debug("Capturing screenshot");
 		File scrrenShot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-		String tempScreenshotName = this.screenShotsPath + "\\" + getScreenShotTime() + "_" + screenshotName + ".png";
+		String tempScreenshotName = this.screenShotsPath + "\\" + getScreenShotTime() + "_" + screenShotName + ".png";
 		FileUtils.copyFile(scrrenShot, new File(tempScreenshotName));
 		return tempScreenshotName;
 
@@ -1337,11 +1340,19 @@ public class CommonFunctions {
 	 * @throws Exception
 	 */
 	public String captureFullPageScreenShot(WebDriver driver, String screenShotName) throws Exception {
-		String tempScreenShotsFolderName = System.getProperty("user.dir") + File.separatorChar + "TempFolder"
-				+ File.separatorChar + getScreenShotTime() + "_" + screenShotName;
-		folderFileUtil.createFolder(tempScreenShotsFolderName);
-		capturePageChunks(driver, tempScreenShotsFolderName);
-		return mergeImagesToSingleImage(tempScreenShotsFolderName, screenShotName + ".png");
+		String browserName = ((RemoteWebDriver) driver).getCapabilities().getBrowserName();
+		// capture the entire page using page chunks approach if the flag is true and
+		// browser name is not PhantomJs
+		if (browserName.equalsIgnoreCase(BrowserEnums.PhantomJs.toString())) {
+			return captureScreenShot(driver, screenShotName);
+		} else {
+
+			String tempScreenShotsFolderName = System.getProperty("user.dir") + File.separatorChar + "TempFolder"
+					+ File.separatorChar + getScreenShotTime() + "_" + screenShotName;
+			folderFileUtil.createFolder(tempScreenShotsFolderName);
+			capturePageChunks(driver, tempScreenShotsFolderName);
+			return mergeImagesToSingleImage(tempScreenShotsFolderName, screenShotName + ".png");
+		}
 	}
 
 	/**
@@ -1366,12 +1377,20 @@ public class CommonFunctions {
 	 */
 	public String captureFullPageScreenShot(WebDriver driver, WebElement headerElement, boolean notIncludeHeader,
 			String screenShotName) throws Exception {
-		String tempScreenShotsFolderName = System.getProperty("user.dir") + File.separatorChar + "TempFolder"
-				+ File.separatorChar + getScreenShotTime() + "_" + screenShotName;
-		folderFileUtil.createFolder(tempScreenShotsFolderName);
+		String browserName = ((RemoteWebDriver) driver).getCapabilities().getBrowserName();
+		// capture the entire page using page chunks approach if the flag is true and
+		// browser name is not PhantomJs
+		if (browserName.equalsIgnoreCase(BrowserEnums.PhantomJs.toString())) {
+			return captureScreenShot(driver, screenShotName);
 
-		capturePageChunks(driver, tempScreenShotsFolderName, headerElement, true);
-		return mergeImagesToSingleImage(tempScreenShotsFolderName, screenShotName + ".png");
+		} else {
+			String tempScreenShotsFolderName = System.getProperty("user.dir") + File.separatorChar + "TempFolder"
+					+ File.separatorChar + getScreenShotTime() + "_" + screenShotName;
+			folderFileUtil.createFolder(tempScreenShotsFolderName);
+
+			capturePageChunks(driver, tempScreenShotsFolderName, headerElement, true);
+			return mergeImagesToSingleImage(tempScreenShotsFolderName, screenShotName + ".png");
+		}
 
 	}
 

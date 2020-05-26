@@ -12,6 +12,9 @@ public enum BrowserEnums {
 	Edge,
 	
 	/** IE browser */
-	IE
+	IE,
+	
+	/** Phantomjs */
+	PhantomJs
 	
 }

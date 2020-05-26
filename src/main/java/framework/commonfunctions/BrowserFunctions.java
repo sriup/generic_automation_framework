@@ -13,6 +13,9 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriverService;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import framework.enums.BrowserEnums;
@@ -133,6 +136,8 @@ public class BrowserFunctions {
 		case "ie":
 		case "internetexplorer":
 			return launchInternetExplorer();
+		case "phantomjs":
+			return launchPhantomJS();
 		default:
 			this.logAccess.getLogger().info(
 					"Unexpected value : " + browserName + "\n only supported browsers are: chrome, firefox, edge, ie");
@@ -348,6 +353,18 @@ public class BrowserFunctions {
 		return threadDriver.get();
 	}
 
+	private WebDriver launchPhantomJS() {
+		WebDriverManager.phantomjs().setup();
+		DesiredCapabilities caps = new DesiredCapabilities();
+		caps.setJavascriptEnabled(true);
+		caps.setCapability("takesScreenshot", true);
+		String[] service_args = { "--web-security=no", "--ssl-protocol=any", "--ignore-ssl-errors=yes" };
+		caps.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX, service_args);
+		threadDriver = new ThreadLocal<RemoteWebDriver>();
+		threadDriver.set(new PhantomJSDriver(caps));
+		return threadDriver.get();
+	}
+	
 	private String getWebDriverLocation(BrowserEnums browserName) throws Exception {
 
 		JsonUtil jsonUtil = new JsonUtil(logAccess);
