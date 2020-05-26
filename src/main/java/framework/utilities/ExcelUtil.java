@@ -952,6 +952,20 @@ public class ExcelUtil {
 	}
 
 	/**
+	 * Format cell style.
+	 *
+	 * @param cell 
+	 * the cell
+	 * @param indexColorEnum 
+	 * the {@link org.apache.poi.ss.usermodel.IndexedColors IndexColors}
+	 * @param patternTypeEnum the {@link org.apache.poi.ss.usermodel.FillPatternType FillPatternType}
+	 */
+	public void formatCellStyle(Cell cell, IndexedColors indexColorEnum, FillPatternType patternTypeEnum ) {
+		CellStyle cellStyle = createCellStyle(indexColorEnum, patternTypeEnum);
+		cell.setCellStyle(cellStyle);
+	}
+
+	/**
 	 * Creating the style for the cells
 	 * 
 	 * @param indexColor  Index of the color <br>
