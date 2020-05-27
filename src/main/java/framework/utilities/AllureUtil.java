@@ -28,7 +28,7 @@ public class AllureUtil {
 	}
 
 	@Attachment(value = "{screenShotName}", type = "image/png")
-	public static byte[] attachScreenShotPNG(String screenShotName, String path) throws IOException {
+	public byte[] attachScreenShotPNG(String screenShotName, String path) throws IOException {
 		File file = new File(path);
 		BufferedImage bufferedImage = ImageIO.read(file);
 

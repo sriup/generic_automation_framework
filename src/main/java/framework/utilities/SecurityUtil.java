@@ -172,7 +172,7 @@ public class SecurityUtil {
 	 * @param bytesToEncode the bytes
 	 * @return the encoded string
 	 */
-	private static String base64Encode(byte[] bytesToEncode) {
+	private String base64Encode(byte[] bytesToEncode) {
 		return Base64.getEncoder().encodeToString(bytesToEncode);
 	}
 
@@ -182,7 +182,7 @@ public class SecurityUtil {
 	 * @param textToDecode the text to decode
 	 * @return the byte[]
 	 */
-	private static byte[] base64Decode(String textToDecode) {
+	private byte[] base64Decode(String textToDecode) {
 		return Base64.getDecoder().decode(textToDecode);
 
 	}

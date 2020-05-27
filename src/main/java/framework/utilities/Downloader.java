@@ -23,7 +23,7 @@ public class Downloader {
 	 * @throws MalformedURLException exception
 	 * @throws IOException           exception
 	 */
-	public static void downloadFile(LogAccess logAceess, String url, String destination)
+	public void downloadFile(LogAccess logAceess, String url, String destination)
 			throws MalformedURLException, IOException {
 		File tempFile = new File(destination);
 		// Download the file to the destination directory

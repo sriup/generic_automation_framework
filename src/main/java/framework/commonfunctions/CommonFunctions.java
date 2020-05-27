@@ -1114,6 +1114,92 @@ public class CommonFunctions {
 	}
 
 	/**
+	 * Select item by index.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param byLocator           the by locator
+	 * @param index               the index
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @throws Exception the exception
+	 */
+	public void selectItemByIndex(WebDriver driver, By byLocator, int index, boolean isCaptureScreenshot,
+			String screenShotName) throws Exception {
+		selectItemByIndex(driver, getElement(driver, byLocator), index, isCaptureScreenshot, screenShotName);
+	}
+
+	/**
+	 * Select drop down list item based on value.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param byLocator           the by locator
+	 * @param value               the list item value to be selected
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @throws Exception the exception
+	 */
+	public void selectItemByValue(WebDriver driver, By byLocator, String value, boolean isCaptureScreenshot,
+			String screenShotName) throws Exception {
+		selectItemByValue(driver, getElement(driver, byLocator), value, isCaptureScreenshot, screenShotName);
+	}
+
+	/**
+	 * Select list item based on the visible text.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param byLocator           the by locator
+	 * @param visibleText         the visible text of the list item
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @throws Exception the exception
+	 */
+	public void selectItemByVisibleText(WebDriver driver, By byLocator, String visibleText, boolean isCaptureScreenshot,
+			String screenShotName) throws Exception {
+		selectItemByVisibleText(driver, getElement(driver, byLocator), visibleText, isCaptureScreenshot,
+				screenShotName);
+	}
+
+	/**
+	 * Select list item based on the partial visible text.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param byLocator           the by locator
+	 * @param partialVisibleText  the partial visible text of the list item
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @throws Exception the exception
+	 */
+	public void selectItemByPartialVisibleText(WebDriver driver, By byLocator, String partialVisibleText,
+			boolean isCaptureScreenshot, String screenShotName) throws Exception {
+		selectItemByPartialVisibleText(driver, getElement(driver, byLocator), partialVisibleText, isCaptureScreenshot,
+				screenShotName);
+	}
+
+	/**
 	 * Get the visible (i.e. not hidden by CSS) text of this element, including
 	 * sub-elements.
 	 *
@@ -1136,6 +1222,42 @@ public class CommonFunctions {
 		String elementText;
 		// get the element
 		WebElement tempElement = getElement(driver, element);
+		// highlight the element
+		String originalStyle = highlightElement(driver, tempElement);
+		// get the element text
+		elementText = tempElement.getText();
+		// capture screenshot
+		if (isCaptureScreenShot) {
+			captureScreenShot(driver, screenShotName);
+		}
+		// unhighlight the element
+		unHighlightElement(driver, tempElement, originalStyle);
+		return elementText;
+	}
+
+	/**
+	 * Get the visible (i.e. not hidden by CSS) text of this element, including
+	 * sub-elements.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param byLocator           the by locator
+	 * @param isCaptureScreenShot the is capture screen shot
+	 * @param screenShotName      the screen shot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @return the visible text of this element.
+	 * @throws Exception the exception
+	 */
+	public String getText(WebDriver driver, By byLocator, boolean isCaptureScreenShot, String screenShotName)
+			throws Exception {
+		this.logAccess.getLogger().info("Getting text form element :- " + byLocator);
+		String elementText;
+		// get the element
+		WebElement tempElement = getElement(driver, byLocator);
 		// highlight the element
 		String originalStyle = highlightElement(driver, tempElement);
 		// get the element text
@@ -1289,7 +1411,7 @@ public class CommonFunctions {
 	public String captureScreenShotWithHighlight(WebDriver driver, By byLocator, String screenshotName)
 			throws Exception {
 		this.logAccess.getLogger().debug("Capturing screenshot for element :- " + byLocator.toString());
-		WebElement element = waitForElement(driver, byLocator, ExpectedConditionsEnums.CLICKABLE);
+		WebElement element = waitForElement(driver, byLocator, ExpectedConditionsEnums.PRESENCE);
 		// highlight
 		String originalStyle = highlightElement(driver, element);
 		// capture screenshot
@@ -1617,13 +1739,9 @@ public class CommonFunctions {
 		switch (expectedCondition) {
 		case CLICKABLE:
 			returnElement = wait.until(ExpectedConditions.elementToBeClickable(element));
-			// driver.manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
-			// TimeUnit.SECONDS);
 			break;
 		case VISIBLE:
 			returnElement = wait.until(ExpectedConditions.visibilityOf(element));
-			// driver.manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
-			// TimeUnit.SECONDS);
 			break;
 		default:
 			throw new IllegalArgumentException("??? Unexpected value: " + expectedCondition
@@ -1643,6 +1761,7 @@ public class CommonFunctions {
 	 *                          <ul>
 	 *                          <li>CLICKABLE</li>
 	 *                          <li>PRESENCE</li>
+	 *                          <li>VISIBLE</li>
 	 *                          </ul>
 	 *                          </font>
 	 * @param maxTimeout        the max timeout in seconds
@@ -1657,13 +1776,12 @@ public class CommonFunctions {
 		switch (expectedCondition) {
 		case CLICKABLE:
 			returnElement = wait.until(ExpectedConditions.elementToBeClickable(byLocator));
-			// driver.manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
-			// TimeUnit.SECONDS);
 			break;
 		case PRESENCE:
 			returnElement = wait.until(ExpectedConditions.presenceOfElementLocated(byLocator));
-			// driver.manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
-			// TimeUnit.SECONDS);
+			break;
+		case VISIBLE:
+			returnElement = wait.until(ExpectedConditions.visibilityOfElementLocated(byLocator));
 			break;
 		default:
 			throw new IllegalArgumentException("????Unexpected value: " + expectedCondition
