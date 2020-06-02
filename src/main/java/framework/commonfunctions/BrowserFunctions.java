@@ -57,13 +57,13 @@ public class BrowserFunctions {
 	 * 
 	 * @param downloadPath the path where the files should be download when download
 	 *                     from browser
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private void setDownloadFolderPath(String downloadPath) throws Exception {
 		if (downloadPath.isEmpty()) {
 			this.downloadFolderpath = System.getProperty("user.dir") + File.separatorChar + "Download_File";
-			
-		}else {
+
+		} else {
 			this.downloadFolderpath = downloadPath;
 		}
 		new FolderFileUtil(this.logAccess).createFolder(this.downloadFolderpath);
@@ -248,70 +248,94 @@ public class BrowserFunctions {
 		HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
 		chromePrefs.put("profile.default_content_settings.popups", 0);
 		chromePrefs.put("download.default_directory", this.getDownloadFolderPath());
+		
+		/** commented the below line of code which saves the print "Save As PDF" file
+		 * as we have to take print window screenshots, it should be handled with in 
+		 * the test
+		 */
+		// save file to the custom downloads folder when try to print
+		//chromePrefs.put("printing.default_destination_selection_rules",
+		//		"{ \"kind\": \"local\", \"idPattern\": \".*\", \"namePattern\": \"Save as PDF\" }");
+		//chromePrefs.put("printing.print_header_footer", true);
+		//chromePrefs.put("savefile.default_directory",this.getDownloadFolderPath());
+		
+		
 		ChromeOptions options = new ChromeOptions();
 		options.setExperimentalOption("prefs", chromePrefs);
 		options.setCapability("ACCEPT_SSL_CERTS", true);
 		options.setCapability("pageLoadStrategy", "none");
+		// enable kiosk printing mode 
+		//options.addArguments("--kiosk-printing");
 
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		setWebDriver(new ChromeDriver(options));
-		//getWebDriver().manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT, TimeUnit.SECONDS);
+		// getWebDriver().manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
+		// TimeUnit.SECONDS);
 		return getWebDriver();
 	}
 
 	/**
-	 * Launch firefox.<br><br>
+	 * Launch firefox.<br>
+	 * <br>
 	 *
-	 * Refer to <a href = 'http://kb.mozillazine.org/Firefox_:_FAQs_:_About:config_Entries'>Firefox Configuration Details</a> for detailed information about
-	 * each configuration setting.
+	 * Refer to <a href =
+	 * 'http://kb.mozillazine.org/Firefox_:_FAQs_:_About:config_Entries'>Firefox
+	 * Configuration Details</a> for detailed information about each configuration
+	 * setting.
+	 * 
 	 * @return the web driver
 	 * @throws Exception
 	 */
 	private WebDriver launchFirefox() throws Exception {
 //		WebDriverManager.firefoxdriver().setup();
-		System.setProperty("webdriver.gecko.driver", System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
-				+ BrowserEnums.Firefox.toString() + File.separatorChar
-				+ getWebDriverLocation(BrowserEnums.Firefox).replace(".", "_") + File.separatorChar
-				+ "geckodriver.exe");
+		System.setProperty("webdriver.gecko.driver",
+				System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
+						+ BrowserEnums.Firefox.toString() + File.separatorChar
+						+ getWebDriverLocation(BrowserEnums.Firefox).replace(".", "_") + File.separatorChar
+						+ "geckodriver.exe");
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
-		
-		
+
 		FirefoxProfile profile = new FirefoxProfile();
-		
+
 		// set the download folder directory
 		profile.setPreference("browser.download.dir", this.getDownloadFolderPath());
-		
+
 		// the last folder specified for a download
-		profile.setPreference("browser.download.folderList", 2); 
-		
+		profile.setPreference("browser.download.folderList", 2);
+
 		// hide Download Manager window when a download begins
-		profile.setPreference("browser.download.manager.showWhenStarting", false); 
-		
-		// A comma-separated list of MIME types to save to disk without asking what to use to open the file.
+		profile.setPreference("browser.download.manager.showWhenStarting", false);
+
+		// A comma-separated list of MIME types to save to disk without asking what to
+		// use to open the file.
 		profile.setPreference("browser.helperApps.neverAsk.saveToDisk",
 				"application/pdf,application/zip,text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;octet/stream");
-		
-		// A comma-separated list of MIME types to open directly without asking for confirmation.
+
+		// A comma-separated list of MIME types to open directly without asking for
+		// confirmation.
 		profile.setPreference("browser.helperApps.neverAsk.openFile",
 				"application/pdf,application/zip,text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;octet/stream");
-		
+
 		// Do not ask what to do with an unknown MIME type
 		profile.setPreference("browser.helperApps.alwaysAsk.force", false);
-		
-		// Leave the window in the background when starting a download (Default Setting is false)
+
+		// Leave the window in the background when starting a download (Default Setting
+		// is false)
 		profile.setPreference("browser.download.manager.focusWhenStarting", false);
-		
-		//popup window at bottom right corner of the screen will not appear once all downloads are finished.
+
+		// popup window at bottom right corner of the screen will not appear once all
+		// downloads are finished.
 		profile.setPreference("browser.download.manager.showAlertOnComplete", true);
-		
+
 		// Close the Download Manager when all downloads are complete
 		profile.setPreference("browser.download.manager.closeWhenDone", true);
-		
+
 		FirefoxOptions options = new FirefoxOptions();
 		options.setProfile(profile);
-		
+
 		setWebDriver(new FirefoxDriver(options));
-		//getWebDriver().manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT, TimeUnit.SECONDS);
+		// getWebDriver().manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
+		// TimeUnit.SECONDS);
 		return getWebDriver();
 
 	}
@@ -325,7 +349,8 @@ public class BrowserFunctions {
 		WebDriverManager.edgedriver().setup();
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		setWebDriver(new EdgeDriver());
-		//getWebDriver().manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT, TimeUnit.SECONDS);
+		// getWebDriver().manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
+		// TimeUnit.SECONDS);
 		return getWebDriver();
 
 	}
@@ -349,7 +374,8 @@ public class BrowserFunctions {
 		options.requireWindowFocus();
 		options.introduceFlakinessByIgnoringSecurityDomains();
 		threadDriver.set(new InternetExplorerDriver(options));
-		//getWebDriver().manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT, TimeUnit.SECONDS);
+		// getWebDriver().manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
+		// TimeUnit.SECONDS);
 		return threadDriver.get();
 	}
 
@@ -364,7 +390,7 @@ public class BrowserFunctions {
 		threadDriver.set(new PhantomJSDriver(caps));
 		return threadDriver.get();
 	}
-	
+
 	private String getWebDriverLocation(BrowserEnums browserName) throws Exception {
 
 		JsonUtil jsonUtil = new JsonUtil(logAccess);

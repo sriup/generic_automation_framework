@@ -23,7 +23,7 @@ public abstract class FwBaseClass {
 	private BrowserFunctions browserFunctions;
 
 	/** The LogAccess object */
-	private LogAccess logAccess;
+	protected LogAccess logAccess;
 
 	/** The FolderFileUtil object */
 	private FolderFileUtil fileUtils;

@@ -381,6 +381,26 @@ public class ExcelUtil {
 		}
 		return headers;
 	}
+	
+	public String getCellData(Cell cell) {
+		String cellValue = "";
+		
+		CellType cellType = cell.getCellTypeEnum();
+
+		if (cellType == CellType.STRING) {
+			cellValue = cell.toString().trim();
+		} else if (cellType == CellType.NUMERIC) {
+			if (cell.getCellStyle().getDataFormatString().contains("%")) {
+				cellValue = Double.toString(cell.getNumericCellValue() * 100) + "%";
+			} else {
+				cellValue = Double.toString(cell.getNumericCellValue());
+			}
+		} else if (cellType == CellType.BOOLEAN) {
+			cellValue = String.valueOf(cell.getBooleanCellValue());
+		}
+		
+		return cellValue;
+	}
 
 	/**
 	 * Gets the cell data.
@@ -401,19 +421,7 @@ public class ExcelUtil {
 				// get row based on the sheet name and row index
 				Row row = getRow(sheetIndex, rowNumber);
 				Cell cell = row.getCell(columnNumber);
-				CellType cellType = cell.getCellTypeEnum();
-
-				if (cellType == CellType.STRING) {
-					cellValue = cell.toString().trim();
-				} else if (cellType == CellType.NUMERIC) {
-					if (cell.getCellStyle().getDataFormatString().contains("%")) {
-						cellValue = Double.toString(cell.getNumericCellValue() * 100) + "%";
-					} else {
-						cellValue = Double.toString(cell.getNumericCellValue());
-					}
-				} else if (cellType == CellType.BOOLEAN) {
-					cellValue = String.valueOf(cell.getBooleanCellValue());
-				}
+				cellValue = getCellData(cell);
 			} catch (NullPointerException NPE) {
 				cellValue = "";
 			}
@@ -507,19 +515,7 @@ public class ExcelUtil {
 
 			// get row based on the sheet name and row index
 			Cell cell = row.getCell(columnNumber);
-			CellType cellType = cell.getCellTypeEnum();
-
-			if (cellType == CellType.STRING) {
-				cellValue = cell.toString().trim();
-			} else if (cellType == CellType.NUMERIC) {
-				if (cell.getCellStyle().getDataFormatString().contains("%")) {
-					cellValue = Double.toString(cell.getNumericCellValue() * 100) + "%";
-				} else {
-					cellValue = Double.toString(cell.getNumericCellValue());
-				}
-			} else if (cellType == CellType.BOOLEAN) {
-				cellValue = String.valueOf(cell.getBooleanCellValue());
-			}
+			cellValue = getCellData(cell);
 		} catch (NullPointerException NPE) {
 			cellValue = "";
 		}
@@ -610,7 +606,7 @@ public class ExcelUtil {
 
 				String currentCellValue = getCellData(sheetName, currentRow, filterMapKey);
 
-				if (!currentCellValue.trim().equalsIgnoreCase(filterMapValue.trim())) {
+				if (!currentCellValue.trim().equals(filterMapValue.trim())) {
 					isFoundAllFilters = false;
 					break;
 				}
@@ -667,7 +663,7 @@ public class ExcelUtil {
 
 				String currentCellValue = getCellData(sheetName, currentRow, filterMapKey);
 
-				if (!currentCellValue.trim().equalsIgnoreCase(filterMapValue.trim())) {
+				if (!currentCellValue.trim().equals(filterMapValue.trim())) {
 					isFoundAllFilters = false;
 					break;
 				}
