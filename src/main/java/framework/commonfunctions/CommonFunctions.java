@@ -2,19 +2,20 @@ package framework.commonfunctions;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
@@ -224,6 +225,7 @@ public class CommonFunctions {
 	 *                          <ul>
 	 *                          <li>CLICKABLE</li>
 	 *                          <li>PRESENCE</li>
+	 *                          <li>VISIBLE</li>
 	 *                          </ul>
 	 *                          </font>
 	 * @return the web element
@@ -245,6 +247,7 @@ public class CommonFunctions {
 	 *                          <ul>
 	 *                          <li>CLICKABLE</li>
 	 *                          <li>PRESENCE</li>
+	 *                          <li>VISIBLE</li>
 	 *                          </ul>
 	 *                          </font>
 	 * @param maxTimeout        the max timeout in seconds
@@ -612,8 +615,9 @@ public class CommonFunctions {
 	 *                unHighlightElement} method to set back the original style of
 	 *                the element.</font>
 	 * @return the String with original style of the element
+	 * @throws Exception the exception
 	 */
-	public String highlightElement(WebDriver driver, WebElement element) {
+	public String highlightElement(WebDriver driver, WebElement element) throws Exception {
 		this.logAccess.getLogger().debug("Highlighting element :- " + element);
 		// get the original
 		String originalStyle = getOriginalStyle(element);
@@ -637,8 +641,9 @@ public class CommonFunctions {
 	 *                  {@link #unHighlightElement unHighlightElement} method to set
 	 *                  back the original style of the element.</font>
 	 * @return the String with original style of the element
+	 * @throws Exception the exception
 	 */
-	public String highlightElement(WebDriver driver, By byLocator) {
+	public String highlightElement(WebDriver driver, By byLocator) throws Exception {
 		this.logAccess.getLogger().debug("Highlighting element :- " + byLocator);
 		// highlight the element and return the original style
 		return highlightElement(driver, getElement(driver, byLocator));
@@ -650,9 +655,10 @@ public class CommonFunctions {
 	 * @param driver        the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param element       the {@link org.openqa.selenium.WebElement element}
 	 * @param originalStyle the original style
+	 * @throws Exception the exception
 	 * 
 	 */
-	public void unHighlightElement(WebDriver driver, WebElement element, String originalStyle) {
+	public void unHighlightElement(WebDriver driver, WebElement element, String originalStyle) throws Exception {
 		this.logAccess.getLogger().debug("Unhighlighting element  :- " + element);
 		// set element original style
 		try {
@@ -671,9 +677,9 @@ public class CommonFunctions {
 	 * @param driver        the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param byLocator     the by locator
 	 * @param originalStyle the original style
-	 * 
+	 * @throws Exception the exception
 	 */
-	public void unHighlightElement(WebDriver driver, By byLocator, String originalStyle) {
+	public void unHighlightElement(WebDriver driver, By byLocator, String originalStyle) throws Exception {
 		this.logAccess.getLogger().debug("Unhighlighting element  :- " + byLocator);
 		unHighlightElement(driver, driver.findElement(byLocator), originalStyle);
 	}
@@ -774,7 +780,11 @@ public class CommonFunctions {
 		// un-highlihgt
 		unHighlightElement(driver, tempElement, originalStyle);
 		// click
-		tempElement.click();
+		try {
+			tempElement.click();
+		} catch (ElementNotInteractableException enie) {
+			executeJs(driver, tempElement, "arguments[0].click()");
+		}
 		// capture after (private capture screenshot)
 		if (isCaptureScreenShot && !captureBefore) {
 
@@ -826,25 +836,30 @@ public class CommonFunctions {
 		this.logAccess.getLogger().info("value :- " + value);
 		this.logAccess.getLogger().info("Element :- " + element);
 		// get the element
-		WebElement tempEle = getElement(driver, element);
+		WebElement tempElement = getElement(driver, element);
 		// click in the field
-		tempEle.click();
+		try {
+			tempElement.click();
+		} catch (ElementClickInterceptedException enie) {
+			executeJs(driver, tempElement, "arguments[0].click()");
+		}
+
 		// clear any existing values
-		tempEle.clear();
+		tempElement.clear();
 		// enter value in the field
-		tempEle.sendKeys(value);
+		tempElement.sendKeys(value);
 		// trigger the onchange event (to make sure the events dispatches correctly in
 		// IE)
-		jsTriggerEventOnElement(driver, tempEle, "onchange");
+		jsTriggerEventOnElement(driver, tempElement, "onchange");
 
 		// highlight element
-		String originalStyle = highlightElement(driver, tempEle);
+		String originalStyle = highlightElement(driver, tempElement);
 		// capture (private capture screenshot)
 		if (isCaptureScreenshot) {
 			captureScreenShot(driver, screenShotName);
 		}
 		// un-highlihgt
-		unHighlightElement(driver, tempEle, originalStyle);
+		unHighlightElement(driver, tempElement, originalStyle);
 	}
 
 	/**
@@ -1477,12 +1492,14 @@ public class CommonFunctions {
 	 *                  JavaScript has to dispatch the event.
 	 * @param eventType the event type <b> eg: </b>MouseEvents, KeyBoardEvents
 	 * @param eventName the event name
-	 * 
+	 * @throws Exception the exception
 	 * @see <a href=
 	 *      'https://www.w3.org/TR/uievents'>https://www.w3.org/TR/uievents/</a> for
 	 *      more information on the UIEvents.
+	 * 
 	 */
-	public void jsTriggerEventOnElement(WebDriver driver, WebElement element, String eventType, String eventName) {
+	public void jsTriggerEventOnElement(WebDriver driver, WebElement element, String eventType, String eventName)
+			throws Exception {
 		this.logAccess.getLogger().debug("Dispatching " + eventName + " event on element :- " + element);
 		String jsFunction = " var clickEvent = document.createEvent ('" + eventType + "');" + "clickEvent.initEvent ('"
 				+ eventName + "', true, true); " + "arguments [0].dispatchEvent (clickEvent); ";
@@ -1503,11 +1520,12 @@ public class CommonFunctions {
 	 *                  JavaScript has to dispatch the event.
 	 * @param eventName the event name to trigger <b> e.g: </b>onchange, onblur,
 	 *                  onclick
+	 * @throws Exception the exception
 	 */
-	public void jsTriggerEventOnElement(WebDriver driver, WebElement element, String eventName) {
+	public void jsTriggerEventOnElement(WebDriver driver, WebElement element, String eventName) throws Exception {
 		this.logAccess.getLogger().debug("Dispatching " + eventName + " event on element :- " + element);
-		String jsFunction = " var clickEvent = document.createEvent ('Event');  clickEvent.initEvent ('" + eventName
-				+ "', true, true); arguments [0].dispatchEvent (clickEvent); ";
+		String jsFunction = " var triggerEvent = document.createEvent ('Event');  triggerEvent.initEvent ('" + eventName
+				+ "', true, true); arguments [0].dispatchEvent (triggerEvent); ";
 		executeJs(driver, element, jsFunction);
 	}
 
@@ -1519,11 +1537,12 @@ public class CommonFunctions {
 	 *                   JavaScript has to dispatch the mouse event.
 	 * @param mouseEvent the mouse event name to trigger <b> e.g: </b>onmousedown,
 	 *                   onmouseup, onmouseover
+	 * @throws Exception the exception
 	 */
-	public void jsTriggerMouseEvent(WebDriver driver, WebElement element, String mouseEvent) {
+	public void jsTriggerMouseEvent(WebDriver driver, WebElement element, String mouseEvent) throws Exception {
 		this.logAccess.getLogger().debug("Dispatching " + mouseEvent + " mouse event on element :- " + element);
-		String jsFunction = " var clickEvent = document.createEvent ('MouseEvents');  clickEvent.initEvent ('"
-				+ mouseEvent + "', true, true); arguments [0].dispatchEvent (clickEvent); ";
+		String jsFunction = " var triggerEvent = document.createEvent ('MouseEvents');  triggerEvent.initEvent ('"
+				+ mouseEvent + "', true, true); arguments [0].dispatchEvent (triggerEvent); ";
 		executeJs(driver, element, jsFunction);
 	}
 
@@ -1596,8 +1615,9 @@ public class CommonFunctions {
 	// screenshots
 	public String captureScreenShot(WebDriver driver, String screenShotName) throws Exception {
 		this.logAccess.getLogger().debug("Capturing screenshot");
-		File scrrenShot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 		String tempScreenshotName = this.screenShotsPath + "\\" + getScreenShotTime() + "_" + screenShotName + ".png";
+
+		File scrrenShot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 		FileUtils.copyFile(scrrenShot, new File(tempScreenshotName));
 		return tempScreenshotName;
 
@@ -1746,20 +1766,30 @@ public class CommonFunctions {
 			for (String winHandle : driver.getWindowHandles()) {
 				driver.switchTo().window(winHandle);
 			}
+			boolean downloadStarted = false;
+			JavascriptExecutor js = (JavascriptExecutor) driver;
+
 			if (CommonVariables.BROWSER_SELECT.equalsIgnoreCase("chrome")) {
 				// navigate to chrome downloads
 				driver.get("chrome://downloads");
-				Thread.sleep(2000);
-				new WebDriverWait(driver, maxTimeoutInSeconds)
-						.until(ExpectedConditions.visibilityOf((WebElement) ((JavascriptExecutor) driver).executeScript(
-								"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item')")));
-				new WebDriverWait(driver, maxTimeoutInSeconds).until(ExpectedConditions
-						.elementToBeClickable((WebElement) ((JavascriptExecutor) driver).executeScript(
-								"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('a#show')")));
-				// get the file name
-				fileName = (String) ((JavascriptExecutor) driver).executeScript(
-						"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('div#content #file-link').text");
+				long startTime = (new Date()).getTime();
 
+				while (!downloadStarted && (((new Date().getTime()) - startTime) / 1000) < maxTimeoutInSeconds) {
+					downloadStarted = (int) js.executeScript(
+							"return document.querySelector('downloads-manager').shadowRoot.querySelectorAll('#downloadsList downloads-item').length") > 0;
+				}
+				if (downloadStarted) {
+
+					new WebDriverWait(driver, maxTimeoutInSeconds).until(ExpectedConditions
+							.elementToBeClickable((WebElement) ((JavascriptExecutor) driver).executeScript(
+									"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('a#show')")));
+					// get the file name
+					fileName = (String) ((JavascriptExecutor) driver).executeScript(
+							"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('div#content #file-link').text");
+					captureScreenShot(driver, "download_file");
+					js.executeScript(
+							"document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('#remove').click()");
+				}
 				// file downloaded location
 				// donwloadedAt = (String) ((JavascriptExecutor) driver).executeScript(
 				// "return
@@ -1770,15 +1800,18 @@ public class CommonFunctions {
 
 				// navigate to chrome downloads
 				driver.get("about:downloads");
-				Thread.sleep(2000);
-				new WebDriverWait(driver, maxTimeoutInSeconds).until(ExpectedConditions.attributeContains(
-						(WebElement) ((JavascriptExecutor) driver).executeScript(
-								"return document.querySelector('#contentAreaDownloadsView .downloadMainArea .downloadContainer progress')"),
-						"value", "100"));
-				// get the file name
-				fileName = (String) ((JavascriptExecutor) driver).executeScript(
-						"return document.querySelector('#contentAreaDownloadsView .downloadMainArea .downloadContainer description:nth-of-type(1)').value");
 
+				new WebDriverWait(driver, maxTimeoutInSeconds)
+						.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".download.download-state")));
+				if (driver.findElements(By.cssSelector(".download.download-state")).size() > 0) {
+					new WebDriverWait(driver, maxTimeoutInSeconds).until(ExpectedConditions.attributeContains(
+							By.cssSelector("#contentAreaDownloadsView .downloadMainArea .downloadContainer progress"),
+							"value", "100"));
+					// get the file name
+					fileName = getAttribute(driver, By.cssSelector(
+							"#contentAreaDownloadsView .downloadMainArea .downloadContainer description:nth-of-type(1)"),
+							"value", true, "");
+				}
 				// file downloaded location
 				// donwloadedAt = (String) ((JavascriptExecutor) driver).executeScript(
 				// "return document.querySelector('#contentAreaDownloadsView .downloadMainArea
@@ -1847,39 +1880,14 @@ public class CommonFunctions {
 	}
 
 	/**
-	 * gets the bytes for the give images
-	 * 
-	 * @param imagePath the image path
-	 * @return image bytes
-	 * @throws Exception the exception
-	 */
-	public byte[] getImageBytes(String imagePath) throws Exception {
-		File file = new File(imagePath);
-		BufferedImage bufferedImage = ImageIO.read(file);
-
-		byte[] image = null;
-		try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-			ImageIO.write(bufferedImage, "png", bos);
-			image = bos.toByteArray();
-		} catch (Exception e) {
-		}
-
-		return image;
-	}
-
-	/*
-	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Private Methods
-	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	 */
-
-	/**
 	 * Executes the JavaScript on the specified element.
 	 *
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param element    the {@link org.openqa.selenium.WebElement element}
 	 * @param javaScript the java script
+	 * @throws Exception the exception
 	 */
-	private void executeJs(WebDriver driver, WebElement element, String javaScript) {
+	public void executeJs(WebDriver driver, WebElement element, String javaScript) throws Exception {
 
 		this.logAccess.getLogger().debug("Executing \"" + javaScript + "\" JavaScript on element :- " + element);
 		JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -1892,11 +1900,16 @@ public class CommonFunctions {
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param javaScript the java script
 	 */
-	private void executeJs(WebDriver driver, String javaScript) {
+	public void executeJs(WebDriver driver, String javaScript) {
 		this.logAccess.getLogger().debug("Executing \"" + javaScript + "\" JavaScript");
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		js.executeScript(javaScript);
 	}
+
+	/*
+	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Private Methods
+	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	 */
 
 	/**
 	 * Gets the original style.
@@ -1915,8 +1928,9 @@ public class CommonFunctions {
 	 * @param driver        the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param element       the {@link org.openqa.selenium.WebElement element}
 	 * @param originalStyle the original style
+	 * @throws Exception the exception
 	 */
-	private void setOriginalStyle(WebDriver driver, WebElement element, String originalStyle) {
+	private void setOriginalStyle(WebDriver driver, WebElement element, String originalStyle) throws Exception {
 		this.logAccess.getLogger().debug("Setting orignial style \"" + originalStyle + "\" to element :- " + element);
 		String js = "arguments[0].setAttribute('style', '" + originalStyle + "');";
 		executeJs(driver, element, js);
@@ -2012,7 +2026,7 @@ public class CommonFunctions {
 	 *                             <font color='blue'>Note : First screenshot will
 	 *                             show the header and will be hidden in the
 	 *                             subsequent screenshots if you choose <b>true</b>
-	 *                             and oppositive holds good too</font>
+	 *                             and opposite holds good too</font>
 	 * @throws Exception exception
 	 */
 	private void capturePageChunks(WebDriver driver, String tempImagesFolderPath, WebElement hideElement,
@@ -2224,5 +2238,7 @@ public class CommonFunctions {
 		return failedScreenShotPath;
 
 	}
+
+	
 
 }

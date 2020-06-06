@@ -248,24 +248,11 @@ public class BrowserFunctions {
 		HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
 		chromePrefs.put("profile.default_content_settings.popups", 0);
 		chromePrefs.put("download.default_directory", this.getDownloadFolderPath());
-		
-		/** commented the below line of code which saves the print "Save As PDF" file
-		 * as we have to take print window screenshots, it should be handled with in 
-		 * the test
-		 */
-		// save file to the custom downloads folder when try to print
-		//chromePrefs.put("printing.default_destination_selection_rules",
-		//		"{ \"kind\": \"local\", \"idPattern\": \".*\", \"namePattern\": \"Save as PDF\" }");
-		//chromePrefs.put("printing.print_header_footer", true);
-		//chromePrefs.put("savefile.default_directory",this.getDownloadFolderPath());
-		
-		
+
 		ChromeOptions options = new ChromeOptions();
 		options.setExperimentalOption("prefs", chromePrefs);
 		options.setCapability("ACCEPT_SSL_CERTS", true);
 		options.setCapability("pageLoadStrategy", "none");
-		// enable kiosk printing mode 
-		//options.addArguments("--kiosk-printing");
 
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		setWebDriver(new ChromeDriver(options));
@@ -281,8 +268,9 @@ public class BrowserFunctions {
 	 * Refer to <a href =
 	 * 'http://kb.mozillazine.org/Firefox_:_FAQs_:_About:config_Entries'>Firefox
 	 * Configuration Details</a> for detailed information about each configuration
-	 * setting.
-	 * 
+	 * setting.<br>
+	 * ! If you want to see the preferences you can click the menu button menu , click Help and select Troubleshooting Information. The Troubleshooting Information tab will open.
+	 * And then click on `Profile Folder` 
 	 * @return the web driver
 	 * @throws Exception
 	 */
@@ -305,6 +293,12 @@ public class BrowserFunctions {
 
 		// hide Download Manager window when a download begins
 		profile.setPreference("browser.download.manager.showWhenStarting", false);
+
+		/****This is the most important setting that will make sure the pdf is downloaded without any prompt**/
+		profile.setPreference("pdfjs.disabled", true);
+		
+		profile.setPreference("pref.downloads.disable_button.edit_actions", false);
+		
 
 		// A comma-separated list of MIME types to save to disk without asking what to
 		// use to open the file.
@@ -330,6 +324,7 @@ public class BrowserFunctions {
 		// Close the Download Manager when all downloads are complete
 		profile.setPreference("browser.download.manager.closeWhenDone", true);
 
+		
 		FirefoxOptions options = new FirefoxOptions();
 		options.setProfile(profile);
 
@@ -367,12 +362,12 @@ public class BrowserFunctions {
 		System.setProperty("webdriver.ie.driver", binaryPath);
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		InternetExplorerOptions options = new InternetExplorerOptions();
-		options.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
+//		options.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
 		// options.destructivelyEnsureCleanSession();
 		options.disableNativeEvents();
-		options.enablePersistentHovering();
-		options.requireWindowFocus();
-		options.introduceFlakinessByIgnoringSecurityDomains();
+//		options.enablePersistentHovering();
+//		options.requireWindowFocus();
+//		options.introduceFlakinessByIgnoringSecurityDomains();
 		threadDriver.set(new InternetExplorerDriver(options));
 		// getWebDriver().manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
 		// TimeUnit.SECONDS);

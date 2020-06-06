@@ -11,6 +11,7 @@ import framework.enums.BrowserEnums;
 import framework.enums.LogVerboseEnums;
 import framework.helper.SoftAssert;
 import framework.logs.LogAccess;
+import framework.utilities.AllureUtil;
 import framework.utilities.DateTimeUtil;
 import framework.utilities.FolderFileUtil;
 
@@ -33,6 +34,9 @@ public abstract class FwBaseClass {
 	
 	/** SoftAssert Object */
 	private SoftAssert softAssert;
+
+	/** AllureUtil Object*/
+	private AllureUtil allureUtil;
 	
 
 	/**
@@ -77,6 +81,9 @@ public abstract class FwBaseClass {
 
 		// initializing the SoftAssert
 		this.softAssert = new SoftAssert(this);
+		
+		// initialzing the AllureUtil
+		this.allureUtil = new AllureUtil();
 
 	}
 

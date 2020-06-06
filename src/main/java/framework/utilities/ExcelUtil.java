@@ -381,10 +381,10 @@ public class ExcelUtil {
 		}
 		return headers;
 	}
-	
+
 	public String getCellData(Cell cell) {
 		String cellValue = "";
-		
+
 		CellType cellType = cell.getCellTypeEnum();
 
 		if (cellType == CellType.STRING) {
@@ -398,7 +398,7 @@ public class ExcelUtil {
 		} else if (cellType == CellType.BOOLEAN) {
 			cellValue = String.valueOf(cell.getBooleanCellValue());
 		}
-		
+
 		return cellValue;
 	}
 
@@ -828,6 +828,9 @@ public class ExcelUtil {
 			// create a new row and append the data
 			cell = getSheet(sheetName).createRow(rowNumber).createCell(columnNumber);
 		} else { // update the data to the existing row
+			if(getRow(sheetName, rowNumber).getCell(columnNumber)== null) {
+				getRow(sheetName, rowNumber).createCell(columnNumber);
+			}
 			cell = getRow(sheetName, rowNumber).getCell(columnNumber);
 		}
 		if (value instanceof Integer) {
@@ -863,6 +866,9 @@ public class ExcelUtil {
 			// create a new row and append the data
 			cell = getSheet(sheetIndex).createRow(rowNumber).createCell(columnNumber);
 		} else { // update the data to the existing row
+			if(getRow(sheetIndex, rowNumber).getCell(columnNumber)== null) {
+				getRow(sheetIndex, rowNumber).createCell(columnNumber);
+			}
 			cell = getRow(sheetIndex, rowNumber).getCell(columnNumber);
 		}
 		if (value instanceof Integer) {
@@ -892,12 +898,19 @@ public class ExcelUtil {
 	public Cell writeCellData(String excelFilePath, String excelFileName, String sheetName, int rowNumber,
 			String columnName, Object value) throws IOException {
 		Cell cell;
+		
+		int columnNumber = getColumnHeaderIndex(sheetName, columnName);
 
 		if (rowNumber > getRowCount(sheetName)) {
 			// create a new row and append the data
-			cell = getSheet(sheetName).createRow(rowNumber).createCell(getColumnHeaderIndex(sheetName, columnName));
+			cell = getSheet(sheetName).createRow(rowNumber).createCell(columnNumber);
 		} else { // update the data to the existing row
-			cell = getRow(sheetName, rowNumber).getCell(getColumnHeaderIndex(sheetName, columnName));
+			
+			if(getRow(sheetName, rowNumber).getCell(columnNumber)== null) {
+				getRow(sheetName, rowNumber).createCell(columnNumber);
+			}
+			
+			cell = getRow(sheetName, rowNumber).getCell(columnNumber);
 		}
 		if (value instanceof Integer) {
 			// set value as integer
@@ -927,12 +940,17 @@ public class ExcelUtil {
 	public Cell writeCellData(String excelFilePath, String excelFileName, int sheetIndex, int rowNumber,
 			String columnName, Object value) throws IOException {
 		Cell cell;
+		
+		int columnNumber = getColumnHeaderIndex(sheetIndex, columnName);
 
 		if (rowNumber > getRowCount(sheetIndex)) {
 			// create a new row and append the data
-			cell = getSheet(sheetIndex).createRow(rowNumber).createCell(getColumnHeaderIndex(sheetIndex, columnName));
+			cell = getSheet(sheetIndex).createRow(rowNumber).createCell(columnNumber);
 		} else { // update the data to the existing row
-			cell = getRow(sheetIndex, rowNumber).getCell(getColumnHeaderIndex(sheetIndex, columnName));
+			if(getRow(sheetIndex, rowNumber).getCell(columnNumber)== null) {
+				getRow(sheetIndex, rowNumber).createCell(columnNumber);
+			}
+			cell = getRow(sheetIndex, rowNumber).getCell(columnNumber);
 		}
 		if (value instanceof Integer) {
 			// set value as integer
@@ -950,13 +968,13 @@ public class ExcelUtil {
 	/**
 	 * Format cell style.
 	 *
-	 * @param cell 
-	 * the cell
-	 * @param indexColorEnum 
-	 * the {@link org.apache.poi.ss.usermodel.IndexedColors IndexColors}
-	 * @param patternTypeEnum the {@link org.apache.poi.ss.usermodel.FillPatternType FillPatternType}
+	 * @param cell            the cell
+	 * @param indexColorEnum  the {@link org.apache.poi.ss.usermodel.IndexedColors
+	 *                        IndexColors}
+	 * @param patternTypeEnum the {@link org.apache.poi.ss.usermodel.FillPatternType
+	 *                        FillPatternType}
 	 */
-	public void formatCellStyle(Cell cell, IndexedColors indexColorEnum, FillPatternType patternTypeEnum ) {
+	public void formatCellStyle(Cell cell, IndexedColors indexColorEnum, FillPatternType patternTypeEnum) {
 		CellStyle cellStyle = createCellStyle(indexColorEnum, patternTypeEnum);
 		cell.setCellStyle(cellStyle);
 	}

@@ -1,7 +1,12 @@
 package framework.helper;
 
+import java.io.File;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -10,6 +15,7 @@ import org.testng.collections.Maps;
 
 import framework.abstracts.FwBaseClass;
 import io.qameta.allure.Allure;
+import io.qameta.allure.Attachment;
 import io.qameta.allure.Step;
 import io.qameta.allure.model.Status;
 
@@ -30,7 +36,7 @@ public class SoftAssert extends org.testng.asserts.SoftAssert {
 	private final Map<AssertionError, IAssert<?>> m_errors = Maps.newLinkedHashMap();
 	private FwBaseClass fwBaseClass;
 	private WebDriver driver;
-	
+
 	/**
 	 * SoftAssert constructor
 	 * @param fwBaseClass {@link framework.abstracts.FwBaseClass FwBaseClass} instance
@@ -106,19 +112,19 @@ public class SoftAssert extends org.testng.asserts.SoftAssert {
 	 * @throws Exception
 	 */
 	@Step("SoftAssert :\n{message}")
-//	@Attachment(value = "SoftAssert Screenshot", type = "image/png")
-	public byte[] addScreenshotInAllureReport(String message, Status status) throws Exception {
-		byte[] screenshot = null;
-
-		screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+	@Attachment(value = "SoftAssert Screenshot", type = "image/png")
+	public void addScreenshotInAllureReport(String message, Status status) throws Exception {
+		File screenshot = null;
+		String screenshotName = fwBaseClass.getScreenshotPath()+ File.separatorChar + new SimpleDateFormat("MM_dd_yyyy_hh_mm_ss_SS").format((new Date()));
+		screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 		// this will mark the sub-step status to fail(red arrow)/passed(green arrow)
 		Allure.getLifecycle().updateStep(stepResult -> stepResult.setStatus(status));
 		// attaches the screenshot to the sub-step
-		Allure.getLifecycle().addAttachment("Screenshot", "image/png", "png", screenshot);
+		//Allure.getLifecycle().addAttachment("Screenshot", "image/png", "png", screenshot);
 		Allure.getLifecycle().stopStep();
+		FileUtils.copyFile(screenshot, new File(screenshotName));
 		// this will mark the main-step status to fail(red arrow)/passed(green arrow)
 		Allure.getLifecycle().updateStep(stepResult -> stepResult.setStatus(status));
 		Allure.getLifecycle().stopStep();
-		return screenshot;
 	}
 }
