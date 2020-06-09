@@ -1,5 +1,7 @@
 package framework.utilities;
 
+import java.util.Locale;
+
 import com.github.javafaker.Faker;
 
 import framework.logs.LogAccess;
@@ -24,7 +26,7 @@ public class FakeDataUtil {
 	 */
 	public FakeDataUtil(LogAccess logAccess) {
 		this.logAccess = logAccess;
-		this.faker = new Faker();
+		this.faker = new Faker(new Locale("en-US"));
 	}
 
 	/**
@@ -131,8 +133,53 @@ public class FakeDataUtil {
 	 * @return phone number
 	 */
 	public String phoneNumber() {
-		String phoneNumber = this.faker.phoneNumber().toString();
+		String phoneNumber = this.faker.phoneNumber().phoneNumber();
 		this.logAccess.getLogger().debug("Generating phone number '" + phoneNumber + "' from faker");
 		return phoneNumber;
+	}
+	
+	/**
+	 * Gets the Country with in the specified zip code
+	 * 
+	 * @param zipCode Zip code in which you want to get the County
+	 * @return County
+	 */
+	public String county(String zipCode) {
+
+		String county = this.faker.address().countyByZipCode(zipCode);
+
+		this.logAccess.getLogger().debug("Generating county '" + county + "' from faker");
+
+		return county;
+	}
+	
+	
+	
+	/**
+	 * Gets the City 
+	 * 
+	 * @return City
+	 */
+	public String city() {
+
+		String city = this.faker.address().cityName();
+
+		this.logAccess.getLogger().debug("Generating city '" + city + "' from faker");
+
+		return city;
+	}
+	
+	/**
+	 * Gets the Email Address 
+	 * 
+	 * @return Email Address
+	 */
+	public String emailAddress() {
+
+		String emailAddress = this.faker.internet().emailAddress();
+
+		this.logAccess.getLogger().debug("Generating email address '" + emailAddress + "' from faker");
+
+		return emailAddress;
 	}
 }
