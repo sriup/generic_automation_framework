@@ -1,13 +1,12 @@
 package framework.utilities;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-import javax.imageio.ImageIO;
-
-import io.qameta.allure.Attachment;
+import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 
 /**
@@ -27,19 +26,21 @@ public class AllureUtil {
 		// intentionally left blank
 	}
 
-	@Attachment(value = "{screenShotName}", type = "image/png")
-	public byte[] attachScreenShotPNG(String screenShotName, String path) throws IOException {
-		File file = new File(path);
-		BufferedImage bufferedImage = ImageIO.read(file);
+	/**
+	 * This method will attach the screenshot to the allure report
+	 * 
+	 * @param allureScreenshotName the screenshot name to be displayed
+	 * @param screenShotPath       the screenshot path
+	 * @throws IOException 		   the exception
+	 */
+	public void attachScreenShotPNG(String allureScreenshotName, String screenShotPath) throws IOException {
+		Path content = Paths.get(screenShotPath);
 
-		byte[] image = null;
-		try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-			ImageIO.write(bufferedImage, "png", bos);
-			image = bos.toByteArray();
-		} catch (Exception e) {
-		}
+		InputStream is = Files.newInputStream(content);
 
-		return image;
+		Allure.addAttachment(allureScreenshotName, is);
+
+		is.close();
 	}
 
 }

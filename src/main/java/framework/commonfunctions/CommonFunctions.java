@@ -56,7 +56,7 @@ public class CommonFunctions {
 
 	/** DateTimeUtil object. */
 	private DateTimeUtil dateTimeUtil;
-	
+
 	/** GenericUtil object */
 	private GenericUtil genericUtil;
 
@@ -128,7 +128,7 @@ public class CommonFunctions {
 	public ZipUtil getZipUtil() {
 		return this.zipUtil;
 	}
-	
+
 	/**
 	 * Gets the Generic Util
 	 * 
@@ -678,7 +678,7 @@ public class CommonFunctions {
 		try {
 			setOriginalStyle(driver, element, originalStyle);
 		} catch (NoSuchElementException | StaleElementReferenceException
-				| ElementNotInteractableException ignoreException) { //TODO need to track this not intractable
+				| ElementNotInteractableException ignoreException) { // TODO need to track this not intractable
 			// we don't have to either print the trace or throw the exception
 			// here as there are situations where the element might not present
 			// after performing some actions like click
@@ -796,7 +796,7 @@ public class CommonFunctions {
 		// click
 		try {
 			tempElement.click();
-		} catch (ElementNotInteractableException enie) {//TODO need to track this not intractable 
+		} catch (ElementNotInteractableException enie) {// TODO need to track this not intractable
 			executeJs(driver, tempElement, "arguments[0].click()");
 		}
 		// capture after (private capture screenshot)
@@ -1790,11 +1790,12 @@ public class CommonFunctions {
 
 				while (!downloadStarted && (((new Date().getTime()) - startTime) / 1000) < maxTimeoutInSeconds) {
 					try {
-					downloadStarted = (int) js.executeScript(
-							"return document.querySelector('downloads-manager').shadowRoot.querySelectorAll('#downloadsList downloads-item').length") > 0;
-					}catch(Exception ignoreException) {
-						//do nothing ignore the exception
-						// until the element is peresent
+						Object downloadedItemsObject = js.executeScript(
+								"return document.querySelector('downloads-manager').shadowRoot.querySelectorAll('#downloadsList downloads-item').length");
+						downloadStarted =  (Integer.parseInt(downloadedItemsObject.toString()) > 0);
+					} catch (Exception ignoreException) {
+						// do nothing ignore the exception
+						// until the element is present
 					}
 				}
 				if (downloadStarted) {
@@ -2257,7 +2258,5 @@ public class CommonFunctions {
 		return failedScreenShotPath;
 
 	}
-
-	
 
 }
