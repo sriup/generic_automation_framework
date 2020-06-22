@@ -237,7 +237,6 @@ public class BrowserFunctions {
 	 */
 
 	private WebDriver launchChrome() throws Exception {
-//		WebDriverManager.chromedriver().setup();
 		System.setProperty("webdriver.chrome.driver",
 				System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
 						+ BrowserEnums.Chrome.toString() + File.separatorChar
@@ -255,8 +254,6 @@ public class BrowserFunctions {
 
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		setWebDriver(new ChromeDriver(options));
-		// getWebDriver().manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
-		// TimeUnit.SECONDS);
 		return getWebDriver();
 	}
 
@@ -274,7 +271,6 @@ public class BrowserFunctions {
 	 * @throws Exception
 	 */
 	private WebDriver launchFirefox() throws Exception {
-//		WebDriverManager.firefoxdriver().setup();
 		System.setProperty("webdriver.gecko.driver",
 				System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
 						+ BrowserEnums.Firefox.toString() + File.separatorChar
@@ -328,8 +324,6 @@ public class BrowserFunctions {
 		options.setProfile(profile);
 
 		setWebDriver(new FirefoxDriver(options));
-		// getWebDriver().manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
-		// TimeUnit.SECONDS);
 		return getWebDriver();
 
 	}
@@ -343,8 +337,6 @@ public class BrowserFunctions {
 		WebDriverManager.edgedriver().setup();
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		setWebDriver(new EdgeDriver());
-		// getWebDriver().manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
-		// TimeUnit.SECONDS);
 		return getWebDriver();
 
 	}
@@ -368,8 +360,6 @@ public class BrowserFunctions {
 		options.requireWindowFocus();
 		options.introduceFlakinessByIgnoringSecurityDomains();
 		threadDriver.set(new InternetExplorerDriver(options));
-		// getWebDriver().manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
-		// TimeUnit.SECONDS);
 		return threadDriver.get();
 	}
 
