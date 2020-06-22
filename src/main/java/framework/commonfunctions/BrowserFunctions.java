@@ -3,7 +3,6 @@ package framework.commonfunctions;
 import java.io.File;
 import java.util.HashMap;
 
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -362,12 +361,12 @@ public class BrowserFunctions {
 		System.setProperty("webdriver.ie.driver", binaryPath);
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		InternetExplorerOptions options = new InternetExplorerOptions();
-//		options.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
-		// options.destructivelyEnsureCleanSession();
+		options.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
+		options.destructivelyEnsureCleanSession();
 		options.disableNativeEvents();
-//		options.enablePersistentHovering();
-//		options.requireWindowFocus();
-//		options.introduceFlakinessByIgnoringSecurityDomains();
+		options.enablePersistentHovering();
+		options.requireWindowFocus();
+		options.introduceFlakinessByIgnoringSecurityDomains();
 		threadDriver.set(new InternetExplorerDriver(options));
 		// getWebDriver().manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
 		// TimeUnit.SECONDS);

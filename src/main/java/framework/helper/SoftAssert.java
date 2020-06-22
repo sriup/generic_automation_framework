@@ -118,9 +118,9 @@ public class SoftAssert extends org.testng.asserts.SoftAssert {
 	public void addScreenshotInAllureReport(String message, Status status) throws Exception {
 		File screenshot = null;
 		String screenshotPath = fwBaseClass.getScreenshotPath() + File.separatorChar
-				+ new SimpleDateFormat("MM_dd_yyyy_hh_mm_ss_SS").format((new Date()));
+				+ new SimpleDateFormat("MM_dd_yyyy_hh_mm_ss_SS").format((new Date()))  + "_sa_failed.png";
 		screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-		FileUtils.copyFile(screenshot, new File(screenshotPath + "_sa_failed.png"));
+		FileUtils.copyFile(screenshot, new File(screenshotPath));
 
 		// this will mark the sub-step status to fail(red arrow)/passed(green arrow)
 		Allure.getLifecycle().updateStep(stepResult -> stepResult.setStatus(status));
