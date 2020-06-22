@@ -1514,7 +1514,7 @@ public class CommonFunctions {
 			throws Exception {
 		this.logAccess.getLogger().debug("Dispatching " + eventName + " event on element :- " + element);
 		String jsFunction = " var clickEvent = document.createEvent ('" + eventType + "');" + "clickEvent.initEvent ('"
-				+ eventName + "', true, true); " + "arguments [0].dispatchEvent (clickEvent); ";
+				+ eventName + "', true, false); " + "arguments [0].dispatchEvent (clickEvent); ";
 		executeJs(driver, element, jsFunction);
 	}
 
@@ -1537,7 +1537,7 @@ public class CommonFunctions {
 	public void jsTriggerEventOnElement(WebDriver driver, WebElement element, String eventName) throws Exception {
 		this.logAccess.getLogger().debug("Dispatching " + eventName + " event on element :- " + element);
 		String jsFunction = " var triggerEvent = document.createEvent ('Event');  triggerEvent.initEvent ('" + eventName
-				+ "', true, true); arguments [0].dispatchEvent (triggerEvent); ";
+				+ "', true, false); arguments [0].dispatchEvent (triggerEvent); ";
 		executeJs(driver, element, jsFunction);
 	}
 
@@ -1554,7 +1554,7 @@ public class CommonFunctions {
 	public void jsTriggerMouseEvent(WebDriver driver, WebElement element, String mouseEvent) throws Exception {
 		this.logAccess.getLogger().debug("Dispatching " + mouseEvent + " mouse event on element :- " + element);
 		String jsFunction = " var triggerEvent = document.createEvent ('MouseEvents');  triggerEvent.initEvent ('"
-				+ mouseEvent + "', true, true); arguments [0].dispatchEvent (triggerEvent); ";
+				+ mouseEvent + "', true, false); arguments [0].dispatchEvent (triggerEvent); ";
 		executeJs(driver, element, jsFunction);
 	}
 
@@ -1808,12 +1808,8 @@ public class CommonFunctions {
 					js.executeScript(
 							"document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('#remove').click()");
 				}
-				// file downloaded location
-				// donwloadedAt = (String) ((JavascriptExecutor) driver).executeScript(
-				// "return
-				// document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList
-				// downloads-item').shadowRoot.querySelector('div.is-active.focus-row-active
-				// #file-icon-wrapper img').src");
+								
+				//TODO Need to implement the logic to clear the downloaded file entry from download history in FireFox 
 			} else if (CommonVariables.BROWSER_SELECT.equalsIgnoreCase("firefox")) {
 
 				// navigate to chrome downloads

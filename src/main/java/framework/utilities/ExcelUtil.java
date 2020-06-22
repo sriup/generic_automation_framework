@@ -382,6 +382,12 @@ public class ExcelUtil {
 		return headers;
 	}
 
+	/**
+	 * Gets the cell value based on the cell
+	 * 
+	 * @param cell Cell from which the value should be returned
+	 * @return cell value
+	 */
 	public String getCellData(Cell cell) {
 		String cellValue = "";
 
