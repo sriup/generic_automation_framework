@@ -36,10 +36,10 @@ public abstract class FwBaseClass {
 	private SoftAssert softAssert;
 
 	/** AllureUtil Object*/
-	private AllureUtil allureUtil;
+	protected AllureUtil allureUtil;
 
 	/** CommonFunctions Object*/
-	private CommonFunctions commonFunctions;
+	protected CommonFunctions commonFunctions;
 	
 
 	/**
