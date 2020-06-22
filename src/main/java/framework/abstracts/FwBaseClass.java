@@ -37,6 +37,9 @@ public abstract class FwBaseClass {
 
 	/** AllureUtil Object*/
 	private AllureUtil allureUtil;
+
+	/** CommonFunctions Object*/
+	private CommonFunctions commonFunctions;
 	
 
 	/**
@@ -84,6 +87,9 @@ public abstract class FwBaseClass {
 		
 		// initialzing the AllureUtil
 		this.allureUtil = new AllureUtil();
+		
+		// initialize the CommonFunctions
+		commonFunctions = new CommonFunctions(getScreenshotPath(), getLogAccess());
 
 	}
 
