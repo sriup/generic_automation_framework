@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
@@ -34,6 +35,7 @@ import framework.utilities.DateTimeUtil;
 import framework.utilities.ExcelUtil;
 import framework.utilities.FakeDataUtil;
 import framework.utilities.FolderFileUtil;
+import framework.utilities.GenericUtil;
 import framework.utilities.SecurityUtil;
 import framework.utilities.ZipUtil;
 
@@ -52,6 +54,9 @@ public class CommonFunctions {
 
 	/** DateTimeUtil object. */
 	private DateTimeUtil dateTimeUtil;
+
+	/** GenericUtil object */
+	private GenericUtil genericUtil;
 
 	/**
 	 * Gets the dateTimeUtil object.
@@ -123,6 +128,15 @@ public class CommonFunctions {
 	}
 
 	/**
+	 * Gets the Generic Util
+	 * 
+	 * @return the GenericUtil
+	 */
+	public GenericUtil genericUtil() {
+		return this.genericUtil;
+	}
+
+	/**
 	 * Instantiates a new common functions.<br>
 	 * All the utilities available in the framework will be instantiate as part of
 	 * this. <br>
@@ -153,6 +167,7 @@ public class CommonFunctions {
 		fakeDataUtil = new FakeDataUtil(logAccess);
 		securityUtil = new SecurityUtil();
 		zipUtil = new ZipUtil(logAccess);
+		genericUtil = new GenericUtil();
 	}
 
 	/**
@@ -222,6 +237,7 @@ public class CommonFunctions {
 	 *                          <ul>
 	 *                          <li>CLICKABLE</li>
 	 *                          <li>PRESENCE</li>
+	 *                          <li>VISIBLE</li>
 	 *                          </ul>
 	 *                          </font>
 	 * @return the web element
@@ -243,6 +259,7 @@ public class CommonFunctions {
 	 *                          <ul>
 	 *                          <li>CLICKABLE</li>
 	 *                          <li>PRESENCE</li>
+	 *                          <li>VISIBLE</li>
 	 *                          </ul>
 	 *                          </font>
 	 * @param maxTimeout        the max timeout in seconds
@@ -280,7 +297,11 @@ public class CommonFunctions {
 	public void waitForInvisibilityOfElement(WebDriver driver, WebElement element, int maxTimeout) throws Exception {
 		this.logAccess.getLogger().info("waiting for element to be invisible  :- " + element);
 
-		Thread.sleep(CommonVariables.MIN_TIMEOUT * 1000);
+		try {
+			waitForElement(driver, element, ExpectedConditionsEnums.VISIBLE, CommonVariables.MIN_TIMEOUT);
+		} catch (Exception ignoreException) {
+			// ignore the exception and continue with the script
+		}
 
 		long currentTimestamp = (new Date()).getTime();
 		int waitingSeconds = maxTimeout * 1000;
@@ -294,31 +315,19 @@ public class CommonFunctions {
 
 			while ((new Date()).getTime() < endTimestamp && isElementInvisible) {
 
-				isElementInvisible = isElementPresent(driver, element, CommonVariables.MIN_TIMEOUT);
+				isElementInvisible = isElementPresent(driver, element, CommonVariables.NO_TIMEOUT);
 
 				if (isElementInvisible) {
 					// Checking if element is visible though it is in the DOM.
 					isElementInvisible = element.isDisplayed();
 
 				}
+				Thread.sleep(500);
 			}
 		} catch (NoSuchElementException | StaleElementReferenceException ignoreException) {
 			// intentionally left it blank (we can ignore the above exceptions when waiting
 			// for element in-visibility)
 		}
-
-		// Its under investigation
-//		try {
-//			WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
-//			wait.until(ExpectedConditions.invisibilityOf(element));
-//		} catch (Exception e) {
-//			if (!isElementPresent(driver, element)
-//					&& e.getClass().toString().equals("org.openqa.selenium.TimeoutException")) {
-//				// ignore the exception as the element is not present which means it's not
-//				// visible
-//				// this issue will be taken care in later version of selenium
-//			}
-//		}
 
 	}
 
@@ -334,7 +343,11 @@ public class CommonFunctions {
 	public void waitForInvisibilityOfElement(WebDriver driver, By byLocator, int maxTimeout) throws Exception {
 		this.logAccess.getLogger().info("waiting for element to be invisible  :- " + byLocator);
 
-		Thread.sleep(CommonVariables.MIN_TIMEOUT * 1000);
+		try {
+			waitForElement(driver, byLocator, ExpectedConditionsEnums.PRESENCE, CommonVariables.MIN_TIMEOUT);
+		} catch (Exception ignoreException) {
+			// ignore the exception and continue with the script
+		}
 
 		long currentTimestamp = (new Date()).getTime();
 		int waitingSeconds = maxTimeout * 1000;
@@ -358,21 +371,6 @@ public class CommonFunctions {
 			// for element in-visibility)
 		}
 
-		// Its under investigation
-//		try {
-//			WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
-//			wait.until(ExpectedConditions.invisibilityOfElementLocated(byLocator));
-//		} catch (Exception e) {
-//			// driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
-//			if (driver.findElements(byLocator).size() == 0
-//					&& e.getClass().toString().equals("org.openqa.selenium.TimeoutException")) {
-//				// ignore the exception as the element is not present which means it's not
-//				// visible
-//				// this issue will be taken care in later version of selenium
-//			}
-//			// driver.manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
-//			// TimeUnit.SECONDS);
-//		}
 	}
 
 	/**
@@ -629,8 +627,9 @@ public class CommonFunctions {
 	 *                unHighlightElement} method to set back the original style of
 	 *                the element.</font>
 	 * @return the String with original style of the element
+	 * @throws Exception the exception
 	 */
-	public String highlightElement(WebDriver driver, WebElement element) {
+	public String highlightElement(WebDriver driver, WebElement element) throws Exception {
 		this.logAccess.getLogger().debug("Highlighting element :- " + element);
 		// get the original
 		String originalStyle = getOriginalStyle(element);
@@ -654,8 +653,9 @@ public class CommonFunctions {
 	 *                  {@link #unHighlightElement unHighlightElement} method to set
 	 *                  back the original style of the element.</font>
 	 * @return the String with original style of the element
+	 * @throws Exception the exception
 	 */
-	public String highlightElement(WebDriver driver, By byLocator) {
+	public String highlightElement(WebDriver driver, By byLocator) throws Exception {
 		this.logAccess.getLogger().debug("Highlighting element :- " + byLocator);
 		// highlight the element and return the original style
 		return highlightElement(driver, getElement(driver, byLocator));
@@ -667,15 +667,16 @@ public class CommonFunctions {
 	 * @param driver        the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param element       the {@link org.openqa.selenium.WebElement element}
 	 * @param originalStyle the original style
+	 * @throws Exception the exception
 	 * 
 	 */
-	public void unHighlightElement(WebDriver driver, WebElement element, String originalStyle) {
+	public void unHighlightElement(WebDriver driver, WebElement element, String originalStyle) throws Exception {
 		this.logAccess.getLogger().debug("Unhighlighting element  :- " + element);
 		// set element original style
 		try {
 			setOriginalStyle(driver, element, originalStyle);
 		} catch (NoSuchElementException | StaleElementReferenceException
-				| ElementNotInteractableException ignoreException) {
+				| ElementNotInteractableException ignoreException) { // TODO need to track this not intractable
 			// we don't have to either print the trace or throw the exception
 			// here as there are situations where the element might not present
 			// after performing some actions like click
@@ -688,9 +689,9 @@ public class CommonFunctions {
 	 * @param driver        the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param byLocator     the by locator
 	 * @param originalStyle the original style
-	 * 
+	 * @throws Exception the exception
 	 */
-	public void unHighlightElement(WebDriver driver, By byLocator, String originalStyle) {
+	public void unHighlightElement(WebDriver driver, By byLocator, String originalStyle) throws Exception {
 		this.logAccess.getLogger().debug("Unhighlighting element  :- " + byLocator);
 		unHighlightElement(driver, driver.findElement(byLocator), originalStyle);
 	}
@@ -791,7 +792,11 @@ public class CommonFunctions {
 		// un-highlihgt
 		unHighlightElement(driver, tempElement, originalStyle);
 		// click
-		tempElement.click();
+		try {
+			tempElement.click();
+		} catch (ElementNotInteractableException enie) {// TODO need to track this not intractable
+			executeJs(driver, tempElement, "arguments[0].click()");
+		}
 		// capture after (private capture screenshot)
 		if (isCaptureScreenShot && !captureBefore) {
 
@@ -843,25 +848,30 @@ public class CommonFunctions {
 		this.logAccess.getLogger().info("value :- " + value);
 		this.logAccess.getLogger().info("Element :- " + element);
 		// get the element
-		WebElement tempEle = getElement(driver, element);
+		WebElement tempElement = getElement(driver, element);
 		// click in the field
-		tempEle.click();
+		try {
+			tempElement.click();
+		} catch (ElementClickInterceptedException enie) {
+			executeJs(driver, tempElement, "arguments[0].click()");
+		}
+
 		// clear any existing values
-		tempEle.clear();
+		tempElement.clear();
 		// enter value in the field
-		tempEle.sendKeys(value);
+		tempElement.sendKeys(value);
 		// trigger the onchange event (to make sure the events dispatches correctly in
 		// IE)
-		jsTriggerEventOnElement(driver, tempEle, "onchange");
+		jsTriggerEventOnElement(driver, tempElement, "onchange");
 
 		// highlight element
-		String originalStyle = highlightElement(driver, tempEle);
+		String originalStyle = highlightElement(driver, tempElement);
 		// capture (private capture screenshot)
 		if (isCaptureScreenshot) {
 			captureScreenShot(driver, screenShotName);
 		}
 		// un-highlihgt
-		unHighlightElement(driver, tempEle, originalStyle);
+		unHighlightElement(driver, tempElement, originalStyle);
 	}
 
 	/**
@@ -878,6 +888,58 @@ public class CommonFunctions {
 			String screenShotName) throws Exception {
 		WebElement element = getElement(driver, byLocator);
 		inputValue(driver, element, value, isCaptureScreenshot, screenShotName);
+	}
+
+	/**
+	 * Gets number of options(list items) in the list
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param element             the {@link org.openqa.selenium.WebElement element}
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @return number of options(list items) in the list
+	 * @throws Exception the exception
+	 */
+	public int getNumberOfListItems(WebDriver driver, WebElement element, boolean isCaptureScreenshot,
+			String screenShotName) throws Exception {
+		// get the element
+		WebElement tempElement = getElement(driver, element);
+
+		// select item by index
+		Select listElement = new Select(tempElement);
+
+		// get the number of options
+		return listElement.getOptions().size();
+	}
+
+	/**
+	 * Gets number of options(list items) in the list
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param byLocator           the by locator
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @return number of options(list items) in the list
+	 * @throws Exception the exception
+	 */
+	public int getNumberOfListItems(WebDriver driver, By byLocator, boolean isCaptureScreenshot, String screenShotName)
+			throws Exception {
+		// get the element
+		WebElement tempElement = getElement(driver, byLocator);
+
+		return getNumberOfListItems(driver, tempElement, isCaptureScreenshot, screenShotName);
 	}
 
 	/**
@@ -935,7 +997,7 @@ public class CommonFunctions {
 	 * @return WebElent List of selected list items
 	 * @throws Exception the exception
 	 */
-	public List<WebElement> getAllSelectedListItems(WebDriver driver, WebElement element, boolean isCaptureScreenshot,
+	public List<WebElement> getSelectedListItems(WebDriver driver, WebElement element, boolean isCaptureScreenshot,
 			String screenShotName) throws Exception {
 		this.logAccess.getLogger().info("Element :- " + element);
 		// get the element
@@ -956,6 +1018,103 @@ public class CommonFunctions {
 		// un-highlihgt
 		unHighlightElement(driver, tempElement, originalStyle);
 		return selectedItems;
+	}
+
+	/**
+	 * Gets the Selected list item.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param byLocator           the by Locator
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @return selected element
+	 * @throws Exception the exception
+	 */
+	public WebElement getSelectedListItem(WebDriver driver, By byLocator, boolean isCaptureScreenshot,
+			String screenShotName) throws Exception {
+		this.logAccess.getLogger().info("By Locator  :- " + byLocator);
+		// get the element
+		WebElement tempElement = getElement(driver, byLocator);
+		return getSelectedListItem(driver, tempElement, isCaptureScreenshot, screenShotName);
+	}
+
+	/**
+	 * Gets the Selected list item text
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param byLocator           the by Locator
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @return selected element text
+	 * @throws Exception the exception
+	 */
+	public String getSelectedListItemText(WebDriver driver, By byLocator, boolean isCaptureScreenshot,
+			String screenShotName) throws Exception {
+		this.logAccess.getLogger().info("By Locator  :- " + byLocator);
+		// get the element
+		WebElement tempElement = getElement(driver, byLocator);
+		return getSelectedListItemText(driver, tempElement, isCaptureScreenshot, screenShotName);
+	}
+
+	/**
+	 * Gets the Selected list item text
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param byLocator           the by Locator
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @return selected element text
+	 * @throws Exception the exception
+	 */
+	public String getSelectedListItemText(WebDriver driver, WebElement element, boolean isCaptureScreenshot,
+			String screenShotName) throws Exception {
+		this.logAccess.getLogger().info("Element  :- " + element);
+		// get the element
+		WebElement tempElement = getElement(driver, element);
+		return getSelectedListItem(driver, tempElement, isCaptureScreenshot, screenShotName).getText();
+	}
+
+	/**
+	 * Gets all the Selected list items.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param byLocator           the by locator
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @return WebElent List of selected list items
+	 * @throws Exception the exception
+	 */
+	public List<WebElement> getSelectedListItems(WebDriver driver, By byLocator, boolean isCaptureScreenshot,
+			String screenShotName) throws Exception {
+		this.logAccess.getLogger().info("By Locator :- " + byLocator);
+		// get the element
+		WebElement tempElement = getElement(driver, byLocator);
+
+		return getSelectedListItems(driver, tempElement, isCaptureScreenshot, screenShotName);
 	}
 
 	/**
@@ -1098,7 +1257,7 @@ public class CommonFunctions {
 		// get the element
 		WebElement tempElement = getElement(driver, element);
 		WebElement option = tempElement
-				.findElement(By.xpath("//option[contains(text(),'" + partialVisibleText + "')]"));
+				.findElement(By.xpath("./option[contains(text(),'" + partialVisibleText + "')]"));
 		option.click();
 
 		// highlight element
@@ -1111,6 +1270,92 @@ public class CommonFunctions {
 
 		// un-highlihgt
 		unHighlightElement(driver, tempElement, originalStyle);
+	}
+
+	/**
+	 * Select item by index.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param byLocator           the by locator
+	 * @param index               the index
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @throws Exception the exception
+	 */
+	public void selectItemByIndex(WebDriver driver, By byLocator, int index, boolean isCaptureScreenshot,
+			String screenShotName) throws Exception {
+		selectItemByIndex(driver, getElement(driver, byLocator), index, isCaptureScreenshot, screenShotName);
+	}
+
+	/**
+	 * Select drop down list item based on value.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param byLocator           the by locator
+	 * @param value               the list item value to be selected
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @throws Exception the exception
+	 */
+	public void selectItemByValue(WebDriver driver, By byLocator, String value, boolean isCaptureScreenshot,
+			String screenShotName) throws Exception {
+		selectItemByValue(driver, getElement(driver, byLocator), value, isCaptureScreenshot, screenShotName);
+	}
+
+	/**
+	 * Select list item based on the visible text.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param byLocator           the by locator
+	 * @param visibleText         the visible text of the list item
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @throws Exception the exception
+	 */
+	public void selectItemByVisibleText(WebDriver driver, By byLocator, String visibleText, boolean isCaptureScreenshot,
+			String screenShotName) throws Exception {
+		selectItemByVisibleText(driver, getElement(driver, byLocator), visibleText, isCaptureScreenshot,
+				screenShotName);
+	}
+
+	/**
+	 * Select list item based on the partial visible text.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param byLocator           the by locator
+	 * @param partialVisibleText  the partial visible text of the list item
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @throws Exception the exception
+	 */
+	public void selectItemByPartialVisibleText(WebDriver driver, By byLocator, String partialVisibleText,
+			boolean isCaptureScreenshot, String screenShotName) throws Exception {
+		selectItemByPartialVisibleText(driver, getElement(driver, byLocator), partialVisibleText, isCaptureScreenshot,
+				screenShotName);
 	}
 
 	/**
@@ -1136,6 +1381,42 @@ public class CommonFunctions {
 		String elementText;
 		// get the element
 		WebElement tempElement = getElement(driver, element);
+		// highlight the element
+		String originalStyle = highlightElement(driver, tempElement);
+		// get the element text
+		elementText = tempElement.getText();
+		// capture screenshot
+		if (isCaptureScreenShot) {
+			captureScreenShot(driver, screenShotName);
+		}
+		// unhighlight the element
+		unHighlightElement(driver, tempElement, originalStyle);
+		return elementText;
+	}
+
+	/**
+	 * Get the visible (i.e. not hidden by CSS) text of this element, including
+	 * sub-elements.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param byLocator           the by locator
+	 * @param isCaptureScreenShot the is capture screen shot
+	 * @param screenShotName      the screen shot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @return the visible text of this element.
+	 * @throws Exception the exception
+	 */
+	public String getText(WebDriver driver, By byLocator, boolean isCaptureScreenShot, String screenShotName)
+			throws Exception {
+		this.logAccess.getLogger().info("Getting text form element :- " + byLocator);
+		String elementText;
+		// get the element
+		WebElement tempElement = getElement(driver, byLocator);
 		// highlight the element
 		String originalStyle = highlightElement(driver, tempElement);
 		// get the element text
@@ -1188,6 +1469,34 @@ public class CommonFunctions {
 	}
 
 	/**
+	 * Gets the attribute.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param element             the {@link org.openqa.selenium.WebElement element}
+	 * @param attributeName       the attribute name
+	 * @param isCaptureScreenShot the is capture screen shot
+	 * @param screenShotName      the screen shot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @return the attribute/property's current value or null if the value is not
+	 *         set.
+	 * @throws Exception the exception
+	 * @see org.openqa.selenium.WebElement#getAttribute getAttribute
+	 */
+	public String getAttribute(WebDriver driver, By byLocator, String attributeName, boolean isCaptureScreenShot,
+			String screenShotName) throws Exception {
+		this.logAccess.getLogger()
+				.info("Getting " + attributeName + " attribute for element by locator :- " + byLocator);
+		// get the element
+		WebElement tempElement = getElement(driver, byLocator);
+		return getAttribute(driver, tempElement, attributeName, isCaptureScreenShot, screenShotName);
+	}
+
+	/**
 	 * Trigger general events on the {@link org.openqa.selenium.WebElement element}
 	 *
 	 * @param driver    the {@link org.openqa.selenium.WebDriver WebDriver}
@@ -1195,15 +1504,17 @@ public class CommonFunctions {
 	 *                  JavaScript has to dispatch the event.
 	 * @param eventType the event type <b> eg: </b>MouseEvents, KeyBoardEvents
 	 * @param eventName the event name
-	 * 
+	 * @throws Exception the exception
 	 * @see <a href=
 	 *      'https://www.w3.org/TR/uievents'>https://www.w3.org/TR/uievents/</a> for
 	 *      more information on the UIEvents.
+	 * 
 	 */
-	public void jsTriggerEventOnElement(WebDriver driver, WebElement element, String eventType, String eventName) {
+	public void jsTriggerEventOnElement(WebDriver driver, WebElement element, String eventType, String eventName)
+			throws Exception {
 		this.logAccess.getLogger().debug("Dispatching " + eventName + " event on element :- " + element);
 		String jsFunction = " var clickEvent = document.createEvent ('" + eventType + "');" + "clickEvent.initEvent ('"
-				+ eventName + "', true, true); " + "arguments [0].dispatchEvent (clickEvent); ";
+				+ eventName + "', true, false); " + "arguments [0].dispatchEvent (clickEvent); ";
 		executeJs(driver, element, jsFunction);
 	}
 
@@ -1221,11 +1532,12 @@ public class CommonFunctions {
 	 *                  JavaScript has to dispatch the event.
 	 * @param eventName the event name to trigger <b> e.g: </b>onchange, onblur,
 	 *                  onclick
+	 * @throws Exception the exception
 	 */
-	public void jsTriggerEventOnElement(WebDriver driver, WebElement element, String eventName) {
+	public void jsTriggerEventOnElement(WebDriver driver, WebElement element, String eventName) throws Exception {
 		this.logAccess.getLogger().debug("Dispatching " + eventName + " event on element :- " + element);
-		String jsFunction = " var clickEvent = document.createEvent ('Event');  clickEvent.initEvent ('" + eventName
-				+ "', true, true); arguments [0].dispatchEvent (clickEvent); ";
+		String jsFunction = " var triggerEvent = document.createEvent ('Event');  triggerEvent.initEvent ('" + eventName
+				+ "', true, false); arguments [0].dispatchEvent (triggerEvent); ";
 		executeJs(driver, element, jsFunction);
 	}
 
@@ -1237,11 +1549,12 @@ public class CommonFunctions {
 	 *                   JavaScript has to dispatch the mouse event.
 	 * @param mouseEvent the mouse event name to trigger <b> e.g: </b>onmousedown,
 	 *                   onmouseup, onmouseover
+	 * @throws Exception the exception
 	 */
-	public void jsTriggerMouseEvent(WebDriver driver, WebElement element, String mouseEvent) {
+	public void jsTriggerMouseEvent(WebDriver driver, WebElement element, String mouseEvent) throws Exception {
 		this.logAccess.getLogger().debug("Dispatching " + mouseEvent + " mouse event on element :- " + element);
-		String jsFunction = " var clickEvent = document.createEvent ('MouseEvents');  clickEvent.initEvent ('"
-				+ mouseEvent + "', true, true); arguments [0].dispatchEvent (clickEvent); ";
+		String jsFunction = " var triggerEvent = document.createEvent ('MouseEvents');  triggerEvent.initEvent ('"
+				+ mouseEvent + "', true, false); arguments [0].dispatchEvent (triggerEvent); ";
 		executeJs(driver, element, jsFunction);
 	}
 
@@ -1289,7 +1602,7 @@ public class CommonFunctions {
 	public String captureScreenShotWithHighlight(WebDriver driver, By byLocator, String screenshotName)
 			throws Exception {
 		this.logAccess.getLogger().debug("Capturing screenshot for element :- " + byLocator.toString());
-		WebElement element = waitForElement(driver, byLocator, ExpectedConditionsEnums.CLICKABLE);
+		WebElement element = waitForElement(driver, byLocator, ExpectedConditionsEnums.PRESENCE);
 		// highlight
 		String originalStyle = highlightElement(driver, element);
 		// capture screenshot
@@ -1314,8 +1627,9 @@ public class CommonFunctions {
 	// screenshots
 	public String captureScreenShot(WebDriver driver, String screenShotName) throws Exception {
 		this.logAccess.getLogger().debug("Capturing screenshot");
-		File scrrenShot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 		String tempScreenshotName = this.screenShotsPath + "\\" + getScreenShotTime() + "_" + screenShotName + ".png";
+
+		File scrrenShot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 		FileUtils.copyFile(scrrenShot, new File(tempScreenshotName));
 		return tempScreenshotName;
 
@@ -1395,6 +1709,33 @@ public class CommonFunctions {
 	}
 
 	/**
+	 * Capture full page screen shot.
+	 *
+	 * @param driver           the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param headerElement    the header element
+	 * @param notIncludeHeader true/false<br>
+	 *                         <font color='blue'>Note: <br>
+	 *                         If you want to show any specific header only one full
+	 *                         screenshot page mark it as true<br>
+	 *                         If this is false, you will see the static header
+	 *                         multiple times in the full screenshot</font>
+	 * @param screenShotName   the screenshot name <br>
+	 *                         Date time Stamp will be <i>prepended</i> to the
+	 *                         screenshot name by default.<br>
+	 *                         Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                         setter to set the path where you want to store the
+	 *                         screenshots.
+	 * @return
+	 * @throws Exception
+	 */
+	public String captureFullPageScreenShot(WebDriver driver, By byLocator, boolean notIncludeHeader,
+			String screenShotName) throws Exception {
+		WebElement tempElement = getElement(driver, byLocator);
+		return captureFullPageScreenShot(driver, tempElement, notIncludeHeader, screenShotName);
+
+	}
+
+	/**
 	 * This method will wait until the file download is completed and waits for
 	 * specified max time
 	 * 
@@ -1437,39 +1778,54 @@ public class CommonFunctions {
 			for (String winHandle : driver.getWindowHandles()) {
 				driver.switchTo().window(winHandle);
 			}
+			boolean downloadStarted = false;
+			JavascriptExecutor js = (JavascriptExecutor) driver;
+
 			if (CommonVariables.BROWSER_SELECT.equalsIgnoreCase("chrome")) {
 				// navigate to chrome downloads
 				driver.get("chrome://downloads");
-				Thread.sleep(2000);
-				new WebDriverWait(driver, maxTimeoutInSeconds)
-						.until(ExpectedConditions.visibilityOf((WebElement) ((JavascriptExecutor) driver).executeScript(
-								"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item')")));
-				new WebDriverWait(driver, maxTimeoutInSeconds).until(ExpectedConditions
-						.elementToBeClickable((WebElement) ((JavascriptExecutor) driver).executeScript(
-								"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('a#show')")));
-				// get the file name
-				fileName = (String) ((JavascriptExecutor) driver).executeScript(
-						"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('div#content #file-link').text");
+				long startTime = (new Date()).getTime();
 
-				// file downloaded location
-				// donwloadedAt = (String) ((JavascriptExecutor) driver).executeScript(
-				// "return
-				// document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList
-				// downloads-item').shadowRoot.querySelector('div.is-active.focus-row-active
-				// #file-icon-wrapper img').src");
+				while (!downloadStarted && (((new Date().getTime()) - startTime) / 1000) < maxTimeoutInSeconds) {
+					try {
+						Object downloadedItemsObject = js.executeScript(
+								"return document.querySelector('downloads-manager').shadowRoot.querySelectorAll('#downloadsList downloads-item').length");
+						downloadStarted =  (Integer.parseInt(downloadedItemsObject.toString()) > 0);
+					} catch (Exception ignoreException) {
+						// do nothing ignore the exception
+						// until the element is present
+					}
+				}
+				if (downloadStarted) {
+
+					new WebDriverWait(driver, maxTimeoutInSeconds).until(ExpectedConditions
+							.elementToBeClickable((WebElement) ((JavascriptExecutor) driver).executeScript(
+									"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('a#show')")));
+					// get the file name
+					fileName = (String) ((JavascriptExecutor) driver).executeScript(
+							"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('div#content #file-link').text");
+					captureScreenShot(driver, "download_file");
+					js.executeScript(
+							"document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('#remove').click()");
+				}
+								
+				//TODO Need to implement the logic to clear the downloaded file entry from download history in FireFox 
 			} else if (CommonVariables.BROWSER_SELECT.equalsIgnoreCase("firefox")) {
 
 				// navigate to chrome downloads
 				driver.get("about:downloads");
-				Thread.sleep(2000);
-				new WebDriverWait(driver, maxTimeoutInSeconds).until(ExpectedConditions.attributeContains(
-						(WebElement) ((JavascriptExecutor) driver).executeScript(
-								"return document.querySelector('#contentAreaDownloadsView .downloadMainArea .downloadContainer progress')"),
-						"value", "100"));
-				// get the file name
-				fileName = (String) ((JavascriptExecutor) driver).executeScript(
-						"return document.querySelector('#contentAreaDownloadsView .downloadMainArea .downloadContainer description:nth-of-type(1)').value");
 
+				new WebDriverWait(driver, maxTimeoutInSeconds)
+						.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".download.download-state")));
+				if (driver.findElements(By.cssSelector(".download.download-state")).size() > 0) {
+					new WebDriverWait(driver, maxTimeoutInSeconds).until(ExpectedConditions.attributeContains(
+							By.cssSelector("#contentAreaDownloadsView .downloadMainArea .downloadContainer progress"),
+							"value", "100"));
+					// get the file name
+					fileName = getAttribute(driver, By.cssSelector(
+							"#contentAreaDownloadsView .downloadMainArea .downloadContainer description:nth-of-type(1)"),
+							"value", true, "");
+				}
 				// file downloaded location
 				// donwloadedAt = (String) ((JavascriptExecutor) driver).executeScript(
 				// "return document.querySelector('#contentAreaDownloadsView .downloadMainArea
@@ -1491,11 +1847,6 @@ public class CommonFunctions {
 
 	}
 
-	/*
-	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Private Methods
-	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	 */
-
 	/**
 	 * gets the element based on the by locater
 	 * 
@@ -1503,7 +1854,7 @@ public class CommonFunctions {
 	 * @param byLocator the by locator
 	 * @return WebElement
 	 */
-	private WebElement getElement(WebDriver driver, By byLocator) {
+	public WebElement getElement(WebDriver driver, By byLocator) {
 		return waitForElement(driver, byLocator, ExpectedConditionsEnums.PRESENCE);
 	}
 
@@ -1515,7 +1866,7 @@ public class CommonFunctions {
 	 * @param maxTimeOut maximum time to wait for WebElement
 	 * @return WebElement
 	 */
-	private WebElement getElement(WebDriver driver, By byLocator, int maxTimeOut) {
+	public WebElement getElement(WebDriver driver, By byLocator, int maxTimeOut) {
 		return waitForElement(driver, byLocator, ExpectedConditionsEnums.PRESENCE, maxTimeOut);
 	}
 
@@ -1526,7 +1877,7 @@ public class CommonFunctions {
 	 * @param element the WebElement
 	 * @return WebElement
 	 */
-	private WebElement getElement(WebDriver driver, WebElement element) {
+	public WebElement getElement(WebDriver driver, WebElement element) {
 		return waitForElement(driver, element, ExpectedConditionsEnums.VISIBLE);
 	}
 
@@ -1538,7 +1889,7 @@ public class CommonFunctions {
 	 * @param maxTimeOut maximum time to wait for the element
 	 * @return WebElement
 	 */
-	private WebElement getElement(WebDriver driver, WebElement element, int maxTimeOut) {
+	public WebElement getElement(WebDriver driver, WebElement element, int maxTimeOut) {
 		return waitForElement(driver, element, ExpectedConditionsEnums.VISIBLE, maxTimeOut);
 	}
 
@@ -1548,8 +1899,9 @@ public class CommonFunctions {
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param element    the {@link org.openqa.selenium.WebElement element}
 	 * @param javaScript the java script
+	 * @throws Exception the exception
 	 */
-	private void executeJs(WebDriver driver, WebElement element, String javaScript) {
+	public void executeJs(WebDriver driver, WebElement element, String javaScript) throws Exception {
 
 		this.logAccess.getLogger().debug("Executing \"" + javaScript + "\" JavaScript on element :- " + element);
 		JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -1562,11 +1914,16 @@ public class CommonFunctions {
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param javaScript the java script
 	 */
-	private void executeJs(WebDriver driver, String javaScript) {
+	public void executeJs(WebDriver driver, String javaScript) {
 		this.logAccess.getLogger().debug("Executing \"" + javaScript + "\" JavaScript");
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		js.executeScript(javaScript);
 	}
+
+	/*
+	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Private Methods
+	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	 */
 
 	/**
 	 * Gets the original style.
@@ -1585,8 +1942,9 @@ public class CommonFunctions {
 	 * @param driver        the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param element       the {@link org.openqa.selenium.WebElement element}
 	 * @param originalStyle the original style
+	 * @throws Exception the exception
 	 */
-	private void setOriginalStyle(WebDriver driver, WebElement element, String originalStyle) {
+	private void setOriginalStyle(WebDriver driver, WebElement element, String originalStyle) throws Exception {
 		this.logAccess.getLogger().debug("Setting orignial style \"" + originalStyle + "\" to element :- " + element);
 		String js = "arguments[0].setAttribute('style', '" + originalStyle + "');";
 		executeJs(driver, element, js);
@@ -1617,13 +1975,9 @@ public class CommonFunctions {
 		switch (expectedCondition) {
 		case CLICKABLE:
 			returnElement = wait.until(ExpectedConditions.elementToBeClickable(element));
-			// driver.manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
-			// TimeUnit.SECONDS);
 			break;
 		case VISIBLE:
 			returnElement = wait.until(ExpectedConditions.visibilityOf(element));
-			// driver.manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
-			// TimeUnit.SECONDS);
 			break;
 		default:
 			throw new IllegalArgumentException("??? Unexpected value: " + expectedCondition
@@ -1643,6 +1997,7 @@ public class CommonFunctions {
 	 *                          <ul>
 	 *                          <li>CLICKABLE</li>
 	 *                          <li>PRESENCE</li>
+	 *                          <li>VISIBLE</li>
 	 *                          </ul>
 	 *                          </font>
 	 * @param maxTimeout        the max timeout in seconds
@@ -1657,13 +2012,12 @@ public class CommonFunctions {
 		switch (expectedCondition) {
 		case CLICKABLE:
 			returnElement = wait.until(ExpectedConditions.elementToBeClickable(byLocator));
-			// driver.manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
-			// TimeUnit.SECONDS);
 			break;
 		case PRESENCE:
 			returnElement = wait.until(ExpectedConditions.presenceOfElementLocated(byLocator));
-			// driver.manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT,
-			// TimeUnit.SECONDS);
+			break;
+		case VISIBLE:
+			returnElement = wait.until(ExpectedConditions.visibilityOfElementLocated(byLocator));
 			break;
 		default:
 			throw new IllegalArgumentException("????Unexpected value: " + expectedCondition
@@ -1686,7 +2040,7 @@ public class CommonFunctions {
 	 *                             <font color='blue'>Note : First screenshot will
 	 *                             show the header and will be hidden in the
 	 *                             subsequent screenshots if you choose <b>true</b>
-	 *                             and oppositive holds good too</font>
+	 *                             and opposite holds good too</font>
 	 * @throws Exception exception
 	 */
 	private void capturePageChunks(WebDriver driver, String tempImagesFolderPath, WebElement hideElement,
@@ -1745,9 +2099,8 @@ public class CommonFunctions {
 			double pxRatio = Math.round(((double) lastPageBufferImage.getHeight() / (double) windowHeight) * 100.0)
 					/ 100.0;
 			// capture the small chunk
-			BufferedImage lastChunk = lastPageBufferImage.getSubimage(0,
-					lastPageBufferImage.getHeight()
-							- (lastPageBufferImage.getHeight() * lastChunkHeight) / windowHeight,
+			BufferedImage lastChunk = lastPageBufferImage.getSubimage(0, (int) (lastPageBufferImage.getHeight()
+					- (lastPageBufferImage.getHeight() * (lastChunkHeight * pxRatio)) / (windowHeight * pxRatio)),
 					lastPageBufferImage.getWidth(), (int) (lastChunkHeight * pxRatio));
 
 			ImageIO.write(lastChunk, "png", tmpFile);

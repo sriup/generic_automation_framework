@@ -3,7 +3,6 @@ package framework.commonfunctions;
 import java.io.File;
 import java.util.HashMap;
 
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -57,13 +56,13 @@ public class BrowserFunctions {
 	 * 
 	 * @param downloadPath the path where the files should be download when download
 	 *                     from browser
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private void setDownloadFolderPath(String downloadPath) throws Exception {
 		if (downloadPath.isEmpty()) {
 			this.downloadFolderpath = System.getProperty("user.dir") + File.separatorChar + "Download_File";
-			
-		}else {
+
+		} else {
 			this.downloadFolderpath = downloadPath;
 		}
 		new FolderFileUtil(this.logAccess).createFolder(this.downloadFolderpath);
@@ -238,7 +237,6 @@ public class BrowserFunctions {
 	 */
 
 	private WebDriver launchChrome() throws Exception {
-//		WebDriverManager.chromedriver().setup();
 		System.setProperty("webdriver.chrome.driver",
 				System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
 						+ BrowserEnums.Chrome.toString() + File.separatorChar
@@ -248,6 +246,7 @@ public class BrowserFunctions {
 		HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
 		chromePrefs.put("profile.default_content_settings.popups", 0);
 		chromePrefs.put("download.default_directory", this.getDownloadFolderPath());
+
 		ChromeOptions options = new ChromeOptions();
 		options.setExperimentalOption("prefs", chromePrefs);
 		options.setCapability("ACCEPT_SSL_CERTS", true);
@@ -255,63 +254,76 @@ public class BrowserFunctions {
 
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		setWebDriver(new ChromeDriver(options));
-		//getWebDriver().manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT, TimeUnit.SECONDS);
 		return getWebDriver();
 	}
 
 	/**
-	 * Launch firefox.<br><br>
+	 * Launch firefox.<br>
+	 * <br>
 	 *
-	 * Refer to <a href = 'http://kb.mozillazine.org/Firefox_:_FAQs_:_About:config_Entries'>Firefox Configuration Details</a> for detailed information about
-	 * each configuration setting.
+	 * Refer to <a href =
+	 * 'http://kb.mozillazine.org/Firefox_:_FAQs_:_About:config_Entries'>Firefox
+	 * Configuration Details</a> for detailed information about each configuration
+	 * setting.<br>
+	 * ! If you want to see the preferences you can click the menu button menu , click Help and select Troubleshooting Information. The Troubleshooting Information tab will open.
+	 * And then click on `Profile Folder` 
 	 * @return the web driver
 	 * @throws Exception
 	 */
 	private WebDriver launchFirefox() throws Exception {
-//		WebDriverManager.firefoxdriver().setup();
-		System.setProperty("webdriver.gecko.driver", System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
-				+ BrowserEnums.Firefox.toString() + File.separatorChar
-				+ getWebDriverLocation(BrowserEnums.Firefox).replace(".", "_") + File.separatorChar
-				+ "geckodriver.exe");
+		System.setProperty("webdriver.gecko.driver",
+				System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
+						+ BrowserEnums.Firefox.toString() + File.separatorChar
+						+ getWebDriverLocation(BrowserEnums.Firefox).replace(".", "_") + File.separatorChar
+						+ "geckodriver.exe");
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
-		
-		
+
 		FirefoxProfile profile = new FirefoxProfile();
-		
+
 		// set the download folder directory
 		profile.setPreference("browser.download.dir", this.getDownloadFolderPath());
-		
+
 		// the last folder specified for a download
-		profile.setPreference("browser.download.folderList", 2); 
-		
+		profile.setPreference("browser.download.folderList", 2);
+
 		// hide Download Manager window when a download begins
-		profile.setPreference("browser.download.manager.showWhenStarting", false); 
+		profile.setPreference("browser.download.manager.showWhenStarting", false);
+
+		/****This is the most important setting that will make sure the pdf is downloaded without any prompt**/
+		profile.setPreference("pdfjs.disabled", true);
 		
-		// A comma-separated list of MIME types to save to disk without asking what to use to open the file.
+		profile.setPreference("pref.downloads.disable_button.edit_actions", false);
+		
+
+		// A comma-separated list of MIME types to save to disk without asking what to
+		// use to open the file.
 		profile.setPreference("browser.helperApps.neverAsk.saveToDisk",
 				"application/pdf,application/zip,text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;octet/stream");
-		
-		// A comma-separated list of MIME types to open directly without asking for confirmation.
+
+		// A comma-separated list of MIME types to open directly without asking for
+		// confirmation.
 		profile.setPreference("browser.helperApps.neverAsk.openFile",
 				"application/pdf,application/zip,text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;octet/stream");
-		
+
 		// Do not ask what to do with an unknown MIME type
 		profile.setPreference("browser.helperApps.alwaysAsk.force", false);
-		
-		// Leave the window in the background when starting a download (Default Setting is false)
+
+		// Leave the window in the background when starting a download (Default Setting
+		// is false)
 		profile.setPreference("browser.download.manager.focusWhenStarting", false);
-		
-		//popup window at bottom right corner of the screen will not appear once all downloads are finished.
+
+		// popup window at bottom right corner of the screen will not appear once all
+		// downloads are finished.
 		profile.setPreference("browser.download.manager.showAlertOnComplete", true);
-		
+
 		// Close the Download Manager when all downloads are complete
 		profile.setPreference("browser.download.manager.closeWhenDone", true);
+
 		
 		FirefoxOptions options = new FirefoxOptions();
 		options.setProfile(profile);
-		
+
 		setWebDriver(new FirefoxDriver(options));
-		//getWebDriver().manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT, TimeUnit.SECONDS);
 		return getWebDriver();
 
 	}
@@ -325,7 +337,6 @@ public class BrowserFunctions {
 		WebDriverManager.edgedriver().setup();
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		setWebDriver(new EdgeDriver());
-		//getWebDriver().manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT, TimeUnit.SECONDS);
 		return getWebDriver();
 
 	}
@@ -343,13 +354,12 @@ public class BrowserFunctions {
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		InternetExplorerOptions options = new InternetExplorerOptions();
 		options.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
-		// options.destructivelyEnsureCleanSession();
+		options.destructivelyEnsureCleanSession();
 		options.disableNativeEvents();
 		options.enablePersistentHovering();
 		options.requireWindowFocus();
 		options.introduceFlakinessByIgnoringSecurityDomains();
 		threadDriver.set(new InternetExplorerDriver(options));
-		//getWebDriver().manage().timeouts().implicitlyWait(CommonVariables.IMPLICIT_WAIT, TimeUnit.SECONDS);
 		return threadDriver.get();
 	}
 
@@ -364,7 +374,7 @@ public class BrowserFunctions {
 		threadDriver.set(new PhantomJSDriver(caps));
 		return threadDriver.get();
 	}
-	
+
 	private String getWebDriverLocation(BrowserEnums browserName) throws Exception {
 
 		JsonUtil jsonUtil = new JsonUtil(logAccess);

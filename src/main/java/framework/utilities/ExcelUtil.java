@@ -383,6 +383,32 @@ public class ExcelUtil {
 	}
 
 	/**
+	 * Gets the cell value based on the cell
+	 * 
+	 * @param cell Cell from which the value should be returned
+	 * @return cell value
+	 */
+	public String getCellData(Cell cell) {
+		String cellValue = "";
+
+		CellType cellType = cell.getCellTypeEnum();
+
+		if (cellType == CellType.STRING) {
+			cellValue = cell.toString().trim();
+		} else if (cellType == CellType.NUMERIC) {
+			if (cell.getCellStyle().getDataFormatString().contains("%")) {
+				cellValue = Double.toString(cell.getNumericCellValue() * 100) + "%";
+			} else {
+				cellValue = Double.toString(cell.getNumericCellValue());
+			}
+		} else if (cellType == CellType.BOOLEAN) {
+			cellValue = String.valueOf(cell.getBooleanCellValue());
+		}
+
+		return cellValue;
+	}
+
+	/**
 	 * Gets the cell data.
 	 *
 	 * @param sheetIndex   the index of the sheet number (0-based physical and
@@ -401,19 +427,7 @@ public class ExcelUtil {
 				// get row based on the sheet name and row index
 				Row row = getRow(sheetIndex, rowNumber);
 				Cell cell = row.getCell(columnNumber);
-				CellType cellType = cell.getCellTypeEnum();
-
-				if (cellType == CellType.STRING) {
-					cellValue = cell.toString().trim();
-				} else if (cellType == CellType.NUMERIC) {
-					if (cell.getCellStyle().getDataFormatString().contains("%")) {
-						cellValue = Double.toString(cell.getNumericCellValue() * 100) + "%";
-					} else {
-						cellValue = Double.toString(cell.getNumericCellValue());
-					}
-				} else if (cellType == CellType.BOOLEAN) {
-					cellValue = String.valueOf(cell.getBooleanCellValue());
-				}
+				cellValue = getCellData(cell);
 			} catch (NullPointerException NPE) {
 				cellValue = "";
 			}
@@ -507,19 +521,7 @@ public class ExcelUtil {
 
 			// get row based on the sheet name and row index
 			Cell cell = row.getCell(columnNumber);
-			CellType cellType = cell.getCellTypeEnum();
-
-			if (cellType == CellType.STRING) {
-				cellValue = cell.toString().trim();
-			} else if (cellType == CellType.NUMERIC) {
-				if (cell.getCellStyle().getDataFormatString().contains("%")) {
-					cellValue = Double.toString(cell.getNumericCellValue() * 100) + "%";
-				} else {
-					cellValue = Double.toString(cell.getNumericCellValue());
-				}
-			} else if (cellType == CellType.BOOLEAN) {
-				cellValue = String.valueOf(cell.getBooleanCellValue());
-			}
+			cellValue = getCellData(cell);
 		} catch (NullPointerException NPE) {
 			cellValue = "";
 		}
@@ -610,7 +612,7 @@ public class ExcelUtil {
 
 				String currentCellValue = getCellData(sheetName, currentRow, filterMapKey);
 
-				if (!currentCellValue.trim().equalsIgnoreCase(filterMapValue.trim())) {
+				if (!currentCellValue.trim().equals(filterMapValue.trim())) {
 					isFoundAllFilters = false;
 					break;
 				}
@@ -667,7 +669,7 @@ public class ExcelUtil {
 
 				String currentCellValue = getCellData(sheetName, currentRow, filterMapKey);
 
-				if (!currentCellValue.trim().equalsIgnoreCase(filterMapValue.trim())) {
+				if (!currentCellValue.trim().equals(filterMapValue.trim())) {
 					isFoundAllFilters = false;
 					break;
 				}
@@ -832,6 +834,9 @@ public class ExcelUtil {
 			// create a new row and append the data
 			cell = getSheet(sheetName).createRow(rowNumber).createCell(columnNumber);
 		} else { // update the data to the existing row
+			if(getRow(sheetName, rowNumber).getCell(columnNumber)== null) {
+				getRow(sheetName, rowNumber).createCell(columnNumber);
+			}
 			cell = getRow(sheetName, rowNumber).getCell(columnNumber);
 		}
 		if (value instanceof Integer) {
@@ -867,6 +872,9 @@ public class ExcelUtil {
 			// create a new row and append the data
 			cell = getSheet(sheetIndex).createRow(rowNumber).createCell(columnNumber);
 		} else { // update the data to the existing row
+			if(getRow(sheetIndex, rowNumber).getCell(columnNumber)== null) {
+				getRow(sheetIndex, rowNumber).createCell(columnNumber);
+			}
 			cell = getRow(sheetIndex, rowNumber).getCell(columnNumber);
 		}
 		if (value instanceof Integer) {
@@ -896,12 +904,19 @@ public class ExcelUtil {
 	public Cell writeCellData(String excelFilePath, String excelFileName, String sheetName, int rowNumber,
 			String columnName, Object value) throws IOException {
 		Cell cell;
+		
+		int columnNumber = getColumnHeaderIndex(sheetName, columnName);
 
 		if (rowNumber > getRowCount(sheetName)) {
 			// create a new row and append the data
-			cell = getSheet(sheetName).createRow(rowNumber).createCell(getColumnHeaderIndex(sheetName, columnName));
+			cell = getSheet(sheetName).createRow(rowNumber).createCell(columnNumber);
 		} else { // update the data to the existing row
-			cell = getRow(sheetName, rowNumber).getCell(getColumnHeaderIndex(sheetName, columnName));
+			
+			if(getRow(sheetName, rowNumber).getCell(columnNumber)== null) {
+				getRow(sheetName, rowNumber).createCell(columnNumber);
+			}
+			
+			cell = getRow(sheetName, rowNumber).getCell(columnNumber);
 		}
 		if (value instanceof Integer) {
 			// set value as integer
@@ -931,12 +946,17 @@ public class ExcelUtil {
 	public Cell writeCellData(String excelFilePath, String excelFileName, int sheetIndex, int rowNumber,
 			String columnName, Object value) throws IOException {
 		Cell cell;
+		
+		int columnNumber = getColumnHeaderIndex(sheetIndex, columnName);
 
 		if (rowNumber > getRowCount(sheetIndex)) {
 			// create a new row and append the data
-			cell = getSheet(sheetIndex).createRow(rowNumber).createCell(getColumnHeaderIndex(sheetIndex, columnName));
+			cell = getSheet(sheetIndex).createRow(rowNumber).createCell(columnNumber);
 		} else { // update the data to the existing row
-			cell = getRow(sheetIndex, rowNumber).getCell(getColumnHeaderIndex(sheetIndex, columnName));
+			if(getRow(sheetIndex, rowNumber).getCell(columnNumber)== null) {
+				getRow(sheetIndex, rowNumber).createCell(columnNumber);
+			}
+			cell = getRow(sheetIndex, rowNumber).getCell(columnNumber);
 		}
 		if (value instanceof Integer) {
 			// set value as integer
@@ -954,13 +974,13 @@ public class ExcelUtil {
 	/**
 	 * Format cell style.
 	 *
-	 * @param cell 
-	 * the cell
-	 * @param indexColorEnum 
-	 * the {@link org.apache.poi.ss.usermodel.IndexedColors IndexColors}
-	 * @param patternTypeEnum the {@link org.apache.poi.ss.usermodel.FillPatternType FillPatternType}
+	 * @param cell            the cell
+	 * @param indexColorEnum  the {@link org.apache.poi.ss.usermodel.IndexedColors
+	 *                        IndexColors}
+	 * @param patternTypeEnum the {@link org.apache.poi.ss.usermodel.FillPatternType
+	 *                        FillPatternType}
 	 */
-	public void formatCellStyle(Cell cell, IndexedColors indexColorEnum, FillPatternType patternTypeEnum ) {
+	public void formatCellStyle(Cell cell, IndexedColors indexColorEnum, FillPatternType patternTypeEnum) {
 		CellStyle cellStyle = createCellStyle(indexColorEnum, patternTypeEnum);
 		cell.setCellStyle(cellStyle);
 	}

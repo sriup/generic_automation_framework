@@ -28,6 +28,9 @@ public class CommonVariables {
 
 	/** The minimum timeout. */
 	public static int MIN_TIMEOUT = 5;
+	
+	/** The no timeout */
+	public static int NO_TIMEOUT = 0;
 
 	/**
 	 * List of available time formats.

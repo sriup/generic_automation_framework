@@ -58,10 +58,10 @@ public class LogAccess {
 		ca.setLayout(new PatternLayout("%d{YYYY-MM-dd HH:mm:ss} - [%M] %m%n"));
 		ca.activateOptions();
 		log.addAppender(ca);
-
 		log.info("appender filename in LogAccess class is: " + loggerFileName);
 
 		FileAppender appender = new FileAppender();
+		
 
 		appender.setAppend(true);
 
@@ -83,7 +83,7 @@ public class LogAccess {
 		appender.setFile(filePath + File.separator + loggerFileName + ".log");
 
 		appender.setThreshold(Level.ALL);
-
+		
 		PatternLayout layOut = new PatternLayout();
 		layOut.setConversionPattern("%d{YYYY-MM-dd HH:mm:ss} - [%M] %m%n");
 		appender.setLayout(layOut);
