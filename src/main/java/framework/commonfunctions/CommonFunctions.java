@@ -276,7 +276,7 @@ public class CommonFunctions {
 	 * Wait for element(s) visible.
 	 *
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param elements   the {@link org.openqa.selenium.WebElement element}
+	 * @param elements   the list of {@link org.openqa.selenium.WebElement element}
 	 * @param maxTimeOut Maximum time to wait for the element(s) visible
 	 * @return List of WebElements
 	 */
@@ -285,6 +285,19 @@ public class CommonFunctions {
 		return (new WebDriverWait(driver, maxTimeOut)).until(ExpectedConditions.visibilityOfAllElements(elements));
 	}
 
+	/**
+	 * Wait for element(s) visible.
+	 *
+	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator   the locator for the element(s)
+	 * @param maxTimeOut Maximum time to wait for the element(s) visible
+	 * @return List of WebElements
+	 */
+	public List<WebElement> waitForElementsToVisible(WebDriver driver, By byLocator, int maxTimeOut) {
+		this.logAccess.getLogger().debug("waiting for all specified elements in the list to be visible " + byLocator);
+		return (new WebDriverWait(driver, maxTimeOut)).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(byLocator));
+	}
+	
 	/**
 	 * Wait for invisibility of element. Method will wait for
 	 * {@link CommonVariables#MIN_TIMEOUT} before checking for element invisibility.
@@ -1863,7 +1876,7 @@ public class CommonFunctions {
 	 * 
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param byLocator  the by locator
-	 * @param maxTimeOut maximum time to wait for WebElement
+	 * @param maxTimeOut Maximum time to wait for WebElement
 	 * @return WebElement
 	 */
 	public WebElement getElement(WebDriver driver, By byLocator, int maxTimeOut) {
@@ -1886,12 +1899,37 @@ public class CommonFunctions {
 	 * 
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param element    the WebElement
-	 * @param maxTimeOut maximum time to wait for the element
+	 * @param maxTimeOut Maximum time to wait for the element
 	 * @return WebElement
 	 */
 	public WebElement getElement(WebDriver driver, WebElement element, int maxTimeOut) {
 		return waitForElement(driver, element, ExpectedConditionsEnums.VISIBLE, maxTimeOut);
 	}
+	
+	/**
+	 * Gets the elements.
+	 *
+	 * @param driver the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator the by locator
+	 * @return the list of elements
+	 */
+	public List<WebElement> getElements(WebDriver driver, By byLocator){
+		return getElements(driver, byLocator, CommonVariables.MED_TIMEOUT);
+		
+	}
+	
+	/**
+	 * Gets the elements.
+	 *
+	 * @param driver the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator the by locator
+	 * @param maxTimeOut Maximum time to wait for the element
+	 * @return the elements
+	 */
+	public List<WebElement> getElements(WebDriver driver, By byLocator, int maxTimeOut){
+		return (waitForElementsToVisible(driver, byLocator, maxTimeOut));		
+	}
+	
 
 	/**
 	 * Executes the JavaScript on the specified element.
