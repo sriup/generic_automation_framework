@@ -289,7 +289,7 @@ public class CommonFunctions {
 	 * Wait for element(s) visible.
 	 *
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param byLocator   the locator for the elements
+	 * @param byLocator   the locator for the element(s)
 	 * @param maxTimeOut Maximum time to wait for the element(s) visible
 	 * @return List of WebElements
 	 */
