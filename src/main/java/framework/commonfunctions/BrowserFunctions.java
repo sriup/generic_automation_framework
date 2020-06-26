@@ -353,12 +353,17 @@ public class BrowserFunctions {
 		System.setProperty("webdriver.ie.driver", binaryPath);
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		InternetExplorerOptions options = new InternetExplorerOptions();
+		// ignore zoom level
 		options.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
+		// ignore protective mode settings across the zones
+		options.introduceFlakinessByIgnoringSecurityDomains();
+		// clean session (without any cache)
 		options.destructivelyEnsureCleanSession();
+		
 		options.disableNativeEvents();
 		options.enablePersistentHovering();
 		options.requireWindowFocus();
-		options.introduceFlakinessByIgnoringSecurityDomains();
+		
 		threadDriver.set(new InternetExplorerDriver(options));
 		return threadDriver.get();
 	}
