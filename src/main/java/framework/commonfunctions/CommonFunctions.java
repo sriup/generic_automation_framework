@@ -289,15 +289,16 @@ public class CommonFunctions {
 	 * Wait for element(s) visible.
 	 *
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param byLocator   the locator for the element(s)
+	 * @param byLocator  the locator for the element(s)
 	 * @param maxTimeOut Maximum time to wait for the element(s) visible
 	 * @return List of WebElements
 	 */
 	public List<WebElement> waitForElementsToVisible(WebDriver driver, By byLocator, int maxTimeOut) {
 		this.logAccess.getLogger().debug("waiting for all specified elements in the list to be visible " + byLocator);
-		return (new WebDriverWait(driver, maxTimeOut)).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(byLocator));
+		return (new WebDriverWait(driver, maxTimeOut))
+				.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(byLocator));
 	}
-	
+
 	/**
 	 * Wait for invisibility of element. Method will wait for
 	 * {@link CommonVariables#MIN_TIMEOUT} before checking for element invisibility.
@@ -647,7 +648,14 @@ public class CommonFunctions {
 		// get the original
 		String originalStyle = getOriginalStyle(element);
 		// scroll element to the center of the page
-		String scrollToCentreJs = "arguments[0].scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'});";
+		// String scrollToCentreJs = "arguments[0].scrollIntoView({behavior: 'auto',
+		// block: 'center', inline: 'center'});";
+		String scrollToCentreJs = "function scrollToCentre(elem) {"
+				+ "var eleWindow = elem.ownerDocument.defaultView || window,"
+				+ "eleRect = elem.getBoundingClientRect(),"
+				+ "targetY = eleRect.top - (eleWindow.innerHeight - eleRect.height) / 2;"
+				+ "eleWindow.scrollTo(eleWindow.pageXOffset, eleWindow.pageYOffset + targetY);"
+				+ "}; scrollToCentre(arguments[0]);";
 		executeJs(driver, element, scrollToCentreJs);
 		// highlight the web element
 		String highlightJavaScript = "arguments[0].setAttribute('style', 'background: orange; border: 2px solid red');";
@@ -804,12 +812,13 @@ public class CommonFunctions {
 		}
 		// un-highlihgt
 		unHighlightElement(driver, tempElement, originalStyle);
-		// click
+		//click
 		try {
 			tempElement.click();
 		} catch (ElementNotInteractableException enie) {// TODO need to track this not intractable
 			executeJs(driver, tempElement, "arguments[0].click()");
 		}
+
 		// capture after (private capture screenshot)
 		if (isCaptureScreenShot && !captureBefore) {
 
@@ -1803,7 +1812,7 @@ public class CommonFunctions {
 					try {
 						Object downloadedItemsObject = js.executeScript(
 								"return document.querySelector('downloads-manager').shadowRoot.querySelectorAll('#downloadsList downloads-item').length");
-						downloadStarted =  (Integer.parseInt(downloadedItemsObject.toString()) > 0);
+						downloadStarted = (Integer.parseInt(downloadedItemsObject.toString()) > 0);
 					} catch (Exception ignoreException) {
 						// do nothing ignore the exception
 						// until the element is present
@@ -1821,8 +1830,9 @@ public class CommonFunctions {
 					js.executeScript(
 							"document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('#remove').click()");
 				}
-								
-				//TODO Need to implement the logic to clear the downloaded file entry from download history in FireFox 
+
+				// TODO Need to implement the logic to clear the downloaded file entry from
+				// download history in FireFox
 			} else if (CommonVariables.BROWSER_SELECT.equalsIgnoreCase("firefox")) {
 
 				// navigate to chrome downloads
@@ -1905,31 +1915,30 @@ public class CommonFunctions {
 	public WebElement getElement(WebDriver driver, WebElement element, int maxTimeOut) {
 		return waitForElement(driver, element, ExpectedConditionsEnums.VISIBLE, maxTimeOut);
 	}
-	
+
 	/**
 	 * Gets the elements.
 	 *
-	 * @param driver the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param driver    the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param byLocator the by locator
 	 * @return the list of elements
 	 */
-	public List<WebElement> getElements(WebDriver driver, By byLocator){
+	public List<WebElement> getElements(WebDriver driver, By byLocator) {
 		return getElements(driver, byLocator, CommonVariables.MED_TIMEOUT);
-		
+
 	}
-	
+
 	/**
 	 * Gets the elements.
 	 *
-	 * @param driver the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param byLocator the by locator
+	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator  the by locator
 	 * @param maxTimeOut Maximum time to wait for the element
 	 * @return the elements
 	 */
-	public List<WebElement> getElements(WebDriver driver, By byLocator, int maxTimeOut){
-		return (waitForElementsToVisible(driver, byLocator, maxTimeOut));		
+	public List<WebElement> getElements(WebDriver driver, By byLocator, int maxTimeOut) {
+		return (waitForElementsToVisible(driver, byLocator, maxTimeOut));
 	}
-	
 
 	/**
 	 * Executes the JavaScript on the specified element.
