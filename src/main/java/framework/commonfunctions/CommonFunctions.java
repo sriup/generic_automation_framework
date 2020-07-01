@@ -1685,7 +1685,7 @@ public class CommonFunctions {
 			return captureScreenShot(driver, screenShotName);
 		} else {
 
-			String tempScreenShotsFolderName = System.getProperty("user.dir") + File.separatorChar + "TempFolder"
+			String tempScreenShotsFolderName = screenShotsPath + File.separatorChar + "TempFolder"
 					+ File.separatorChar + getScreenShotTime() + "_" + screenShotName;
 			folderFileUtil.createFolder(tempScreenShotsFolderName);
 			capturePageChunks(driver, tempScreenShotsFolderName);
@@ -1722,7 +1722,7 @@ public class CommonFunctions {
 			return captureScreenShot(driver, screenShotName);
 
 		} else {
-			String tempScreenShotsFolderName = System.getProperty("user.dir") + File.separatorChar + "TempFolder"
+			String tempScreenShotsFolderName = screenShotsPath + File.separatorChar + "TempFolder"
 					+ File.separatorChar + getScreenShotTime() + "_" + screenShotName;
 			folderFileUtil.createFolder(tempScreenShotsFolderName);
 
