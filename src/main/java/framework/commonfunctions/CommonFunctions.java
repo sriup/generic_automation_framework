@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
@@ -802,6 +803,7 @@ public class CommonFunctions {
 	public void clickOnElement(WebDriver driver, WebElement element, boolean isCaptureScreenShot, boolean captureBefore,
 			String screenShotName) throws Exception {
 		this.logAccess.getLogger().info("Clicking on element  :- " + element);
+		String browserName = ((RemoteWebDriver) driver).getCapabilities().getBrowserName();
 		WebElement tempElement = getElement(driver, element);
 		// highlight element
 		String originalStyle = highlightElement(driver, tempElement);
@@ -812,7 +814,7 @@ public class CommonFunctions {
 		}
 		// un-highlihgt
 		unHighlightElement(driver, tempElement, originalStyle);
-		//click
+		// click
 		try {
 			tempElement.click();
 		} catch (ElementNotInteractableException enie) {// TODO need to track this not intractable
@@ -1683,7 +1685,7 @@ public class CommonFunctions {
 			return captureScreenShot(driver, screenShotName);
 		} else {
 
-			String tempScreenShotsFolderName = System.getProperty("user.dir") + File.separatorChar + "TempFolder"
+			String tempScreenShotsFolderName = screenShotsPath + File.separatorChar + "TempFolder"
 					+ File.separatorChar + getScreenShotTime() + "_" + screenShotName;
 			folderFileUtil.createFolder(tempScreenShotsFolderName);
 			capturePageChunks(driver, tempScreenShotsFolderName);
@@ -1720,7 +1722,7 @@ public class CommonFunctions {
 			return captureScreenShot(driver, screenShotName);
 
 		} else {
-			String tempScreenShotsFolderName = System.getProperty("user.dir") + File.separatorChar + "TempFolder"
+			String tempScreenShotsFolderName = screenShotsPath + File.separatorChar + "TempFolder"
 					+ File.separatorChar + getScreenShotTime() + "_" + screenShotName;
 			folderFileUtil.createFolder(tempScreenShotsFolderName);
 
@@ -1921,7 +1923,7 @@ public class CommonFunctions {
 	 *
 	 * @param driver    the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param byLocator the by locator
-	 * @return the list of elements
+	 * @return the list of elements,empty list will be return if there are no matching elements
 	 */
 	public List<WebElement> getElements(WebDriver driver, By byLocator) {
 		return getElements(driver, byLocator, CommonVariables.MED_TIMEOUT);
@@ -1934,10 +1936,18 @@ public class CommonFunctions {
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param byLocator  the by locator
 	 * @param maxTimeOut Maximum time to wait for the element
-	 * @return the elements
+	 * @return the elements,empty list will be return if there are no matching elements
 	 */
 	public List<WebElement> getElements(WebDriver driver, By byLocator, int maxTimeOut) {
-		return (waitForElementsToVisible(driver, byLocator, maxTimeOut));
+		List<WebElement> listElements = new ArrayList<WebElement>();
+		// check if the elements are present
+		try {
+			// get the elements if they are present
+			listElements = waitForElementsToVisible(driver, byLocator, maxTimeOut);
+		} catch (Exception e) {
+			// Do nothing when
+		}
+		return listElements;
 	}
 
 	/**
