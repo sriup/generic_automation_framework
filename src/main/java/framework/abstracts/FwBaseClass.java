@@ -103,6 +103,10 @@ public abstract class FwBaseClass {
 	}
 	
 	
+	public CommonFunctions getCommonFunctions() {
+		return this.commonFunctions;
+	}
+	
 
 	/**
 	 * Gets the instance of {@link framework.helper.SoftAssert SoftAssert}

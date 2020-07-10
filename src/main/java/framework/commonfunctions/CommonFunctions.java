@@ -197,8 +197,9 @@ public class CommonFunctions {
 	 *                          </ul>
 	 *                          </font>
 	 * @return the {@link org.openqa.selenium.WebElement element}
+	 * @throws Exception 
 	 */
-	public WebElement waitForElement(WebDriver driver, WebElement element, ExpectedConditionsEnums expectedCondition) {
+	public WebElement waitForElement(WebDriver driver, WebElement element, ExpectedConditionsEnums expectedCondition) throws Exception {
 		this.logAccess.getLogger()
 				.debug("waiting for element to be " + expectedCondition.toString() + " :- " + element);
 		return waitUntilElement(driver, element, expectedCondition, CommonVariables.MED_TIMEOUT);
@@ -219,9 +220,10 @@ public class CommonFunctions {
 	 *                          </font>
 	 * @param maxTimeout        the max timeout in seconds
 	 * @return the {@link org.openqa.selenium.WebElement element}
+	 * @throws Exception 
 	 */
 	public WebElement waitForElement(WebDriver driver, WebElement element, ExpectedConditionsEnums expectedCondition,
-			int maxTimeout) {
+			int maxTimeout) throws Exception {
 		this.logAccess.getLogger()
 				.debug("waiting for element to be " + expectedCondition.toString() + " :- " + element);
 		return waitUntilElement(driver, element, expectedCondition, maxTimeout);
@@ -242,8 +244,9 @@ public class CommonFunctions {
 	 *                          </ul>
 	 *                          </font>
 	 * @return the web element
+	 * @throws Exception 
 	 */
-	public WebElement waitForElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition) {
+	public WebElement waitForElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition) throws Exception {
 		this.logAccess.getLogger()
 				.debug("waiting for element to be " + expectedCondition.toString() + " :- " + byLocator);
 		return waitUntilElement(driver, byLocator, expectedCondition, CommonVariables.MED_TIMEOUT);
@@ -265,9 +268,10 @@ public class CommonFunctions {
 	 *                          </font>
 	 * @param maxTimeout        the max timeout in seconds
 	 * @return the web element
+	 * @throws Exception 
 	 */
 	public WebElement waitForElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition,
-			int maxTimeout) {
+			int maxTimeout) throws Exception {
 		this.logAccess.getLogger()
 				.debug("waiting for element to be " + expectedCondition.toString() + " :- " + byLocator);
 		return waitUntilElement(driver, byLocator, expectedCondition, maxTimeout);
@@ -648,21 +652,14 @@ public class CommonFunctions {
 		this.logAccess.getLogger().debug("Highlighting element :- " + element);
 		// get the original
 		String originalStyle = getOriginalStyle(element);
-		// scroll element to the center of the page
-		// String scrollToCentreJs = "arguments[0].scrollIntoView({behavior: 'auto',
-		// block: 'center', inline: 'center'});";
-		String scrollToCentreJs = "function scrollToCentre(elem) {"
-				+ "var eleWindow = elem.ownerDocument.defaultView || window,"
-				+ "eleRect = elem.getBoundingClientRect(),"
-				+ "targetY = eleRect.top - (eleWindow.innerHeight - eleRect.height) / 2;"
-				+ "eleWindow.scrollTo(eleWindow.pageXOffset, eleWindow.pageYOffset + targetY);"
-				+ "}; scrollToCentre(arguments[0]);";
-		executeJs(driver, element, scrollToCentreJs);
+		//scroll element to the center
+		scrollElement(driver, element, "center");
 		// highlight the web element
 		String highlightJavaScript = "arguments[0].setAttribute('style', 'background: orange; border: 2px solid red');";
 		executeJs(driver, element, highlightJavaScript);
 		return originalStyle;
 	}
+	
 
 	/**
 	 * Highlights the element.
@@ -1878,8 +1875,9 @@ public class CommonFunctions {
 	 * @param driver    the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param byLocator the by locator
 	 * @return WebElement
+	 * @throws Exception 
 	 */
-	public WebElement getElement(WebDriver driver, By byLocator) {
+	public WebElement getElement(WebDriver driver, By byLocator) throws Exception {
 		return waitForElement(driver, byLocator, ExpectedConditionsEnums.PRESENCE);
 	}
 
@@ -1890,8 +1888,9 @@ public class CommonFunctions {
 	 * @param byLocator  the by locator
 	 * @param maxTimeOut Maximum time to wait for WebElement
 	 * @return WebElement
+	 * @throws Exception 
 	 */
-	public WebElement getElement(WebDriver driver, By byLocator, int maxTimeOut) {
+	public WebElement getElement(WebDriver driver, By byLocator, int maxTimeOut) throws Exception {
 		return waitForElement(driver, byLocator, ExpectedConditionsEnums.PRESENCE, maxTimeOut);
 	}
 
@@ -1901,8 +1900,9 @@ public class CommonFunctions {
 	 * @param driver  the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param element the WebElement
 	 * @return WebElement
+	 * @throws Exception 
 	 */
-	public WebElement getElement(WebDriver driver, WebElement element) {
+	public WebElement getElement(WebDriver driver, WebElement element) throws Exception {
 		return waitForElement(driver, element, ExpectedConditionsEnums.VISIBLE);
 	}
 
@@ -1913,8 +1913,9 @@ public class CommonFunctions {
 	 * @param element    the WebElement
 	 * @param maxTimeOut Maximum time to wait for the element
 	 * @return WebElement
+	 * @throws Exception 
 	 */
-	public WebElement getElement(WebDriver driver, WebElement element, int maxTimeOut) {
+	public WebElement getElement(WebDriver driver, WebElement element, int maxTimeOut) throws Exception {
 		return waitForElement(driver, element, ExpectedConditionsEnums.VISIBLE, maxTimeOut);
 	}
 
@@ -2022,9 +2023,10 @@ public class CommonFunctions {
 	 *                          </font>
 	 * @param maxTimeout        the max timeout in seconds
 	 * @return the web element
+	 * @throws Exception 
 	 */
 	private WebElement waitUntilElement(WebDriver driver, WebElement element, ExpectedConditionsEnums expectedCondition,
-			int maxTimeout) {
+			int maxTimeout) throws Exception {
 		// driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
 		WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
 
@@ -2040,6 +2042,7 @@ public class CommonFunctions {
 			throw new IllegalArgumentException("??? Unexpected value: " + expectedCondition
 					+ ". This method supports clickable and Vislble options. Please use waitUntilElement by locator method for PRESENCE. ???");
 		}
+		scrollElement(driver, returnElement, "center");
 		return returnElement;
 	}
 
@@ -2059,9 +2062,10 @@ public class CommonFunctions {
 	 *                          </font>
 	 * @param maxTimeout        the max timeout in seconds
 	 * @return the web element
+	 * @throws Exception 
 	 */
 	private WebElement waitUntilElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition,
-			int maxTimeout) {
+			int maxTimeout) throws Exception {
 		// driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
 		WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
 
@@ -2080,6 +2084,7 @@ public class CommonFunctions {
 			throw new IllegalArgumentException("????Unexpected value: " + expectedCondition
 					+ ". This method supports clickable and Presence options. Please use waitUntilElement by locator method for VISIBLE.");
 		}
+		scrollElement(driver, returnElement, "center");
 		return returnElement;
 	}
 
@@ -2308,6 +2313,32 @@ public class CommonFunctions {
 		folderFileUtil.deleteFolder(folder);
 		return failedScreenShotPath;
 
+	}
+	
+	/**
+	 * Scroll element on the page to the specific position
+	 *
+	 * @param driver the driver
+	 * @param element the element to be scrolled
+	 * @param location the location Eg: top,bottom, center
+	 * @throws Exception the exception
+	 */
+	private void scrollElement(WebDriver driver, WebElement element, String location) throws Exception {
+		String elePosition = (location.equalsIgnoreCase("TOP")) ? "start" : (location.equalsIgnoreCase("BOTTOM")) ? "end" : "center";
+		String jScript;
+		if (elePosition.equalsIgnoreCase("center")) {
+			jScript = "function scrollToCentre(elem) {"
+				+ "var eleWindow = elem.ownerDocument.defaultView || window,"
+				+ "eleRect = elem.getBoundingClientRect(),"
+				+ "targetY = eleRect.top - (eleWindow.innerHeight - eleRect.height) / 2;"
+				+ "eleWindow.scrollTo(eleWindow.pageXOffset, eleWindow.pageYOffset + targetY);"
+				+ "}; scrollToCentre(arguments[0]);";
+			
+		}else {
+			jScript = "arguments[0].scrollIntoView({behavior: 'auto', block: '" + elePosition +"', inline: 'center'})";
+		}
+		
+		executeJs(driver, element, jScript);
 	}
 
 }
