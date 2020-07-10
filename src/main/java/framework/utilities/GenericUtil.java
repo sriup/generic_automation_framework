@@ -31,7 +31,8 @@ public class GenericUtil {
 	/**
 	 * Generates random number
 	 * 
-	 * @param length Length of the digit number
+	 * @param length Length of the digit number<br>
+	 *               Note: Maximum length can =<19
 	 * @return Random long number
 	 */
 	public long generateRandomNumber(int length) {
@@ -40,7 +41,13 @@ public class GenericUtil {
 		String temp = RandomStringUtils.random(length, allowedChars);
 		randomNumber = temp.substring(0, temp.length());
 
-		return Long.valueOf(randomNumber);
+		long returnRandomNumber = Long.valueOf(randomNumber);
+
+		if (length != String.valueOf(returnRandomNumber).length()) {
+			returnRandomNumber = generateRandomNumber(length);
+		}
+
+		return returnRandomNumber;
 	}
 
 	/**

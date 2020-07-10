@@ -324,6 +324,7 @@ public class BrowserFunctions {
 		options.setProfile(profile);
 
 		setWebDriver(new FirefoxDriver(options));
+		Thread.sleep(4000);
 		return getWebDriver();
 
 	}
