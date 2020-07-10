@@ -2325,16 +2325,19 @@ public class CommonFunctions {
 	 */
 	private void scrollElement(WebDriver driver, WebElement element, String location) throws Exception {
 		String elePosition = (location.equalsIgnoreCase("TOP")) ? "start" : (location.equalsIgnoreCase("BOTTOM")) ? "end" : "center";
-		
-//		String scrollToCentreJs = "function scrollToCentre(elem) {"
-//				+ "var eleWindow = elem.ownerDocument.defaultView || window,"
-//				+ "eleRect = elem.getBoundingClientRect(),"
-//				+ "targetY = eleRect.top - (eleWindow.innerHeight - eleRect.height) / 2;"
-//				+ "eleWindow.scrollTo(eleWindow.pageXOffset, eleWindow.pageYOffset + targetY);"
-//				+ "}; scrollToCentre(arguments[0]);";
+		String jScript;
+		if (elePosition.equalsIgnoreCase("center")) {
+			jScript = "function scrollToCentre(elem) {"
+				+ "var eleWindow = elem.ownerDocument.defaultView || window,"
+				+ "eleRect = elem.getBoundingClientRect(),"
+				+ "targetY = eleRect.top - (eleWindow.innerHeight - eleRect.height) / 2;"
+				+ "eleWindow.scrollTo(eleWindow.pageXOffset, eleWindow.pageYOffset + targetY);"
+				+ "}; scrollToCentre(arguments[0]);";
 			
+		}else {
+			jScript = "arguments[0].scrollIntoView({behavior: 'auto', block: '" + elePosition +"', inline: 'center'})";
+		}
 		
-		String jScript = "arguments[0].scrollIntoView({behavior: 'auto', block: '" + elePosition +"', inline: 'center'})";
 		executeJs(driver, element, jScript);
 	}
 
