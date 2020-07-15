@@ -1,3 +1,7 @@
+beta 07/15/2020
+===============
+updated scroll to center method to move element to center when horizontal scroll bar exist
+
 beta 07/09/2020
 ===============
 Updated the logic to move element to center as part of WaitForElement
