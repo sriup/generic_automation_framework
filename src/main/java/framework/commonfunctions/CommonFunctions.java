@@ -2330,8 +2330,9 @@ public class CommonFunctions {
 			jScript = "function scrollToCentre(elem) {"
 				+ "var eleWindow = elem.ownerDocument.defaultView || window,"
 				+ "eleRect = elem.getBoundingClientRect(),"
+				+ "targetX = eleRect.left - (eleWindow.innerWidth-eleRect.width)/2;"
 				+ "targetY = eleRect.top - (eleWindow.innerHeight - eleRect.height) / 2;"
-				+ "eleWindow.scrollTo(eleWindow.pageXOffset, eleWindow.pageYOffset + targetY);"
+				+ "eleWindow.scrollTo(eleWindow.pageXOffset+targetX, eleWindow.pageYOffset + targetY);"
 				+ "}; scrollToCentre(arguments[0]);";
 			
 		}else {
