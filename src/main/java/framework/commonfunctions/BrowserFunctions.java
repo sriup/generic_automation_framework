@@ -8,6 +8,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -322,6 +323,8 @@ public class BrowserFunctions {
 		
 		FirefoxOptions options = new FirefoxOptions();
 		options.setProfile(profile);
+        options.setLogLevel(FirefoxDriverLogLevel.TRACE);
+        options.addPreference("dom.ipc.processCount", 1);
 
 		setWebDriver(new FirefoxDriver(options));
 		Thread.sleep(5000);

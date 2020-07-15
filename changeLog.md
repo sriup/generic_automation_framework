@@ -1,6 +1,7 @@
 beta 07/15/2020
 ===============
 updated scroll to center method to move element to center when horizontal scroll bar exist
+Handled Firefox multiple threads 
 
 beta 07/09/2020
 ===============
