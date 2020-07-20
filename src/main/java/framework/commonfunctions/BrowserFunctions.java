@@ -2,6 +2,8 @@ package framework.commonfunctions;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -49,6 +51,17 @@ public class BrowserFunctions {
 
 	/** Log info is written in LogAccess. */
 	private LogAccess logAccess;
+
+	private String browserName;
+
+	/**
+	 * Gets the browser name
+	 * 
+	 * @return the browser name
+	 */
+	public String getBrowserName() {
+		return this.browserName;
+	}
 
 	/**
 	 * Sets the download folder path.<br>
@@ -119,10 +132,11 @@ public class BrowserFunctions {
 	 * @throws Exception
 	 */
 	@Step("Lauching \"{browserName}\" browser")
-	public WebDriver launch(String browserName, String downloadPath) throws Exception {
+	public WebDriver launch(String browserName, String downloadPath, HashMap<String, Object> options) throws Exception {
 		setDownloadFolderPath(downloadPath);
 		this.logAccess.getLogger().info("Launching browser :-  " + browserName);
 		this.logAccess.getLogger().info("Downloads folder :- " + getDownloadFolderPath());
+		this.browserName = browserName;
 
 		switch (browserName.trim().toLowerCase()) {
 		case "chrome":
@@ -135,7 +149,7 @@ public class BrowserFunctions {
 			return launchEdge();
 		case "ie":
 		case "internetexplorer":
-			return launchInternetExplorer();
+			return launchInternetExplorer(options);
 		case "phantomjs":
 			return launchPhantomJS();
 		default:
@@ -155,7 +169,7 @@ public class BrowserFunctions {
 	 */
 	@Step("Navigating to \"{URL}\"")
 	public void navigate(String URL) {
-		logAccess.getLogger().info("Navigating to URL :- " + URL);
+		this.logAccess.getLogger().info("Navigating to URL :- " + URL);
 		this.threadDriver.get().manage().window().maximize();
 		this.threadDriver.get().get(URL);
 	}
@@ -169,7 +183,7 @@ public class BrowserFunctions {
 	@Step("Getting current URL")
 	public String getCurrentURL() {
 		String currentURL = this.threadDriver.get().getCurrentUrl();
-		logAccess.getLogger().info("Current URL :- " + currentURL);
+		this.logAccess.getLogger().info("Current URL :- " + currentURL);
 		return currentURL;
 	}
 
@@ -181,7 +195,7 @@ public class BrowserFunctions {
 	 */
 	@Step("Closing browser")
 	public void close() {
-		logAccess.getLogger().info("Closing browser");
+		this.logAccess.getLogger().info("Closing browser");
 		this.threadDriver.get().close();
 	}
 
@@ -192,7 +206,7 @@ public class BrowserFunctions {
 	 */
 	@Step("Quiting the browser")
 	public void quit() {
-		logAccess.getLogger().info("Quiting the browser");
+		this.logAccess.getLogger().info("Quiting the browser");
 		this.threadDriver.get().quit();
 	}
 
@@ -203,7 +217,7 @@ public class BrowserFunctions {
 	 */
 	@Step("Refreshing the browser")
 	public void refresh() {
-		logAccess.getLogger().info("Refreshing the browser");
+		this.logAccess.getLogger().info("Refreshing the browser");
 		this.threadDriver.get().navigate().refresh();
 	}
 
@@ -213,7 +227,7 @@ public class BrowserFunctions {
 	// back
 	@Step("Navigating back in browser")
 	public void navigateBack() {
-		logAccess.getLogger().info("Navigating back in browser");
+		this.logAccess.getLogger().info("Navigating back in browser");
 		this.threadDriver.get().navigate().back();
 	}
 
@@ -222,7 +236,7 @@ public class BrowserFunctions {
 	 */
 	@Step("Navigating forward in browser")
 	public void navigateForward() {
-		logAccess.getLogger().info("Navigating forward in browser");
+		this.logAccess.getLogger().info("Navigating forward in browser");
 		this.threadDriver.get().navigate().forward();
 	}
 
@@ -247,6 +261,7 @@ public class BrowserFunctions {
 		HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
 		chromePrefs.put("profile.default_content_settings.popups", 0);
 		chromePrefs.put("download.default_directory", this.getDownloadFolderPath());
+		chromePrefs.put("profile.default_content_setting_values.automatic_downloads", 1);
 
 		ChromeOptions options = new ChromeOptions();
 		options.setExperimentalOption("prefs", chromePrefs);
@@ -266,8 +281,10 @@ public class BrowserFunctions {
 	 * 'http://kb.mozillazine.org/Firefox_:_FAQs_:_About:config_Entries'>Firefox
 	 * Configuration Details</a> for detailed information about each configuration
 	 * setting.<br>
-	 * ! If you want to see the preferences you can click the menu button menu , click Help and select Troubleshooting Information. The Troubleshooting Information tab will open.
-	 * And then click on `Profile Folder` 
+	 * ! If you want to see the preferences you can click the menu button menu ,
+	 * click Help and select Troubleshooting Information. The Troubleshooting
+	 * Information tab will open. And then click on `Profile Folder`
+	 * 
 	 * @return the web driver
 	 * @throws Exception
 	 */
@@ -290,21 +307,23 @@ public class BrowserFunctions {
 		// hide Download Manager window when a download begins
 		profile.setPreference("browser.download.manager.showWhenStarting", false);
 
-		/****This is the most important setting that will make sure the pdf is downloaded without any prompt**/
+		/****
+		 * This is the most important setting that will make sure the pdf is downloaded
+		 * without any prompt
+		 **/
 		profile.setPreference("pdfjs.disabled", true);
-		
+
 		profile.setPreference("pref.downloads.disable_button.edit_actions", false);
-		
 
 		// A comma-separated list of MIME types to save to disk without asking what to
 		// use to open the file.
 		profile.setPreference("browser.helperApps.neverAsk.saveToDisk",
-				"application/pdf,application/zip,text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;octet/stream");
+				"application/pdf,application/zip,text/csv,text/plain,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;octet/stream");
 
 		// A comma-separated list of MIME types to open directly without asking for
 		// confirmation.
 		profile.setPreference("browser.helperApps.neverAsk.openFile",
-				"application/pdf,application/zip,text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;octet/stream");
+				"application/pdf,application/zip,text/csv,text/plain,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;octet/stream");
 
 		// Do not ask what to do with an unknown MIME type
 		profile.setPreference("browser.helperApps.alwaysAsk.force", false);
@@ -320,14 +339,13 @@ public class BrowserFunctions {
 		// Close the Download Manager when all downloads are complete
 		profile.setPreference("browser.download.manager.closeWhenDone", true);
 
-		
 		FirefoxOptions options = new FirefoxOptions();
 		options.setProfile(profile);
-        options.setLogLevel(FirefoxDriverLogLevel.TRACE);
-        options.addPreference("dom.ipc.processCount", 1);
+		// options.setLogLevel(FirefoxDriverLogLevel.TRACE);
+		// options.addPreference("dom.ipc.processCount", 1);
 
 		setWebDriver(new FirefoxDriver(options));
-		Thread.sleep(5000);
+		Thread.sleep(10000);
 		return getWebDriver();
 
 	}
@@ -350,7 +368,7 @@ public class BrowserFunctions {
 	 *
 	 * @return the web driver
 	 */
-	private WebDriver launchInternetExplorer() {
+	private WebDriver launchInternetExplorer(HashMap<String, Object> ieOptions) {
 		WebDriverManager.globalConfig().setArchitecture(Architecture.X32);
 		WebDriverManager.iedriver().setup();
 		String binaryPath = WebDriverManager.iedriver().getBinaryPath();
@@ -358,16 +376,23 @@ public class BrowserFunctions {
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		InternetExplorerOptions options = new InternetExplorerOptions();
 		// ignore zoom level
-		options.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
+		// options.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
 		// ignore protective mode settings across the zones
 		options.introduceFlakinessByIgnoringSecurityDomains();
 		// clean session (without any cache)
 		options.destructivelyEnsureCleanSession();
-		
-		options.disableNativeEvents();
+
 		options.enablePersistentHovering();
 		options.requireWindowFocus();
 		
+		if (ieOptions == null) {
+			options.disableNativeEvents();
+		} else {
+			Set<String> ieOptionsKeys = ieOptions.keySet();
+			for (String currentIeOptionKey : ieOptionsKeys) {
+				options.setCapability(currentIeOptionKey, ieOptions.get(currentIeOptionKey));
+			}
+		}
 		threadDriver.set(new InternetExplorerDriver(options));
 		return threadDriver.get();
 	}

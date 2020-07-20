@@ -107,9 +107,9 @@ public class ExcelUtil {
 	 */
 	public void createExcel(String excelFilePath, String excelFileName, String sheetName, Object[][] excelData)
 			throws Exception {
-		this.logAccess.getLogger().info("File Path :- " + excelFilePath);
-		this.logAccess.getLogger().info("File Name :- " + excelFileName);
-		this.logAccess.getLogger().info("Sheet Name" + sheetName);
+		this.logAccess.getLogger().debug("File Path :- " + excelFilePath);
+		this.logAccess.getLogger().debug("File Name :- " + excelFileName);
+		this.logAccess.getLogger().debug("Sheet Name" + sheetName);
 		this.logAccess.getLogger()
 				.debug("Creating Excel File :- " + excelFilePath + File.separatorChar + excelFileName);
 		this.logAccess.getLogger().debug("Sheet Name :- " + sheetName);

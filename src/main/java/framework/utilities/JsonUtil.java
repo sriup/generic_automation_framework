@@ -28,7 +28,7 @@ public class JsonUtil {
 		jPathDocCon = JsonPath.parse(new File(jsonFilePath));
 		String result;
 		result = jPathDocCon.read(jsonPath).toString();
-		this.logAccess.getLogger().info("JSonPath : " + jsonPath + "\n Result : " + result);
+		this.logAccess.getLogger().debug("JSonPath : " + jsonPath + "\n Result : " + result);
 		return result;
 	}
 

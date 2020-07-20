@@ -1,7 +1,11 @@
+beta 07/20/2020
+===============
+updated the framework to get the IE capabilities from user
+
+
 beta 07/15/2020
 ===============
 updated scroll to center method to move element to center when horizontal scroll bar exist
-Handled Firefox multiple threads 
 
 beta 07/09/2020
 ===============
