@@ -1,6 +1,7 @@
 package framework.abstracts;
 
 import java.io.File;
+import java.util.HashMap;
 
 import org.apache.log4j.LogManager;
 
@@ -40,6 +41,8 @@ public abstract class FwBaseClass {
 
 	/** CommonFunctions Object*/
 	protected CommonFunctions commonFunctions;
+
+	private HashMap<String, Object> setBrowserOptions = null;
 	
 
 	/**
@@ -80,7 +83,7 @@ public abstract class FwBaseClass {
 		}
 
 		this.browserFunctions = new BrowserFunctions(this.logAccess);
-		browserFunctions.launch(browserName, downloadPath);
+		browserFunctions.launch(browserName, downloadPath, setBrowserOptions);
 
 		// initializing the SoftAssert
 		this.softAssert = new SoftAssert(this);
@@ -91,6 +94,19 @@ public abstract class FwBaseClass {
 		// initialize the CommonFunctions
 		commonFunctions = new CommonFunctions(getScreenshotPath(), getLogAccess());
 
+	}
+	
+	/**
+	 * Sets browser options<br>
+	 *  Example:<pre>
+	 *  	HashMap<String, Object> ieOptions = new HashMap<String, Object>();
+	 *  	ieOptions.put("nativeEvents",false);
+	 *  </pre>
+	 *  Note: Currently this is been supported for IE only
+	 * @param browserOptions
+	 */
+	public void setBrowserOptions(HashMap<String,Object> browserOptions) {
+		this.setBrowserOptions = browserOptions;		
 	}
 
 	/**

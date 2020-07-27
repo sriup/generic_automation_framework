@@ -43,7 +43,7 @@ public class ApiMethods {
 	 * 
 	 */
 	public Response sendRequest(String requestType, String uri) {
-		this.logAccess.getLogger().info("Sending " + requestType + " request to " + uri);
+		this.logAccess.getLogger().debug("Sending " + requestType + " request to " + uri);
 		RequestSpecification httpRequest = RestAssured.given();
 		// request header
 		defaultHeadersMap.forEach((k, v) -> httpRequest.header(k, v));
@@ -60,13 +60,13 @@ public class ApiMethods {
 		} else if (requestType.toLowerCase().equalsIgnoreCase("delete")) {
 			response = httpRequest.delete(uri);
 		} else {
-			this.logAccess.getLogger().info("Unexpected value : " + requestType
+			this.logAccess.getLogger().debug("Unexpected value : " + requestType
 					+ "\n only supported request types are: GET, POST, PUT, PATCH, DELETE");
 
 			throw new IllegalArgumentException("Unexpected value : " + requestType
 					+ "\n only supported request types are: GET, POST, PUT, PATCH, DELETE");
 		}
-		this.logAccess.getLogger().info(response.body().prettyPrint());
+		this.logAccess.getLogger().debug(response.body().prettyPrint());
 		return response;
 	}
 
@@ -77,7 +77,7 @@ public class ApiMethods {
 	 * @return response object {@link io.restassured.response.Response Response}
 	 */
 	public Response sendRequest(String requestType, String uri, HashMap<String, String> headers) {
-		this.logAccess.getLogger().info("Sending " + requestType + " request to " + uri);
+		this.logAccess.getLogger().debug("Sending " + requestType + " request to " + uri);
 		RequestSpecification httpRequest = RestAssured.given();
 		// add all headers to the request
 		headers.forEach((k, v) -> httpRequest.header(k, v));
@@ -95,13 +95,13 @@ public class ApiMethods {
 		} else if (requestType.toLowerCase().equalsIgnoreCase("delete")) {
 			response = httpRequest.delete(uri);
 		} else {
-			this.logAccess.getLogger().info("Unexpected value : " + requestType
+			this.logAccess.getLogger().debug("Unexpected value : " + requestType
 					+ "\n only supported request types are: GET, POST, PUT, PATCH, DELETE");
 
 			throw new IllegalArgumentException("Unexpected value : " + requestType
 					+ "\n only supported request types are: GET, POST, PUT, PATCH, DELETE");
 		}
-		this.logAccess.getLogger().info(response.body().prettyPrint());
+		this.logAccess.getLogger().debug(response.body().prettyPrint());
 		return response;
 	}
 
@@ -114,7 +114,7 @@ public class ApiMethods {
 	 */
 	public Response sendReqResponse(String requestType, String uri, HashMap<String, String> headers,
 			HashMap<String, String> data) {
-		this.logAccess.getLogger().info("Sending " + requestType + " request to " + uri);
+		this.logAccess.getLogger().debug("Sending " + requestType + " request to " + uri);
 		RequestSpecification httpRequest = RestAssured.given();
 
 		// add all headers to the request
@@ -136,13 +136,13 @@ public class ApiMethods {
 		} else if (requestType.toLowerCase().equalsIgnoreCase("delete")) {
 			response = httpRequest.delete(uri);
 		} else {
-			this.logAccess.getLogger().info("Unexpected value : " + requestType
+			this.logAccess.getLogger().debug("Unexpected value : " + requestType
 					+ "\n only supported request types are: GET, POST, PUT, PATCH, DELETE");
 
 			throw new IllegalArgumentException("Unexpected value : " + requestType
 					+ "\n only supported request types are: GET, POST, PUT, PATCH, DELETE");
 		}
-		this.logAccess.getLogger().info(response.body().prettyPrint());
+		this.logAccess.getLogger().debug(response.body().prettyPrint());
 		return response;
 	}
 	
@@ -150,7 +150,7 @@ public class ApiMethods {
 	public String getValue(Response response, String jsonPath) {
 		String result;
 		result = response.jsonPath().getString(jsonPath);
-		this.logAccess.getLogger().info("JSonPath : " + jsonPath + "\n Result : " + result);
+		this.logAccess.getLogger().debug("JSonPath : " + jsonPath + "\n Result : " + result);
 		return result;
 	}
 	

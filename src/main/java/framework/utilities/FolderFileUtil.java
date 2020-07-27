@@ -44,13 +44,13 @@ public class FolderFileUtil {
 	 */
 	public File createFolder(String folderPath, String folderName) throws Exception {
 
-		this.logAccess.getLogger().info("FolderPath :- " + folderPath);
-		this.logAccess.getLogger().info("folderName :- " + folderName);
+		this.logAccess.getLogger().debug("FolderPath :- " + folderPath);
+		this.logAccess.getLogger().debug("folderName :- " + folderName);
 
 		File folderFile = new File(folderPath + File.separatorChar + folderName);
 		if (!folderFile.exists()) {
 			if (folderFile.mkdirs()) {
-				this.logAccess.getLogger().info("Folder is created!");
+				this.logAccess.getLogger().debug("Folder is created!");
 			}
 		}
 		return folderFile;
@@ -66,12 +66,12 @@ public class FolderFileUtil {
 	 */
 	public File createFolder(String folderPath) throws Exception {
 
-		this.logAccess.getLogger().info("FolderPath :- " + folderPath);
+		this.logAccess.getLogger().debug("FolderPath :- " + folderPath);
 
 		File folderFile = new File(folderPath);
 		if (!folderFile.exists()) {
 			if (folderFile.mkdirs()) {
-				this.logAccess.getLogger().info("Folder is created!");
+				this.logAccess.getLogger().debug("Folder is created!");
 			}
 		}
 		return folderFile;
@@ -88,7 +88,7 @@ public class FolderFileUtil {
 		fileObject.delete();
 		File deletedFile = new File(filePath);
 		if (!deletedFile.exists()) {
-			this.logAccess.getLogger().info("File is deleted!");
+			this.logAccess.getLogger().debug("File is deleted!");
 			return true;
 		} else {
 			return false;
@@ -102,7 +102,7 @@ public class FolderFileUtil {
 	 * @throws Exception the exception
 	 */
 	public boolean deleteFile(String filePath) throws Exception {
-		this.logAccess.getLogger().info("file Path :- " + filePath);
+		this.logAccess.getLogger().debug("file Path :- " + filePath);
 		return deleteFile(new File(filePath));
 	}
 
@@ -116,8 +116,8 @@ public class FolderFileUtil {
 	 */
 	public boolean deleteFile(String folderPath, String fileName) throws Exception {
 
-		this.logAccess.getLogger().info("folder Path :- " + folderPath);
-		this.logAccess.getLogger().info("file Name :- " + fileName);
+		this.logAccess.getLogger().debug("folder Path :- " + folderPath);
+		this.logAccess.getLogger().debug("file Name :- " + fileName);
 		return deleteFile(new File(folderPath + File.separatorChar + fileName));
 	}
 
@@ -130,8 +130,8 @@ public class FolderFileUtil {
 	 */
 	public boolean deleteFolder(String folderPath, String folderName) throws Exception {
 
-		this.logAccess.getLogger().info("folder Path :- " + folderPath);
-		this.logAccess.getLogger().info("folder Name :- " + folderName);
+		this.logAccess.getLogger().debug("folder Path :- " + folderPath);
+		this.logAccess.getLogger().debug("folder Name :- " + folderName);
 
 		File folderFile = new File(folderPath + File.separatorChar + folderName);
 		return deleteFolder(folderFile);
@@ -148,7 +148,7 @@ public class FolderFileUtil {
 		FileUtils.deleteDirectory(folderObject);
 		File deletedFolder = new File(folderPath);
 		if (!deletedFolder.exists()) {
-			this.logAccess.getLogger().info("Folder is deleted!");
+			this.logAccess.getLogger().debug("Folder is deleted!");
 			return true;
 		} else {
 			return false;
@@ -163,7 +163,7 @@ public class FolderFileUtil {
 	 */
 	public boolean deleteFolder(String folderPath) throws Exception {
 
-		this.logAccess.getLogger().info("folder Path :- " + folderPath);
+		this.logAccess.getLogger().debug("folder Path :- " + folderPath);
 
 		File folderFile = new File(folderPath);
 		return deleteFolder(folderFile);
@@ -180,8 +180,8 @@ public class FolderFileUtil {
 	 */
 	public File createFile(String filePath, String filename) throws Exception {
 
-		this.logAccess.getLogger().info("filePath :- " + filePath);
-		this.logAccess.getLogger().info("filename :- " + filename);
+		this.logAccess.getLogger().debug("filePath :- " + filePath);
+		this.logAccess.getLogger().debug("filename :- " + filename);
 
 		createFolder(filePath);
 
@@ -190,7 +190,7 @@ public class FolderFileUtil {
 		String logMessage = (file.createNewFile()) ? "File is created!" : "File already exists.";
 
 		// TODO
-		this.logAccess.getLogger().info(logMessage);
+		this.logAccess.getLogger().debug(logMessage);
 
 		return file;
 
@@ -208,10 +208,10 @@ public class FolderFileUtil {
 	 */
 	public File writeToTextFile(String filePath, String filename, String input) throws Exception {
 
-		this.logAccess.getLogger().info("filePath :- " + filePath);
-		this.logAccess.getLogger().info("filename :- " + filename);
+		this.logAccess.getLogger().debug("filePath :- " + filePath);
+		this.logAccess.getLogger().debug("filename :- " + filename);
 
-		this.logAccess.getLogger().info("input :- " + input);
+		this.logAccess.getLogger().debug("input :- " + input);
 
 		File file = createFile(filePath, filename);
 
@@ -220,7 +220,7 @@ public class FolderFileUtil {
 		writer.write(input);
 		writer.close();
 
-		this.logAccess.getLogger().info("Writing to text file is completed");
+		this.logAccess.getLogger().debug("Writing to text file is completed");
 
 		return file;
 	}
@@ -237,8 +237,8 @@ public class FolderFileUtil {
 	public File writeMultiLinesToTextFile(String filePath, String filename, List<String> inputLinesList)
 			throws Exception {
 
-		this.logAccess.getLogger().info("filePath :- " + filePath);
-		this.logAccess.getLogger().info("filename :- " + filename);
+		this.logAccess.getLogger().debug("filePath :- " + filePath);
+		this.logAccess.getLogger().debug("filename :- " + filename);
 
 		File file = createFile(filePath, filename);
 
@@ -247,7 +247,7 @@ public class FolderFileUtil {
 
 		for (String currentInputLine : inputLinesList) {
 
-			this.logAccess.getLogger().info("Writing Current input line :- " + inputLinesList);
+			this.logAccess.getLogger().debug("Writing Current input line :- " + inputLinesList);
 
 			writer.write(currentInputLine);
 		}
@@ -268,8 +268,8 @@ public class FolderFileUtil {
 	 */
 	public List<String> readTextFile(String filePath, String filename) throws IOException {
 
-		this.logAccess.getLogger().info("filePath :- " + filePath);
-		this.logAccess.getLogger().info("filename :- " + filename);
+		this.logAccess.getLogger().debug("filePath :- " + filePath);
+		this.logAccess.getLogger().debug("filename :- " + filename);
 
 		List<String> lines = FileUtils.readLines(new File(filePath + File.separatorChar + filename), "utf-8");
 
@@ -286,8 +286,8 @@ public class FolderFileUtil {
 	 */
 	public String readTextFileToString(String filePath, String filename) throws IOException {
 
-		this.logAccess.getLogger().info("filePath :- " + filePath);
-		this.logAccess.getLogger().info("filename :- " + filename);
+		this.logAccess.getLogger().debug("filePath :- " + filePath);
+		this.logAccess.getLogger().debug("filename :- " + filename);
 
 		String content = FileUtils.readFileToString(new File(filePath + File.separatorChar + filename), "utf-8");
 
@@ -305,9 +305,9 @@ public class FolderFileUtil {
 	 */
 	public String readTextFile(String filePath, String filename, int lineNumber) throws IOException {
 
-		this.logAccess.getLogger().info("filePath :- " + filePath);
-		this.logAccess.getLogger().info("filename :- " + filename);
-		this.logAccess.getLogger().info("lineNumber :- " + lineNumber);
+		this.logAccess.getLogger().debug("filePath :- " + filePath);
+		this.logAccess.getLogger().debug("filename :- " + filename);
+		this.logAccess.getLogger().debug("lineNumber :- " + lineNumber);
 
 		List<String> lines = FileUtils.readLines(new File(filePath + File.separatorChar + filename), "utf-8");
 
@@ -331,7 +331,7 @@ public class FolderFileUtil {
 
 		Files.move(oldFile.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-		this.logAccess.getLogger().info("The file '" + filename + "' got moved from '" + oldFilePath
+		this.logAccess.getLogger().debug("The file '" + filename + "' got moved from '" + oldFilePath
 				+ "' to target location '" + newFilePath + "'");
 
 		return newFile;
@@ -369,7 +369,7 @@ public class FolderFileUtil {
 
 		Files.copy(oldFile.toPath(), newFile.toPath(), standardOption);
 
-		this.logAccess.getLogger().info("The file '" + oldFile.getName() + "' got copied from '"
+		this.logAccess.getLogger().debug("The file '" + oldFile.getName() + "' got copied from '"
 				+ oldFile.getAbsolutePath() + "' to target location '" + newFile.getAbsolutePath() + "'");
 
 		return newFile;
