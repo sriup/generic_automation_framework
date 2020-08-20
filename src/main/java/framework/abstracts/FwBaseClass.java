@@ -185,9 +185,6 @@ public abstract class FwBaseClass {
 	 *                 <i>ALL</i> log level information.</font>
 	 */
 	public void initializeLogger(String filename, LogVerboseEnums logLevel) {
-
-		LogManager.resetConfiguration();
-
 		logAccess = new LogAccess(filename, logLevel);
 
 	}

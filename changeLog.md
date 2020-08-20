@@ -1,3 +1,11 @@
+beta 08/06/2020
+===============
+removed the soft click when Element Not Interactable as it's missing the issues
+
+beta 08/05/2020
+===============
+removed the line to make sure the logs are updated
+
 beta 07/20/2020
 ===============
 updated the framework to get the IE capabilities from user

@@ -816,12 +816,12 @@ public class CommonFunctions {
 		if (browserName.equalsIgnoreCase("internet explorer")) {
 			executeJs(driver, tempElement, "arguments[0].click()");
 		} else {
-
-			try {
+			
+			//try {
 				tempElement.click();
-			} catch (ElementNotInteractableException enie) {// TODO need to track this not intractable
-				executeJs(driver, tempElement, "arguments[0].click()");
-			}
+//			} catch (ElementNotInteractableException enie) {// TODO need to track this not intractable
+//				executeJs(driver, tempElement, "arguments[0].click()");
+//			}
 		}
 
 		// capture after (private capture screenshot)
