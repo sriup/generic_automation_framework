@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 
 import javax.imageio.ImageIO;
 
@@ -24,6 +25,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -816,9 +818,9 @@ public class CommonFunctions {
 		if (browserName.equalsIgnoreCase("internet explorer")) {
 			executeJs(driver, tempElement, "arguments[0].click()");
 		} else {
-			
-			//try {
-				tempElement.click();
+
+			// try {
+			tempElement.click();
 //			} catch (ElementNotInteractableException enie) {// TODO need to track this not intractable
 //				executeJs(driver, tempElement, "arguments[0].click()");
 //			}
@@ -855,6 +857,39 @@ public class CommonFunctions {
 	}
 
 	/**
+	 * Input file path in file upload/browse.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param element             the {@link org.openqa.selenium.WebElement element}
+	 * @param value               the absolute path of the file to be uploaded
+	 * @param isCaptureScreenshot toggle to capture screenshot
+	 * @param screenShotName      the screen shot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @throws Exception the exception
+	 */
+	public void browseFile(WebDriver driver, WebElement element, String value, boolean isCaptureScreenshot,
+			String screenShotName) throws Exception {
+
+		this.logAccess.getLogger().info("Element :- " + element);
+		// capture (private capture screenshot)
+		if (isCaptureScreenshot) {
+			captureScreenShot(driver, screenShotName);
+		}
+
+		// enter value in the field
+		element.sendKeys(value);
+		// trigger the onchange event (to make sure the events dispatches correctly in
+		// IE)
+		jsTriggerEventOnElement(driver, element, "onchange");
+		
+	}
+
+	/**
 	 * Input value.
 	 *
 	 * @param driver              the {@link org.openqa.selenium.WebDriver
@@ -872,17 +907,22 @@ public class CommonFunctions {
 	 */
 	public void inputValue(WebDriver driver, WebElement element, String value, boolean isCaptureScreenshot,
 			String screenShotName) throws Exception {
-		this.logAccess.getLogger().info("value :- " + value);
+
 		this.logAccess.getLogger().info("Element :- " + element);
 		// get the element
 		WebElement tempElement = getElement(driver, element);
+		if (tempElement.getAttribute("type").equals("password")) {
+			this.logAccess.getLogger().info("Masked value :- " + "x".repeat(value.length()));
+		} else {
+			this.logAccess.getLogger().info("value :- " + value);
+		}
+
 		// click in the field
 		try {
 			tempElement.click();
 		} catch (ElementClickInterceptedException enie) {
 			executeJs(driver, tempElement, "arguments[0].click()");
 		}
-
 		// clear any existing values
 		tempElement.clear();
 		// enter value in the field
@@ -1913,6 +1953,20 @@ public class CommonFunctions {
 	}
 
 	/**
+	 * gets the element based on the element
+	 * 
+	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param element           the WebElement
+	 * @param expectedCondition the expected condition
+	 * @return WebElement
+	 * @throws Exception
+	 */
+	public WebElement getElement(WebDriver driver, WebElement element, ExpectedConditionsEnums expectedCondition)
+			throws Exception {
+		return waitForElement(driver, element, expectedCondition);
+	}
+
+	/**
 	 * gets the element based on the element and max timeout
 	 * 
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
@@ -2046,6 +2100,13 @@ public class CommonFunctions {
 		case VISIBLE:
 			returnElement = wait.until(ExpectedConditions.visibilityOf(element));
 			break;
+		//case PRESENCE:
+//			wait.until((ExpectedCondition<Boolean>) wd -> ((JavascriptExecutor) wd)
+//			.executeScript("return arguments[0].tagName !==''",element).equals(true));
+			
+//			returnElement = (WebElement) wait.until((ExpectedCondition<Object>) wd -> ((JavascriptExecutor) wd)
+//					.executeScript("return if(arguments[0].tagName !==''){arugments[0]}else{null}",element));
+			//break;
 		default:
 			throw new IllegalArgumentException("??? Unexpected value: " + expectedCondition
 					+ ". This method supports clickable and Vislble options. Please use waitUntilElement by locator method for PRESENCE. ???");
@@ -2222,7 +2283,7 @@ public class CommonFunctions {
 		// Calculate our scroll script
 		String script = "window.scrollBy(0," + String.valueOf(windowHeight - 5) + ")";
 		int coveredHeight = 0;
-		for (int screenshotIndex = startIndex; screenshotIndex <= fullShots; screenshotIndex++) {
+		for (int screenshotIndex = startIndex; screenshotIndex < fullShots; screenshotIndex++) {
 			File tmpFile = screenCapture.getScreenshotAs(OutputType.FILE);
 			folderFileUtil.copyFile(tmpFile, new File(tempImagesFolderPath + File.separatorChar
 					+ String.valueOf(screenshotIndex * windowHeight) + ".png"));

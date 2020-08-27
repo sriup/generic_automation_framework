@@ -318,12 +318,12 @@ public class BrowserFunctions {
 		// A comma-separated list of MIME types to save to disk without asking what to
 		// use to open the file.
 		profile.setPreference("browser.helperApps.neverAsk.saveToDisk",
-				"application/pdf,application/zip,text/csv,text/plain,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;octet/stream");
+				"application/pdf,application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/zip,text/csv,text/plain,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;octet/stream");
 
 		// A comma-separated list of MIME types to open directly without asking for
 		// confirmation.
 		profile.setPreference("browser.helperApps.neverAsk.openFile",
-				"application/pdf,application/zip,text/csv,text/plain,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;octet/stream");
+				"application/pdf,application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/zip,text/csv,text/plain,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;octet/stream");
 
 		// Do not ask what to do with an unknown MIME type
 		profile.setPreference("browser.helperApps.alwaysAsk.force", false);
