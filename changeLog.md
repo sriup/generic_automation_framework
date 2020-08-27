@@ -1,33 +1,24 @@
-beta 08/06/2020
+beta - 0.2
+==========
+08/13/2020
+==========
+- Masked the passwords in the log
+- Added doc and docx to the firefox mimetype
+
+08/20/2020
+===========
+- Added methods to get the excel column headers based on the row index
+- Added browseFile method to handle file upload field
+- Added getElement with expected conditions
+- Fixed fullpage screenshot (removed duplicate area in the full page screenshot)
+
+
+beta - 0.1
 ===============
-removed the soft click when Element Not Interactable as it's missing the issues
+- Removed javaclick (softclick) when ElementNotInteractable exception occurred, to make sure we don't miss any defects
 
-beta 08/05/2020
-===============
-removed the line to make sure the logs are updated
+- Updated the logic to move the element to the center of the page (this might not still support the applications wrapped in iframes like edfr). Please use Method Override to implement project specific implementation.
 
-beta 07/20/2020
-===============
-updated the framework to get the IE capabilities from user
+- Enhanced the logs so that we can see the more detailed information in the log which helps in root cause analysis in case any test fails.
 
-
-beta 07/15/2020
-===============
-updated scroll to center method to move element to center when horizontal scroll bar exist
-
-beta 07/09/2020
-===============
-Updated the logic to move element to center as part of WaitForElement
-Updated generate random number method so that the method returns correct number of digits - currently the number of digits not
-	matching when the starting number is zero.
-Updated the logic in the softassert to take full page screenshot when softassert failed.
-
-beta	07/01/2020
-=================
-handled the empty list in getElements method
-updated the temp screenshots path so that, temp screenshots will go into the method specific folder
-
-beta	06/24/2020
-=================
-added getElements method
-updated the logic to scroll the element to the center of the page window
+- IE capabilities can be controlled from the project, the default value for native events will be off. If the project requires the scripts to be executed with native defects, please use the below 3 lines in the BaseClass.

@@ -323,6 +323,7 @@ public class ExcelUtil {
 			columnData[rowIndex] = getCellData(sheetName, rowIndex, columnNumber);
 		}
 		return columnData;
+		//TODO Need clean-up call the overloaded method with index rather replicating the code
 	}
 
 	/**
@@ -351,15 +352,9 @@ public class ExcelUtil {
 	 */
 	// get headers
 	public String[] getColumnHeaders(String sheetName) {
-		// get the header row
-		Row row = getRow(sheetName, 0);
-		// get number of columns
-		int columnCount = row.getLastCellNum();
-		String[] headers = new String[columnCount];
-		for (int columnIndex = 0; columnIndex < columnCount; columnIndex++) {
-			headers[columnIndex] = row.getCell(columnIndex).toString();
-		}
-		return headers;
+		int sheetIndex = getSheetIndex(sheetName);
+
+		return getColumnHeaders(sheetIndex, 0);
 	}
 
 	/**
@@ -371,15 +366,67 @@ public class ExcelUtil {
 	 */
 	// get headers
 	public String[] getColumnHeaders(int sheetIndex) {
+
+		return getColumnHeaders(sheetIndex, 0);
+	}
+
+	/**
+	 * 
+	 * Gets the column headers.
+	 *
+	 * 
+	 * 
+	 * @param sheetIndex      the index of the sheet number (0-based physical and
+	 * 
+	 *                        logical)
+	 * 
+	 * @param headersRowIndex the index of the row where it contains all the headers
+	 * 
+	 * @return the column headers
+	 * 
+	 */
+
+	public String[] getColumnHeaders(int sheetIndex, int headersRowIndex) {
 		// get the header row
-		Row row = getRow(sheetIndex, 0);
+
+		Row row = getRow(sheetIndex, headersRowIndex);
+
 		// get number of columns
+
 		int columnCount = row.getLastCellNum();
+
 		String[] headers = new String[columnCount];
+
 		for (int columnIndex = 0; columnIndex < columnCount; columnIndex++) {
+
 			headers[columnIndex] = row.getCell(columnIndex).toString();
+
 		}
+
 		return headers;
+
+	}
+
+	/**
+	 * 
+	 * Gets the column headers.
+	 *
+	 * 
+	 * 
+	 * @param sheetname       Name of the work sheet
+	 * 
+	 * @param headersRowIndex the index of the row where it contains all the headers
+	 * 
+	 * @return the column headers
+	 * 
+	 */
+
+	public String[] getColumnHeaders(String sheetname, int headersRowIndex) {
+
+		int sheetIndex = getSheetIndex(sheetname);
+
+		return getColumnHeaders(sheetIndex, headersRowIndex);
+
 	}
 
 	/**
@@ -834,7 +881,7 @@ public class ExcelUtil {
 			// create a new row and append the data
 			cell = getSheet(sheetName).createRow(rowNumber).createCell(columnNumber);
 		} else { // update the data to the existing row
-			if(getRow(sheetName, rowNumber).getCell(columnNumber)== null) {
+			if (getRow(sheetName, rowNumber).getCell(columnNumber) == null) {
 				getRow(sheetName, rowNumber).createCell(columnNumber);
 			}
 			cell = getRow(sheetName, rowNumber).getCell(columnNumber);
@@ -872,7 +919,7 @@ public class ExcelUtil {
 			// create a new row and append the data
 			cell = getSheet(sheetIndex).createRow(rowNumber).createCell(columnNumber);
 		} else { // update the data to the existing row
-			if(getRow(sheetIndex, rowNumber).getCell(columnNumber)== null) {
+			if (getRow(sheetIndex, rowNumber).getCell(columnNumber) == null) {
 				getRow(sheetIndex, rowNumber).createCell(columnNumber);
 			}
 			cell = getRow(sheetIndex, rowNumber).getCell(columnNumber);
@@ -904,18 +951,18 @@ public class ExcelUtil {
 	public Cell writeCellData(String excelFilePath, String excelFileName, String sheetName, int rowNumber,
 			String columnName, Object value) throws IOException {
 		Cell cell;
-		
+
 		int columnNumber = getColumnHeaderIndex(sheetName, columnName);
 
 		if (rowNumber > getRowCount(sheetName)) {
 			// create a new row and append the data
 			cell = getSheet(sheetName).createRow(rowNumber).createCell(columnNumber);
 		} else { // update the data to the existing row
-			
-			if(getRow(sheetName, rowNumber).getCell(columnNumber)== null) {
+
+			if (getRow(sheetName, rowNumber).getCell(columnNumber) == null) {
 				getRow(sheetName, rowNumber).createCell(columnNumber);
 			}
-			
+
 			cell = getRow(sheetName, rowNumber).getCell(columnNumber);
 		}
 		if (value instanceof Integer) {
@@ -946,14 +993,14 @@ public class ExcelUtil {
 	public Cell writeCellData(String excelFilePath, String excelFileName, int sheetIndex, int rowNumber,
 			String columnName, Object value) throws IOException {
 		Cell cell;
-		
+
 		int columnNumber = getColumnHeaderIndex(sheetIndex, columnName);
 
 		if (rowNumber > getRowCount(sheetIndex)) {
 			// create a new row and append the data
 			cell = getSheet(sheetIndex).createRow(rowNumber).createCell(columnNumber);
 		} else { // update the data to the existing row
-			if(getRow(sheetIndex, rowNumber).getCell(columnNumber)== null) {
+			if (getRow(sheetIndex, rowNumber).getCell(columnNumber) == null) {
 				getRow(sheetIndex, rowNumber).createCell(columnNumber);
 			}
 			cell = getRow(sheetIndex, rowNumber).getCell(columnNumber);
