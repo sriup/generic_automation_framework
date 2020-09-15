@@ -382,12 +382,13 @@ public class CommonFunctions {
 		try {
 			while ((new Date()).getTime() < endTimestamp && isElementInvisible) {
 
-				isElementInvisible = isElementPresent(driver, byLocator, CommonVariables.MIN_TIMEOUT);
+				isElementInvisible = isElementPresent(driver, byLocator, CommonVariables.NO_TIMEOUT);
 
 				if (isElementInvisible) {
 					// Checking if element is visible though it is in the DOM.
-					isElementInvisible = isElementDisplayed(driver, byLocator, CommonVariables.MIN_TIMEOUT);
+					isElementInvisible = isElementDisplayed(driver, byLocator, CommonVariables.NO_TIMEOUT);
 				}
+				Thread.sleep(500);
 			}
 		} catch (NoSuchElementException | StaleElementReferenceException ignoreException) {
 			// intentionally left it blank (we can ignore the above exceptions when waiting
@@ -1953,6 +1954,20 @@ public class CommonFunctions {
 	}
 
 	/**
+	 * gets the element based on the locator
+	 * 
+	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator           the by locator
+	 * @param expectedCondition the expected condition
+	 * @return WebElement
+	 * @throws Exception
+	 */
+	public WebElement getElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition)
+			throws Exception {
+		return waitForElement(driver, byLocator, expectedCondition);
+	}
+	
+	/**
 	 * gets the element based on the element
 	 * 
 	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
@@ -1964,6 +1979,34 @@ public class CommonFunctions {
 	public WebElement getElement(WebDriver driver, WebElement element, ExpectedConditionsEnums expectedCondition)
 			throws Exception {
 		return waitForElement(driver, element, expectedCondition);
+	}
+	
+	/**
+	 * gets the element based on the locator
+	 * 
+	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator           the by locator
+	 * @param expectedCondition the expected condition
+	 * @return WebElement
+	 * @throws Exception
+	 */
+	public WebElement getElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition, int maxTimeOut)
+			throws Exception {
+		return waitForElement(driver, byLocator, expectedCondition, maxTimeOut);
+	}
+	
+	/**
+	 * gets the element based on the element expected condition
+	 * 
+	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param element           the WebElement
+	 * @param expectedCondition the expected condition
+	 * @return WebElement
+	 * @throws Exception
+	 */
+	public WebElement getElement(WebDriver driver, WebElement element, ExpectedConditionsEnums expectedCondition, int maxTimeOut)
+			throws Exception {
+		return waitForElement(driver, element, expectedCondition, maxTimeOut);
 	}
 
 	/**
@@ -2107,9 +2150,15 @@ public class CommonFunctions {
 //			returnElement = (WebElement) wait.until((ExpectedCondition<Object>) wd -> ((JavascriptExecutor) wd)
 //					.executeScript("return if(arguments[0].tagName !==''){arugments[0]}else{null}",element));
 			//break;
+			
+		// TODO - For now we are giving back the element when expected condition is presence so that we can use same method
+			// at other places
+		case PRESENCE:
+			returnElement = element; //TODO need to keep observation on this change for next 2 releases
+			break;
 		default:
 			throw new IllegalArgumentException("??? Unexpected value: " + expectedCondition
-					+ ". This method supports clickable and Vislble options. Please use waitUntilElement by locator method for PRESENCE. ???");
+					+ ". This method supports clickable, Vislble and Presence options.");
 		}
 		scrollElement(driver, returnElement, "center");
 		return returnElement;
