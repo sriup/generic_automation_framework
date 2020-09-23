@@ -62,25 +62,13 @@ public class DownloadWebDrivers {
 			case "internet explorer":
 				// TODO need to implement IEDriver download logic
 				break;
-			case "edge":
-				String latestEdgeVersion = getEdgeVersion();
-				downloadUrl = "https://msedgedriver.azureedge.net/" + latestEdgeVersion + "/edgedriver_win64.zip";
-				downloadWebDriver(browserName.toString(),latestEdgeVersion, downloadUrl, "drivers" + File.separatorChar + "Edge" + File.separatorChar + latestEdgeVersion.replace(".", "_"));
+
 			default:
 				break;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	private static String getEdgeVersion() {
-		String uri = "https://msedgedriver.azureedge.net/LATEST_STABLE";
-		Response response = apiMethods.sendRequest("get", uri);
-		// response code
-		DownloadWebDrivers.logAccess.getLogger().debug("RESPONSE CODE: " + response.getStatusCode());
-		String versionNumber = response.asString().replaceAll("[^0-9\\.]","");
-		return versionNumber;
 	}
 
 	/**
@@ -158,7 +146,7 @@ public class DownloadWebDrivers {
 			DownloadWebDrivers.logAccess.getLogger().debug("Extracting the driver to " + destinationFilePath);
 			zipUtil.unzip(originalZipPath, destinationFilePath);
 
-			// delete the zip from temp directory
+			// delet the zip from temp directory
 			folderFileUtil.deleteFile(tempZipFile);
 			DownloadWebDrivers.logAccess.getLogger()
 					.debug("Successfully downloaded driver for " + browserName.toUpperCase());

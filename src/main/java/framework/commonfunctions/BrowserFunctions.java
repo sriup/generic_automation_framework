@@ -9,7 +9,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -147,7 +146,6 @@ public class BrowserFunctions {
 			DownloadWebDrivers.downloadDriver(BrowserEnums.Firefox);
 			return launchFirefox();
 		case "edge":
-			DownloadWebDrivers.downloadDriver(BrowserEnums.Edge);
 			return launchEdge();
 		case "ie":
 		case "internetexplorer":
@@ -356,15 +354,9 @@ public class BrowserFunctions {
 	 * Launch edge.
 	 *
 	 * @return the web driver
-	 * @throws Exception 
 	 */
-	private WebDriver launchEdge() throws Exception {
-		System.setProperty("webdriver.edge.driver",
-				System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
-						+ BrowserEnums.Edge.toString() + File.separatorChar
-						+ getWebDriverLocation(BrowserEnums.Edge).replace(".", "_") + File.separatorChar
-						+ "msedgedriver.exe");
-		
+	private WebDriver launchEdge() {
+		WebDriverManager.edgedriver().setup();
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		setWebDriver(new EdgeDriver());
 		return getWebDriver();
@@ -392,7 +384,7 @@ public class BrowserFunctions {
 
 		options.enablePersistentHovering();
 		options.requireWindowFocus();
-
+		
 		if (ieOptions == null) {
 			options.disableNativeEvents();
 		} else {
