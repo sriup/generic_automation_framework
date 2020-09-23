@@ -660,7 +660,7 @@ public class CommonFunctions {
 		// scroll element to the center
 		scrollElement(driver, element, "center");
 		// highlight the web element
-		String highlightJavaScript = "arguments[0].style.backgroundColor=\"orange\";";
+		String highlightJavaScript = "arguments[0].setAttribute('style', 'background: orange; border: 2px solid red');";
 		executeJs(driver, element, highlightJavaScript);
 		return originalStyle;
 	}
