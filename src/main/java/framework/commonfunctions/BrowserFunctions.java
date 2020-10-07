@@ -379,6 +379,7 @@ public class BrowserFunctions {
 						+ BrowserEnums.Edge.toString() + File.separatorChar
 						+ getWebDriverLocation(BrowserEnums.Edge).replace(".", "_") + File.separatorChar
 						+ "msedgedriver.exe");
+		//TODO: Need to work on the edge options to change the download path location
 		
 	        EdgeDriverService edgeDriverService = EdgeDriverService.createDefaultService();
 	        
