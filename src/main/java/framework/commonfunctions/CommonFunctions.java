@@ -18,6 +18,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.StaleElementReferenceException;
@@ -121,6 +122,8 @@ public class CommonFunctions {
 	/** The Zip Utility. */
 	private ZipUtil zipUtil;
 
+	private String highlightBgColor = "orange";
+
 	/**
 	 * Gets the ZipUtil.
 	 *
@@ -171,6 +174,13 @@ public class CommonFunctions {
 		securityUtil = new SecurityUtil();
 		zipUtil = new ZipUtil(logAccess);
 		genericUtil = new GenericUtil();
+	}
+	/**
+	 * Sets the highlight color
+	 * @param color the background color for highlight
+	 */
+	public void setHighlightColor(String color) {
+		this.highlightBgColor = color;
 	}
 
 	/**
@@ -231,6 +241,24 @@ public class CommonFunctions {
 				.debug("waiting for element to be " + expectedCondition.toString() + " :- " + element);
 		return waitUntilElement(driver, element, expectedCondition, maxTimeout);
 	}
+	
+	
+	/**
+	 * Wait for alert.
+	 *
+	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param maxTimeout        the max timeout in seconds
+	 * @throws Exception
+	 */
+	public void waitForAlert(WebDriver driver, int maxTimeout) {
+		this.logAccess.getLogger()
+				.debug("waiting for alert");
+		
+		WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
+		
+        wait.ignoring(NoAlertPresentException.class).until(ExpectedConditions.alertIsPresent());
+	}
+	
 
 	/**
 	 * Wait for element by locator.
@@ -368,6 +396,52 @@ public class CommonFunctions {
 
 		try {
 			waitForElement(driver, byLocator, ExpectedConditionsEnums.PRESENCE, CommonVariables.MIN_TIMEOUT);
+		} catch (Exception ignoreException) {
+			// ignore the exception and continue with the script
+		}
+
+		long currentTimestamp = (new Date()).getTime();
+		int waitingSeconds = maxTimeout * 1000;
+		long endTimestamp = currentTimestamp + waitingSeconds;
+
+		boolean isElementInvisible = true;
+
+		this.logAccess.getLogger().info("End timestamp for Invisibility of an Element is " + endTimestamp);
+		try {
+			while ((new Date()).getTime() < endTimestamp && isElementInvisible) {
+
+				isElementInvisible = isElementPresent(driver, byLocator, CommonVariables.NO_TIMEOUT);
+
+				if (isElementInvisible) {
+					// Checking if element is visible though it is in the DOM.
+					isElementInvisible = isElementDisplayed(driver, byLocator, CommonVariables.NO_TIMEOUT);
+				}
+				Thread.sleep(500);
+			}
+		} catch (NoSuchElementException | StaleElementReferenceException ignoreException) {
+			// intentionally left it blank (we can ignore the above exceptions when waiting
+			// for element in-visibility)
+		}
+
+	}
+
+	/**
+	 * Wait for invisibility of element by locator. Method will wait for
+	 * {@link CommonVariables#MIN_TIMEOUT} before checking for element invisibility.
+	 *
+	 * @param driver          the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator       the by locator
+	 * @param initialWaitTime the time to be waited for the element to be present in
+	 *                        seconds
+	 * @param maxTimeout      the max timeout in seconds
+	 * @throws Exception
+	 */
+	public void waitForInvisibilityOfElement(WebDriver driver, By byLocator, int initialWaitTime, int maxTimeout)
+			throws Exception {
+		this.logAccess.getLogger().info("waiting for element to be invisible  :- " + byLocator);
+
+		try {
+			waitForElement(driver, byLocator, ExpectedConditionsEnums.PRESENCE, initialWaitTime);
 		} catch (Exception ignoreException) {
 			// ignore the exception and continue with the script
 		}
@@ -660,7 +734,7 @@ public class CommonFunctions {
 		// scroll element to the center
 		scrollElement(driver, element, "center");
 		// highlight the web element
-		String highlightJavaScript = "arguments[0].style.backgroundColor=\"orange\";";
+		String highlightJavaScript = "arguments[0].style.backgroundColor=\"" + this.highlightBgColor + "\";";
 		executeJs(driver, element, highlightJavaScript);
 		return originalStyle;
 	}
@@ -887,7 +961,7 @@ public class CommonFunctions {
 		// trigger the onchange event (to make sure the events dispatches correctly in
 		// IE)
 		jsTriggerEventOnElement(driver, element, "onchange");
-		
+
 	}
 
 	/**
@@ -1957,7 +2031,7 @@ public class CommonFunctions {
 	 * gets the element based on the locator
 	 * 
 	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param byLocator           the by locator
+	 * @param byLocator         the by locator
 	 * @param expectedCondition the expected condition
 	 * @return WebElement
 	 * @throws Exception
@@ -1966,7 +2040,7 @@ public class CommonFunctions {
 			throws Exception {
 		return waitForElement(driver, byLocator, expectedCondition);
 	}
-	
+
 	/**
 	 * gets the element based on the element
 	 * 
@@ -1980,21 +2054,21 @@ public class CommonFunctions {
 			throws Exception {
 		return waitForElement(driver, element, expectedCondition);
 	}
-	
+
 	/**
 	 * gets the element based on the locator
 	 * 
 	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param byLocator           the by locator
+	 * @param byLocator         the by locator
 	 * @param expectedCondition the expected condition
 	 * @return WebElement
 	 * @throws Exception
 	 */
-	public WebElement getElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition, int maxTimeOut)
-			throws Exception {
+	public WebElement getElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition,
+			int maxTimeOut) throws Exception {
 		return waitForElement(driver, byLocator, expectedCondition, maxTimeOut);
 	}
-	
+
 	/**
 	 * gets the element based on the element expected condition
 	 * 
@@ -2004,8 +2078,8 @@ public class CommonFunctions {
 	 * @return WebElement
 	 * @throws Exception
 	 */
-	public WebElement getElement(WebDriver driver, WebElement element, ExpectedConditionsEnums expectedCondition, int maxTimeOut)
-			throws Exception {
+	public WebElement getElement(WebDriver driver, WebElement element, ExpectedConditionsEnums expectedCondition,
+			int maxTimeOut) throws Exception {
 		return waitForElement(driver, element, expectedCondition, maxTimeOut);
 	}
 
@@ -2134,7 +2208,6 @@ public class CommonFunctions {
 			int maxTimeout) throws Exception {
 		// driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
 		WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
-
 		WebElement returnElement = null;
 		switch (expectedCondition) {
 		case CLICKABLE:
@@ -2143,18 +2216,19 @@ public class CommonFunctions {
 		case VISIBLE:
 			returnElement = wait.until(ExpectedConditions.visibilityOf(element));
 			break;
-		//case PRESENCE:
+		// case PRESENCE:
 //			wait.until((ExpectedCondition<Boolean>) wd -> ((JavascriptExecutor) wd)
 //			.executeScript("return arguments[0].tagName !==''",element).equals(true));
-			
+
 //			returnElement = (WebElement) wait.until((ExpectedCondition<Object>) wd -> ((JavascriptExecutor) wd)
 //					.executeScript("return if(arguments[0].tagName !==''){arugments[0]}else{null}",element));
-			//break;
-			
-		// TODO - For now we are giving back the element when expected condition is presence so that we can use same method
-			// at other places
+		// break;
+
+		// TODO - For now we are giving back the element when expected condition is
+		// presence so that we can use same method
+		// at other places
 		case PRESENCE:
-			returnElement = element; //TODO need to keep observation on this change for next 2 releases
+			returnElement = element; // TODO need to keep observation on this change for next 2 releases
 			break;
 		default:
 			throw new IllegalArgumentException("??? Unexpected value: " + expectedCondition

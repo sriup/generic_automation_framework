@@ -5,13 +5,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeDriverService;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -20,6 +24,9 @@ import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.SessionId;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import framework.enums.BrowserEnums;
 import framework.logs.LogAccess;
@@ -261,15 +268,22 @@ public class BrowserFunctions {
 						+ "chromedriver.exe");
 		// !! Chrome Options !!
 		HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
+//		
+//		Map<String, String> mobileEmulation = new HashMap<>();
+//
+//		mobileEmulation.put("deviceName", "iPhone X");
+		
 		chromePrefs.put("profile.default_content_settings.popups", 0);
 		chromePrefs.put("download.default_directory", this.getDownloadFolderPath());
 		chromePrefs.put("profile.default_content_setting_values.automatic_downloads", 1);
-
+				
 		ChromeOptions options = new ChromeOptions();
 		options.setExperimentalOption("prefs", chromePrefs);
 		options.setCapability("ACCEPT_SSL_CERTS", true);
 		options.setCapability("pageLoadStrategy", "none");
-
+		//options.setExperimentalOption("mobileEmulation", mobileEmulation);
+		
+		
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		setWebDriver(new ChromeDriver(options));
 		return getWebDriver();
@@ -316,6 +330,7 @@ public class BrowserFunctions {
 		profile.setPreference("pdfjs.disabled", true);
 
 		profile.setPreference("pref.downloads.disable_button.edit_actions", false);
+		profile.setPreference("media.navigator.permission.disabled", true);
 
 		// A comma-separated list of MIME types to save to disk without asking what to
 		// use to open the file.
@@ -365,9 +380,49 @@ public class BrowserFunctions {
 						+ getWebDriverLocation(BrowserEnums.Edge).replace(".", "_") + File.separatorChar
 						+ "msedgedriver.exe");
 		
-		threadDriver = new ThreadLocal<RemoteWebDriver>();
-		setWebDriver(new EdgeDriver());
-		return getWebDriver();
+	        EdgeDriverService edgeDriverService = EdgeDriverService.createDefaultService();
+	        
+	        threadDriver = new ThreadLocal<RemoteWebDriver>();
+	        
+	        EdgeOptions edgeOptions = new EdgeOptions();
+	       
+	        
+			setWebDriver(new EdgeDriver(edgeDriverService, edgeOptions));
+
+	        // set the download path and the download behavior        
+	        Map<String, Object> commandParameters = new HashMap<>();
+	        
+	        commandParameters.put("cmd", "Page.setDownloadBehavior");
+	        
+	        Map<String, String> parameters = new HashMap<>();
+	        
+	        parameters.put("behavior", "allow");
+	        
+	        parameters.put("downloadPath", getDownloadFolderPath());
+	       
+	        
+	        commandParameters.put("params", parameters);
+	        
+	        ObjectMapper objectMapper = new ObjectMapper();
+	        
+	        HttpClient httpClient = HttpClientBuilder.create().build();
+	        
+	        String command = objectMapper.writeValueAsString(commandParameters);
+	        
+	        // get the remote driver session id
+	        SessionId session = ((RemoteWebDriver)this.getWebDriver()).getSessionId();
+	        
+	        String postRequestUri = edgeDriverService.getUrl().toString() + "/session/" + session + "/chromium/send_command";
+	        
+	        HttpPost postRequest = new HttpPost(postRequestUri);
+	        
+	        postRequest.addHeader("content-type", "application/json");
+	        
+	        postRequest.setEntity(new StringEntity(command));
+	        
+	        httpClient.execute(postRequest);
+
+	        return getWebDriver();
 
 	}
 

@@ -88,7 +88,7 @@ public abstract class FwBaseClass {
 		// initializing the SoftAssert
 		this.softAssert = new SoftAssert(this);
 		
-		// initialzing the AllureUtil
+		// initializing the AllureUtil
 		this.allureUtil = new AllureUtil();
 		
 		// initialize the CommonFunctions
@@ -108,7 +108,7 @@ public abstract class FwBaseClass {
 	public void setBrowserOptions(HashMap<String,Object> browserOptions) {
 		this.setBrowserOptions = browserOptions;		
 	}
-
+	
 	/**
 	 * Gets the instance of {@link BrowserFunctions BrowserFunctions}
 	 *
