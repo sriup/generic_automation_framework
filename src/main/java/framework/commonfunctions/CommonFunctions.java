@@ -185,6 +185,23 @@ public class CommonFunctions {
 	public void setHighlightColor(String color) {
 		this.highlightBgColor = color;
 	}
+	
+	/**
+	 * Gets the screenshot path
+	 * @return
+	 */
+	
+	public String getScreenShotsPath() {
+		return screenShotsPath;
+	}
+	
+	/**
+	 * Sets the screenshot path
+	 * @param screenShotsPath
+	 */
+	public void setScreenShotsPath(String screenShotsPath) {
+		this.screenShotsPath = screenShotsPath;
+	}
 
 	/**
 	 * Sets the date time format for the screenshot. <br>

@@ -32,18 +32,17 @@ public abstract class FwBaseClass {
 
 	/** The screenshot path. */
 	private String screenshotPath;
-	
+
 	/** SoftAssert Object */
 	private SoftAssert softAssert;
 
-	/** AllureUtil Object*/
+	/** AllureUtil Object */
 	protected AllureUtil allureUtil;
 
-	/** CommonFunctions Object*/
+	/** CommonFunctions Object */
 	protected CommonFunctions commonFunctions;
 
 	private HashMap<String, Object> setBrowserOptions = null;
-	
 
 	/**
 	 * This method will launch the browser.<br>
@@ -62,20 +61,21 @@ public abstract class FwBaseClass {
 	 * <b>supersedes</b> the browser specified from test.</font>
 	 * 
 	 *
-	 * @param browserEnum  Select the browser name from the <b>BrowserEnums</b> class
+	 * @param browserEnum  Select the browser name from the <b>BrowserEnums</b>
+	 *                     class
 	 * @param downloadPath The download path
 	 * @throws Exception The exception
 	 */
 	public void init(BrowserEnums browserEnum, String downloadPath) throws Exception {
-		
+
 		String browserName = "";
-		
-		if (CommonVariables.BROWSER_SELECT == null || CommonVariables.BROWSER_SELECT.isEmpty()) {	
+
+		if (CommonVariables.BROWSER_SELECT == null || CommonVariables.BROWSER_SELECT.isEmpty()) {
 			browserName = browserEnum.toString();
 			this.getLogAccess().getLogger()
 					.warn("maven command is having empty value for Browser selection.\nSo, we are using local browser '"
 							+ browserName + "' from test case.\nIf you want to specify the browser in the maven command"
-									+ "please use \"browser\" property to specify the browser name.");
+							+ "please use \"browser\" property to specify the browser name.");
 		} else {
 			browserName = CommonVariables.BROWSER_SELECT;
 			this.getLogAccess().getLogger()
@@ -87,28 +87,29 @@ public abstract class FwBaseClass {
 
 		// initializing the SoftAssert
 		this.softAssert = new SoftAssert(this);
-		
+
 		// initializing the AllureUtil
 		this.allureUtil = new AllureUtil();
-		
-		// initialize the CommonFunctions
-		commonFunctions = new CommonFunctions(getScreenshotPath(), getLogAccess());
 
 	}
-	
+
 	/**
 	 * Sets browser options<br>
-	 *  Example:<pre>
-	 *  	HashMap<String, Object> ieOptions = new HashMap<String, Object>();
-	 *  	ieOptions.put("nativeEvents",false);
-	 *  </pre>
-	 *  Note: Currently this is been supported for IE only
+	 * Example:
+	 * 
+	 * <pre>
+	 * HashMap<String, Object> ieOptions = new HashMap<String, Object>();
+	 * ieOptions.put("nativeEvents", false);
+	 * </pre>
+	 * 
+	 * Note: Currently this is been supported for IE only
+	 * 
 	 * @param browserOptions
 	 */
-	public void setBrowserOptions(HashMap<String,Object> browserOptions) {
-		this.setBrowserOptions = browserOptions;		
+	public void setBrowserOptions(HashMap<String, Object> browserOptions) {
+		this.setBrowserOptions = browserOptions;
 	}
-	
+
 	/**
 	 * Gets the instance of {@link BrowserFunctions BrowserFunctions}
 	 *
@@ -117,12 +118,10 @@ public abstract class FwBaseClass {
 	public BrowserFunctions getBrowserFunctions() {
 		return this.browserFunctions;
 	}
-	
-	
+
 	public CommonFunctions getCommonFunctions() {
 		return this.commonFunctions;
 	}
-	
 
 	/**
 	 * Gets the instance of {@link framework.helper.SoftAssert SoftAssert}
@@ -132,6 +131,7 @@ public abstract class FwBaseClass {
 	public SoftAssert getSoftAssert() {
 		return this.softAssert;
 	}
+
 	/**
 	 * Gets the screenshot path.<br>
 	 * <font color="blue"><b>Note : </b>This method will create "SystemGenerated_"
@@ -209,10 +209,15 @@ public abstract class FwBaseClass {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		this.screenshotPath = SCREENSHOT_SUBFOLDER_PATH;
 		
-		commonFunctions = new CommonFunctions(this.screenshotPath, getLogAccess());
+		// update the commonFunctions instance
+		if (commonFunctions != null) {
+			commonFunctions.setScreenShotsPath(this.screenshotPath);
+		} else {
+			commonFunctions = new CommonFunctions(this.screenshotPath, getLogAccess());
+		}
 		
 		return SCREENSHOT_SUBFOLDER_PATH;
 	};
