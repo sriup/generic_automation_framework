@@ -14,6 +14,7 @@ import java.util.function.Function;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.ElementNotInteractableException;
@@ -175,12 +176,31 @@ public class CommonFunctions {
 		zipUtil = new ZipUtil(logAccess);
 		genericUtil = new GenericUtil();
 	}
+
 	/**
 	 * Sets the highlight color
+	 * 
 	 * @param color the background color for highlight
 	 */
 	public void setHighlightColor(String color) {
 		this.highlightBgColor = color;
+	}
+	
+	/**
+	 * Gets the screenshot path
+	 * @return
+	 */
+	
+	public String getScreenShotsPath() {
+		return screenShotsPath;
+	}
+	
+	/**
+	 * Sets the screenshot path
+	 * @param screenShotsPath
+	 */
+	public void setScreenShotsPath(String screenShotsPath) {
+		this.screenShotsPath = screenShotsPath;
 	}
 
 	/**
@@ -241,24 +261,22 @@ public class CommonFunctions {
 				.debug("waiting for element to be " + expectedCondition.toString() + " :- " + element);
 		return waitUntilElement(driver, element, expectedCondition, maxTimeout);
 	}
-	
-	
+
 	/**
 	 * Wait for alert.
 	 *
-	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param maxTimeout        the max timeout in seconds
+	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param maxTimeout the max timeout in seconds
 	 * @throws Exception
 	 */
-	public void waitForAlert(WebDriver driver, int maxTimeout) {
-		this.logAccess.getLogger()
-				.debug("waiting for alert");
-		
+	public Alert waitForAlert(WebDriver driver, int maxTimeout) {
+		this.logAccess.getLogger().debug("waiting for alert");
+
 		WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
-		
-        wait.ignoring(NoAlertPresentException.class).until(ExpectedConditions.alertIsPresent());
+
+		Alert alert = wait.ignoring(NoAlertPresentException.class).until(ExpectedConditions.alertIsPresent());
+		return alert;
 	}
-	
 
 	/**
 	 * Wait for element by locator.
@@ -734,7 +752,7 @@ public class CommonFunctions {
 		// scroll element to the center
 		scrollElement(driver, element, "center");
 		// highlight the web element
-		String highlightJavaScript = "arguments[0].style.backgroundColor=\"" + this.highlightBgColor + "\";";
+		String highlightJavaScript = "arguments[0].style.background=\"" + this.highlightBgColor + "\";";
 		executeJs(driver, element, highlightJavaScript);
 		return originalStyle;
 	}
@@ -2520,17 +2538,18 @@ public class CommonFunctions {
 				: (location.equalsIgnoreCase("BOTTOM")) ? "end" : "center";
 		String jScript;
 
-		if (elePosition.equalsIgnoreCase("center")) {
-			jScript = "function scrollToCentre(elem) {" + "var eleWindow = elem.ownerDocument.defaultView || window,"
-					+ "eleRect = elem.getBoundingClientRect(),"
-					+ "targetX = eleRect.left - (eleWindow.innerWidth-eleRect.width)/2;"
-					+ "targetY = eleRect.top - (eleWindow.innerHeight - eleRect.height) / 2;"
-					+ "eleWindow.scrollTo(eleWindow.pageXOffset+targetX, eleWindow.pageYOffset + targetY);"
-					+ "}; scrollToCentre(arguments[0]);";
-
-		} else {
-			jScript = "arguments[0].scrollIntoView({behavior: 'auto', block: '" + elePosition + "', inline: 'center'})";
-		}
+		//TODO - Need to remove the below commented code once the code is working as expected in all projects 
+//		if (elePosition.equalsIgnoreCase("center")) {
+//			jScript = "function scrollToCentre(elem) {" + "var eleWindow = elem.ownerDocument.defaultView || window,"
+//					+ "eleRect = elem.getBoundingClientRect(),"
+//					+ "targetX = eleRect.left - (eleWindow.innerWidth-eleRect.width)/2;"
+//					+ "targetY = eleRect.top - (eleWindow.innerHeight - eleRect.height) / 2;"
+//					+ "eleWindow.scrollTo(eleWindow.pageXOffset+targetX, eleWindow.pageYOffset + targetY);"
+//					+ "}; scrollToCentre(arguments[0]);";
+//
+//		} else {
+		jScript = "arguments[0].scrollIntoView({behavior: 'auto', block: '" + elePosition + "', inline: 'center'})";
+		// }
 
 		executeJs(driver, element, jScript);
 	}
