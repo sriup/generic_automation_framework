@@ -209,7 +209,11 @@ public abstract class FwBaseClass {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 		this.screenshotPath = SCREENSHOT_SUBFOLDER_PATH;
+		
+		commonFunctions = new CommonFunctions(this.screenshotPath, getLogAccess());
+		
 		return SCREENSHOT_SUBFOLDER_PATH;
 	};
 
