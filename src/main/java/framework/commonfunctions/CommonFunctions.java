@@ -2538,6 +2538,7 @@ public class CommonFunctions {
 				: (location.equalsIgnoreCase("BOTTOM")) ? "end" : "center";
 		String jScript;
 
+		//TODO - Need to remove the below commented code once the code is working as expected in all projects 
 //		if (elePosition.equalsIgnoreCase("center")) {
 //			jScript = "function scrollToCentre(elem) {" + "var eleWindow = elem.ownerDocument.defaultView || window,"
 //					+ "eleRect = elem.getBoundingClientRect(),"
