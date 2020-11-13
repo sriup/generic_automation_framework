@@ -15,22 +15,22 @@ public class CommonVariables {
 	 * eg : <b>-Dbrowser="chrome"</b>
 	 */
 
-	public static String BROWSER_SELECT = System.getProperty("browser");
-	
-	/** The implicit wait time */
+	public static final String BROWSER_SELECT = System.getProperty("browser");
+
+	/* The implicit wait time */
 	//public static int IMPLICIT_WAIT = 15;
 	
 	/** The max timeout. */
 	public static int MAX_TIMEOUT = 120;
 
 	/** The medium timeout. */
-	public static int MED_TIMEOUT = 30;
+	public static final int MED_TIMEOUT = 30;
 
 	/** The minimum timeout. */
-	public static int MIN_TIMEOUT = 5;
+	public static final int MIN_TIMEOUT = 5;
 	
 	/** The no timeout */
-	public static int NO_TIMEOUT = 0;
+	public static final int NO_TIMEOUT = 0;
 
 	/**
 	 * List of available time formats.
@@ -83,7 +83,7 @@ public class CommonVariables {
 	 * </tr>
 	 * </table>
 	 */
-	public static String[] TIME_FORMATS = { "yyyy:MM:dd_hh_mm_ss", "mm:dd:yy", "MM/dd/yyyy", "MM/dd/yyyy hh:mm",
+	public static final String[] TIME_FORMATS = { "yyyy:MM:dd_hh_mm_ss", "mm:dd:yy", "MM/dd/yyyy", "MM/dd/yyyy hh:mm",
 			"hh:mm", "MM/dd/yyyy h:mma", "MM/dd/yyyy mm:ss a", "MM_dd_yyyy_hh_mm_ss",  "MM_dd_yyyy_hh_mm_ss_SS"};
 
 }

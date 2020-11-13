@@ -3,8 +3,6 @@ package framework.abstracts;
 import java.io.File;
 import java.util.HashMap;
 
-import org.apache.log4j.LogManager;
-
 import framework.commonfunctions.BrowserFunctions;
 import framework.commonfunctions.CommonFunctions;
 import framework.constants.CommonVariables;
@@ -53,7 +51,7 @@ public abstract class FwBaseClass {
 	 * the browser.<br>
 	 * <br>
 	 * browser will be picked from the test case, if "browser" is not specified or
-	 * empty in the maven commond. <br>
+	 * empty in the maven command. <br>
 	 * This gives the flexibility to run the tests from maven command, test or
 	 * TestNg.xml<br>
 	 * </font> <br>
@@ -64,7 +62,7 @@ public abstract class FwBaseClass {
 	 * @param browserEnum  Select the browser name from the <b>BrowserEnums</b>
 	 *                     class
 	 * @param downloadPath The download path
-	 * @throws Exception The exception
+	 * @throws Exception the exception
 	 */
 	public void init(BrowserEnums browserEnum, String downloadPath) throws Exception {
 
@@ -85,12 +83,16 @@ public abstract class FwBaseClass {
 		this.browserFunctions = new BrowserFunctions(this.logAccess);
 		browserFunctions.launch(browserName, downloadPath, setBrowserOptions);
 
-		// initializing the SoftAssert
-		this.softAssert = new SoftAssert(this);
-
+		setSoftAssert();
+		
 		// initializing the AllureUtil
 		this.allureUtil = new AllureUtil();
 
+	}
+
+	public void setSoftAssert() {
+		// initializing the SoftAssert
+		this.softAssert = new SoftAssert(this);
 	}
 
 	/**
@@ -104,7 +106,7 @@ public abstract class FwBaseClass {
 	 * 
 	 * Note: Currently this is been supported for IE only
 	 * 
-	 * @param browserOptions
+	 * @param browserOptions the browser options
 	 */
 	public void setBrowserOptions(HashMap<String, Object> browserOptions) {
 		this.setBrowserOptions = browserOptions;
@@ -136,13 +138,12 @@ public abstract class FwBaseClass {
 	 * Gets the screenshot path.<br>
 	 * <font color="blue"><b>Note : </b>This method will create "SystemGenerated_"
 	 * folder appended with date time stamp under "Outputs/Screenshots" folder, if
-	 * {@link #createScreenshotPath} is not called in the "BaseClass"
+	 * createScreenshotPath is not called in the "BaseClass"
 	 * constructor.</font>
 	 * 
 	 * @return the screenshot path
-	 * @throws Exception exception
 	 */
-	public String getScreenshotPath() throws Exception {
+	public String getScreenshotPath() {
 		if (this.screenshotPath == null || this.screenshotPath.isEmpty()) {
 			this.logAccess.getLogger().debug(
 					"Generating the screenshots folder as user not defined the screenshots location using \"createScreenshotPath\" method in \"BaseClass\" constructor.");
@@ -155,7 +156,7 @@ public abstract class FwBaseClass {
 	/**
 	 * Sets the screenshot path.<br>
 	 * <font color="blue"><b>Note :</b> This method in turn calls
-	 * {@link #createScreenshotName} method that creates the screenshots folder and
+	 * createScreenshotName method that creates the screenshots folder and
 	 * also sets the {@link #screenshotPath}.</font>
 	 * 
 	 * @param folderName the screenshots folder name, folder will be created under
@@ -211,16 +212,16 @@ public abstract class FwBaseClass {
 		}
 
 		this.screenshotPath = SCREENSHOT_SUBFOLDER_PATH;
-		
+
 		// update the commonFunctions instance
 		if (commonFunctions != null) {
 			commonFunctions.setScreenShotsPath(this.screenshotPath);
 		} else {
 			commonFunctions = new CommonFunctions(this.screenshotPath, getLogAccess());
 		}
-		
+
 		return SCREENSHOT_SUBFOLDER_PATH;
-	};
+	}
 
 	/**
 	 * This should be implemented in the project/application level "BaseClass"<br>

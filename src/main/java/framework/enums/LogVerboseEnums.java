@@ -1,7 +1,7 @@
 package framework.enums;
 
 /**
- * This enum holds the possilbe {@link org.apache.log4j.Level LogLevels}
+ * This enum holds the possible {@link org.apache.log4j.Level LogLevels}
  */
 public enum LogVerboseEnums {
 

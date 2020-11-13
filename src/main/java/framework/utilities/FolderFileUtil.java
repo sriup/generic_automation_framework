@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -18,7 +19,7 @@ import framework.logs.LogAccess;
 public class FolderFileUtil {
 
 	/** The log access. */
-	private LogAccess logAccess;
+	private final LogAccess logAccess;
 
 	public void normalizeFilePath(String filePath) {
 		// TODO need to implement this
@@ -62,9 +63,8 @@ public class FolderFileUtil {
 	 *
 	 * @param folderPath Provide the Absolute Folder path
 	 * @return the file
-	 * @throws Exception the exception
 	 */
-	public File createFolder(String folderPath) throws Exception {
+	public File createFolder(String folderPath) {
 
 		this.logAccess.getLogger().debug("FolderPath :- " + folderPath);
 
@@ -81,9 +81,8 @@ public class FolderFileUtil {
 	 * It deletes the file if it exists.
 	 *
 	 * @param fileObject Provide the file object
-	 * @throws Exception the exception
 	 */
-	public boolean deleteFile(File fileObject) throws Exception {
+	public boolean deleteFile(File fileObject) {
 		String filePath = fileObject.getAbsolutePath();
 		fileObject.delete();
 		File deletedFile = new File(filePath);
@@ -111,7 +110,7 @@ public class FolderFileUtil {
 	 *
 	 * @param folderPath Provide the Absolute folder path
 	 * @param fileName   Provide the file name
-	 * @return
+	 * @return the delete file status
 	 * @throws Exception the exception
 	 */
 	public boolean deleteFile(String folderPath, String fileName) throws Exception {
@@ -198,7 +197,7 @@ public class FolderFileUtil {
 
 	// Write file
 	/**
-	 * Writing the single inputed line to the specified File.
+	 * Writing the single inputted line to the specified File.
 	 *
 	 * @param filePath Provide the Absolute File path
 	 * @param filename the filename
@@ -271,9 +270,7 @@ public class FolderFileUtil {
 		this.logAccess.getLogger().debug("filePath :- " + filePath);
 		this.logAccess.getLogger().debug("filename :- " + filename);
 
-		List<String> lines = FileUtils.readLines(new File(filePath + File.separatorChar + filename), "utf-8");
-
-		return lines;
+		return FileUtils.readLines(new File(filePath + File.separatorChar + filename), "utf-8");
 	}
 
 	/**
@@ -289,9 +286,7 @@ public class FolderFileUtil {
 		this.logAccess.getLogger().debug("filePath :- " + filePath);
 		this.logAccess.getLogger().debug("filename :- " + filename);
 
-		String content = FileUtils.readFileToString(new File(filePath + File.separatorChar + filename), "utf-8");
-
-		return content;
+		return FileUtils.readFileToString(new File(filePath + File.separatorChar + filename), "utf-8");
 	}
 
 	/**
@@ -451,9 +446,7 @@ public class FolderFileUtil {
 
 		List<File> fileList = new ArrayList<File>();
 		File[] files = dir.listFiles();
-		for (File file : files) {
-			fileList.add(file);
-		}
+		fileList.addAll(Arrays.asList(files));
 
 		return fileList;
 

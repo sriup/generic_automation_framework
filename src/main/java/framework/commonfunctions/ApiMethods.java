@@ -16,10 +16,10 @@ import io.restassured.specification.RequestSpecification;
  */
 public class ApiMethods {
 
-	private LogAccess logAccess;
+	private final LogAccess logAccess;
 	private FolderFileUtil folderFileUtil;
 
-	public Map<String, Object> defaultHeadersMap;
+	public final Map<String, Object> defaultHeadersMap;
 
 	/**
 	 * Instantiates a new APIMethods object to set the log access.
@@ -47,7 +47,7 @@ public class ApiMethods {
 		RequestSpecification httpRequest = RestAssured.given();
 		// request header
 		defaultHeadersMap.forEach((k, v) -> httpRequest.header(k, v));
-		Response response = null;
+		Response response;
 		// send request
 		if (requestType.toLowerCase().equalsIgnoreCase("get")) {
 			response = httpRequest.get(uri);
@@ -82,7 +82,7 @@ public class ApiMethods {
 		// add all headers to the request
 		headers.forEach((k, v) -> httpRequest.header(k, v));
 		this.logAccess.getLogger().debug("headers \n " + headers.toString());
-		Response response = null;
+		Response response;
 		// send request
 		if (requestType.toLowerCase().equalsIgnoreCase("get")) {
 			response = httpRequest.get(uri);
@@ -123,7 +123,7 @@ public class ApiMethods {
 		// add data to the request
 		httpRequest.body(data);
 		this.logAccess.getLogger().debug("data \n " + data.toString());
-		Response response = null;
+		Response response;
 		// send request
 		if (requestType.toLowerCase().equalsIgnoreCase("get")) {
 			response = httpRequest.get(uri);
@@ -158,9 +158,9 @@ public class ApiMethods {
 	 * @param folderPath      folder path to store file name
 	 * @param fileName        file name to store the response content
 	 * @param responseContent response content to be written in file
-	 * @throws Exception exception
+	 * @throws Exception the exception
 	 */
-	public void writeResposeToFile(String folderPath, String fileName, String responseContent) throws Exception {
+	public void writeResponseToFile(String folderPath, String fileName, String responseContent) throws Exception {
 		this.logAccess.getLogger().debug("Writing response to the file : " + folderPath + File.separatorChar + fileName
 				+ "\n Response Content: \n" + responseContent);
 		folderFileUtil.writeToTextFile(folderPath, fileName, responseContent);
@@ -171,9 +171,9 @@ public class ApiMethods {
 	 * @param fileName   file name to store the response content
 	 * @param response   response object {@link io.restassured.response.Response
 	 *                   Response}
-	 * @throws Exception exception
+	 * @throws Exception the exception
 	 */
-	public void writeResposeToFile(String folderPath, String fileName, Response response) throws Exception {
+	public void writeResponseToFile(String folderPath, String fileName, Response response) throws Exception {
 		String responseCode = response.body().prettyPrint();
 		this.logAccess.getLogger().debug("Writing response to the file : " + folderPath + File.separatorChar + fileName
 				+ "\n Response Content: \n" + responseCode);

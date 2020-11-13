@@ -37,9 +37,7 @@ public class GenericUtil {
 	 */
 	public long generateRandomNumber(int length) {
 		String allowedChars = "0123456789";
-		String randomNumber = "";
-		String temp = RandomStringUtils.random(length, allowedChars);
-		randomNumber = temp.substring(0, temp.length());
+		String randomNumber = RandomStringUtils.random(length, allowedChars);
 
 		long returnRandomNumber = Long.valueOf(randomNumber);
 
@@ -59,8 +57,7 @@ public class GenericUtil {
 	 */
 	public int generateRandomNumber(int minValue, int maxValue) {
 		SecureRandom random = new SecureRandom();
-		int randomNumber = random.nextInt(maxValue + 1 - minValue) + minValue;
-		return randomNumber;
+		return random.nextInt(maxValue + 1 - minValue) + minValue;
 	}
 
 }

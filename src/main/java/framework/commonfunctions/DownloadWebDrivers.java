@@ -22,7 +22,7 @@ public class DownloadWebDrivers {
 	private static DateTimeUtil dateTimeUtil;
 	private static ZipUtil zipUtil;
 	private static FolderFileUtil folderFileUtil;
-	private static LogAccess logAccess = new LogAccess("DownloadWebDrivers", LogVerboseEnums.ALL);
+	private static final LogAccess logAccess = new LogAccess("DownloadWebDrivers", LogVerboseEnums.ALL);
 
 	/**
 	 * Download driver <br>
@@ -41,7 +41,7 @@ public class DownloadWebDrivers {
 		folderFileUtil = new FolderFileUtil(logAccess);
 
 		try {
-			String downloadUrl = null;
+			String downloadUrl;
 			switch (browserName.toString().toLowerCase()) {
 			case "chrome":
 				String latestChromeVersion = getChromeDriverVersion();
@@ -79,8 +79,7 @@ public class DownloadWebDrivers {
 		Response response = apiMethods.sendRequest("get", uri);
 		// response code
 		DownloadWebDrivers.logAccess.getLogger().debug("RESPONSE CODE: " + response.getStatusCode());
-		String versionNumber = response.asString().replaceAll("[^0-9\\.]","");
-		return versionNumber;
+		return response.asString().replaceAll("[^0-9.]","");
 	}
 
 	/**
@@ -107,8 +106,7 @@ public class DownloadWebDrivers {
 		// response code
 		DownloadWebDrivers.logAccess.getLogger().debug("RESPONSE CODE: " + response.getStatusCode());
 		JsonPath jsonPathEvaluator = response.jsonPath();
-		String versionNumber = jsonPathEvaluator.getString("tag_name");
-		return versionNumber;
+		return jsonPathEvaluator.getString("tag_name");
 	}
 
 	/**
@@ -126,7 +124,7 @@ public class DownloadWebDrivers {
 		// get json data
 		String currentVersion = "";
 		String driversFolderPath = System.getProperty("user.dir") + File.separatorChar + "drivers";
-		DocumentContext jPathDocCon = null;
+		DocumentContext jPathDocCon;
 		try {
 			jPathDocCon = com.jayway.jsonpath.JsonPath
 					.parse(new File(driversFolderPath + File.separatorChar + "DriversInfo.json"));
@@ -147,12 +145,12 @@ public class DownloadWebDrivers {
 		// check if the latest version does already exist in the system
 		if (!currentVersion.equals(laterVersion)) {
 			String destinationFilePath = new File(destinationFolder).getAbsolutePath();
-			DownloadWebDrivers.logAccess.getLogger().debug("Latest webdriver is not availble for " + browserName
+			DownloadWebDrivers.logAccess.getLogger().debug("Latest webdriver is not available for " + browserName
 					+ " on the local machine. Downloading latest version # " + laterVersion);
 			String originalZipPath = destinationFilePath + dateTimeUtil.getCurrentDateTime(CommonVariables.TIME_FORMATS[7]) + ".zip";
 			DownloadWebDrivers.logAccess.getLogger().debug("Downing the driver zip and storing as " + originalZipPath);
 			File tempZipFile = new File(originalZipPath);
-			// donwload the zip file to temp directory
+			// download the zip file to temp directory
 			FileUtils.copyURLToFile(new URL(url), tempZipFile);
 			// unzip the driver to the destination
 			DownloadWebDrivers.logAccess.getLogger().debug("Extracting the driver to " + destinationFilePath);

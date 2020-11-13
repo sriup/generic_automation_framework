@@ -1,8 +1,8 @@
 package framework.logs;
 
 import java.io.File;
-/**
- * The Class LogAccess.
+/*
+  The Class LogAccess.
  */
 import java.io.OutputStreamWriter;
 
@@ -29,7 +29,7 @@ public class LogAccess {
 	private Logger log;
 
 	/** The log level. */
-	private LogVerboseEnums logLevel;
+	private final LogVerboseEnums logLevel;
 
 	/**
 	 * Instantiates a new log access.
@@ -49,7 +49,7 @@ public class LogAccess {
 	/**
 	 * Creating the Console Appender and File Appender.
 	 */
-	private void intializeLogger() {
+	private void initializeLogger() {
 
 		Logger.getLogger("org.apache.http").setLevel(org.apache.log4j.Level.OFF);
 		ConsoleAppender ca = new ConsoleAppender();
@@ -100,19 +100,17 @@ public class LogAccess {
 	public Logger getLogger() {
 
 		if (!isInitialized) {
-			System.out.println("Initializating the logger");
+			System.out.println("Initializing the logger");
 
 			log = Logger.getLogger(loggerFileName);
 
 			Logger.getRootLogger().setAdditivity(false);
 			log.setLevel(Level.ALL);
 
-			intializeLogger();
+			initializeLogger();
 			isInitialized = true;
-			return this.log;
-		} else {
-			return this.log;
 		}
+		return this.log;
 	}
 
 	/**
@@ -162,9 +160,6 @@ public class LogAccess {
 
 		switch (this.logLevel) {
 		// We are getting ENUMS from LogVerboseEnums class
-		case DEBUG:
-			return Level.DEBUG;
-
 		case INFO:
 			return Level.INFO;
 

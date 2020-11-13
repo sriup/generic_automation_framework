@@ -58,7 +58,7 @@ public class BrowserFunctions {
 	private String downloadFolderpath = "";
 
 	/** Log info is written in LogAccess. */
-	private LogAccess logAccess;
+	private final LogAccess logAccess;
 
 	private String browserName;
 
@@ -78,7 +78,7 @@ public class BrowserFunctions {
 	 * 
 	 * @param downloadPath the path where the files should be download when download
 	 *                     from browser
-	 * @throws Exception
+	 * @throws Exception the exception
 	 */
 	private void setDownloadFolderPath(String downloadPath) throws Exception {
 		if (downloadPath.isEmpty()) {
@@ -137,9 +137,9 @@ public class BrowserFunctions {
 	 * @param downloadPath the download path
 	 * @return the {@link org.openqa.selenium.WebDriver WebDriver} for the specified
 	 *         browser
-	 * @throws Exception
+	 * @throws Exception the exception
 	 */
-	@Step("Lauching \"{browserName}\" browser")
+	@Step("Launching \"{browserName}\" browser")
 	public WebDriver launch(String browserName, String downloadPath, HashMap<String, Object> options) throws Exception {
 		setDownloadFolderPath(downloadPath);
 		this.logAccess.getLogger().info("Launching browser :-  " + browserName);
@@ -257,7 +257,7 @@ public class BrowserFunctions {
 	 * Launch Chrome.
 	 *
 	 * @return the web driver
-	 * @throws Exception
+	 * @throws Exception the exception
 	 */
 
 	private WebDriver launchChrome() throws Exception {
@@ -302,7 +302,7 @@ public class BrowserFunctions {
 	 * Information tab will open. And then click on `Profile Folder`
 	 * 
 	 * @return the web driver
-	 * @throws Exception
+	 * @throws Exception the exception
 	 */
 	private WebDriver launchFirefox() throws Exception {
 		System.setProperty("webdriver.gecko.driver",
@@ -323,10 +323,10 @@ public class BrowserFunctions {
 		// hide Download Manager window when a download begins
 		profile.setPreference("browser.download.manager.showWhenStarting", false);
 
-		/****
-		 * This is the most important setting that will make sure the pdf is downloaded
-		 * without any prompt
-		 **/
+		/**
+		 This is the most important setting that will make sure the pdf is downloaded
+		 without any prompt
+		 */
 		profile.setPreference("pdfjs.disabled", true);
 
 		profile.setPreference("pref.downloads.disable_button.edit_actions", false);
@@ -371,7 +371,7 @@ public class BrowserFunctions {
 	 * Launch edge.
 	 *
 	 * @return the web driver
-	 * @throws Exception 
+	 * @throws Exception the exception
 	 */
 	private WebDriver launchEdge() throws Exception {
 		System.setProperty("webdriver.edge.driver",
