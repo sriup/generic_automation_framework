@@ -4,18 +4,17 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>automation.generic</groupId>
 	<artifactId>framework</artifactId>
-	<version>beta-0.3</version>
-
+	<version>beta-0.6</version>
 	<packaging>jar</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<selenium.version>3.141.59</selenium.version>
 		<wdmanager.version>3.4.0</wdmanager.version>
-		<aspectj.version>1.8.10</aspectj.version>
-		<java.source-target.version>1.8</java.source-target.version>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<aspectj.version>1.9.5</aspectj.version>
+		<java.source-target.version>13</java.source-target.version>
+		<maven.compiler.source>13</maven.compiler.source>
+		<maven.compiler.target>13</maven.compiler.target>
 	</properties>
 
 	<build>

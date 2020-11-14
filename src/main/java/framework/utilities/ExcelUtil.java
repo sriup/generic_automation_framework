@@ -35,7 +35,7 @@ public class ExcelUtil {
 	private Workbook wb;
 
 	/** The log access. */
-	private LogAccess logAccess;
+	private final LogAccess logAccess;
 
 	/**
 	 * Instantiates a new excel functions.
@@ -58,9 +58,7 @@ public class ExcelUtil {
 	 */
 	public Workbook openWorkBook(String excelFilePath, String excelFileName) throws IOException {
 
-		Workbook wb = openWorkBook(excelFilePath + File.separatorChar + excelFileName);
-
-		return wb;
+		return openWorkBook(excelFilePath + File.separatorChar + excelFileName);
 	}
 
 	/**
@@ -264,7 +262,7 @@ public class ExcelUtil {
 	 * @param sheetIndex  the index of the sheet number (0-based physical and
 	 *                    logical)
 	 * @param startRowNum Row index starts from
-	 * @param endRowNum   Row index upto
+	 * @param endRowNum   Row index up to
 	 * @return List of rows
 	 */
 	public List<Row> getRows(int sheetIndex, int startRowNum, int endRowNum) {
@@ -295,16 +293,14 @@ public class ExcelUtil {
 	 * 
 	 * @param sheetName   Name of the work sheet
 	 * @param startRowNum Row index starts from
-	 * @param endRowNum   Row index upto
+	 * @param endRowNum   Row index up to
 	 * @return List of rows
 	 */
 	public List<Row> getRows(String sheetName, int startRowNum, int endRowNum) {
 
 		int sheetIndex = getSheetIndex(sheetName);
 
-		List<Row> rowsList = getRows(sheetIndex, startRowNum, endRowNum);
-
-		return rowsList;
+		return getRows(sheetIndex, startRowNum, endRowNum);
 	}
 
 	/**
@@ -413,7 +409,7 @@ public class ExcelUtil {
 	 *
 	 * 
 	 * 
-	 * @param sheetname       Name of the work sheet
+	 * @param sheetName       Name of the work sheet
 	 * 
 	 * @param headersRowIndex the index of the row where it contains all the headers
 	 * 
@@ -421,9 +417,9 @@ public class ExcelUtil {
 	 * 
 	 */
 
-	public String[] getColumnHeaders(String sheetname, int headersRowIndex) {
+	public String[] getColumnHeaders(String sheetName, int headersRowIndex) {
 
-		int sheetIndex = getSheetIndex(sheetname);
+		int sheetIndex = getSheetIndex(sheetName);
 
 		return getColumnHeaders(sheetIndex, headersRowIndex);
 
@@ -444,7 +440,7 @@ public class ExcelUtil {
 			cellValue = cell.toString().trim();
 		} else if (cellType == CellType.NUMERIC) {
 			if (cell.getCellStyle().getDataFormatString().contains("%")) {
-				cellValue = Double.toString(cell.getNumericCellValue() * 100) + "%";
+				cellValue = cell.getNumericCellValue() * 100 + "%";
 			} else {
 				cellValue = Double.toString(cell.getNumericCellValue());
 			}
@@ -479,10 +475,10 @@ public class ExcelUtil {
 				cellValue = "";
 			}
 		} else {
-			this.logAccess.getLogger().warn("Cell :  \"R" + String.valueOf(rowNumber) + "C"
-					+ String.valueOf(columnNumber) + "\"  is out of range.");
-			throw new ArrayIndexOutOfBoundsException("Cell :  \"R" + String.valueOf(rowNumber) + "C"
-					+ String.valueOf(columnNumber) + "\"  is out of range.");
+			this.logAccess.getLogger().warn("Cell :  \"R" + rowNumber + "C"
+					+ columnNumber + "\"  is out of range.");
+			throw new ArrayIndexOutOfBoundsException("Cell :  \"R" + rowNumber + "C"
+					+ columnNumber + "\"  is out of range.");
 		}
 		return cellValue;
 	}
@@ -505,6 +501,7 @@ public class ExcelUtil {
 			cellValue = row.getCell(columnNumber).toString();
 		} else {
 			// throw error that rowNumber is > rows count in the sheet
+			//TODO need to add logic to throw the error
 		}
 		return cellValue;
 	}
@@ -520,7 +517,7 @@ public class ExcelUtil {
 	 */
 	// get cell value by header
 	public String getCellData(String sheetName, int rowNumber, String columnName) {
-		String cellValue = null;
+		String cellValue;
 		// check if the rowNumber is with in the limit of available rows
 		if (rowNumber <= getRowCount(sheetName)) {
 			// get row based on the sheet name and row index
@@ -1041,7 +1038,7 @@ public class ExcelUtil {
 	 * @param patternType Fill Pattern <br>
 	 *                    <font color="blue"><b>Example:</b>
 	 *                    FillPatternType.LESS_DOTS </font>
-	 * @return
+	 * @return			  the cell style
 	 */
 	private CellStyle createCellStyle(IndexedColors indexColor, FillPatternType patternType) {
 
@@ -1208,7 +1205,7 @@ public class ExcelUtil {
 			try {
 				this.wb.close();
 			} catch (IOException e) {
-				this.logAccess.getLogger().debug("recieved IOException, please check the trace for more informtaion.");
+				this.logAccess.getLogger().debug("received IOException, please check the trace for more information.");
 				e.printStackTrace();
 			}
 			this.wb = null;

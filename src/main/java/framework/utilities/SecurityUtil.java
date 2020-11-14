@@ -53,7 +53,7 @@ public class SecurityUtil {
 	 * 
 	 */
 	public String getToken(String secretKey, boolean isSecretKeyEncrypted) {
-		String token = null;
+		String token;
 		// create the instance of the TOTP with the security key
 		if (isSecretKeyEncrypted) {
 			token = getToken(secretKey);
@@ -78,11 +78,11 @@ public class SecurityUtil {
 	 * if you decided to use new key generated.</font>
 	 * 
 	 * @return dynamically generated AES_KEY string
-	 * @throws Exception exception
+	 * @throws Exception the exception
 	 */
 	public String generateKey() throws Exception {
 		String keyBase = RandomStringUtils.random(64, "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
-		byte[] salt = new String("1234567890").getBytes();
+		byte[] salt = "1234567890".getBytes();
 		int iterationCount = 40000;
 		int keyLength = 192; // generating 32 bytes key
 		SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
@@ -104,7 +104,7 @@ public class SecurityUtil {
 	 * @return Encrypted text
 	 */
 	public String encrypt(String textToEncrypt) {
-		String encryptedtext = null;
+		String encryptedText = null;
 		try {
 			// Get the AES_KEY from user environment variables
 			String key = System.getenv("AES_KEY");
@@ -117,18 +117,18 @@ public class SecurityUtil {
 			// initiate the algorithm parameters
 			AlgorithmParameters parameters = cipher.getParameters();
 			IvParameterSpec ivParameterSpec = parameters.getParameterSpec(IvParameterSpec.class);
-			// Get the encypted value
+			// Get the encrypted value
 			byte[] encrypted = cipher.doFinal(textToEncrypt.getBytes());
 			// append the paramConvert the value from bytes to standard text
-			encryptedtext = base64Encode(ivParameterSpec.getIV()) + base64Encode(encrypted);
-			if (!decrypt(encryptedtext).equals(textToEncrypt)) {
+			encryptedText = base64Encode(ivParameterSpec.getIV()) + base64Encode(encrypted);
+			if (!decrypt(encryptedText).equals(textToEncrypt)) {
 				throw new Exception("unable to decrypt the encrypted text");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		// return the encrypted value
-		return encryptedtext;
+		return encryptedText;
 
 	}
 

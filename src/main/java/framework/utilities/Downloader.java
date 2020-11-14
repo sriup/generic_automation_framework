@@ -16,14 +16,14 @@ public class Downloader {
 	 * be override with the new download, if already exist in the
 	 * destination.</font>
 	 * 
-	 * @param logAceess   LogAccess instance
+	 * @param logAccess   LogAccess instance
 	 * @param url         URL from where the file should be download
 	 * @param destination destination folder path to save the file
 	 * 
 	 * @throws MalformedURLException exception
 	 * @throws IOException           exception
 	 */
-	public void downloadFile(LogAccess logAceess, String url, String destination)
+	public void downloadFile(LogAccess logAccess, String url, String destination)
 			throws MalformedURLException, IOException {
 		File tempFile = new File(destination);
 		// Download the file to the destination directory

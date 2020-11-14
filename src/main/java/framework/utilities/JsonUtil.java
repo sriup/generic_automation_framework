@@ -9,7 +9,7 @@ import com.jayway.jsonpath.JsonPath;
 import framework.logs.LogAccess;
 
 public class JsonUtil {
-	private LogAccess logAccess;
+	private final LogAccess logAccess;
 
 	public JsonUtil(LogAccess logAccess) {
 		this.logAccess = logAccess;
@@ -24,7 +24,7 @@ public class JsonUtil {
 	 * @throws IOException I/O exception
 	 */
 	public String getValue(String jsonFilePath, String jsonPath) throws IOException {
-		DocumentContext jPathDocCon = null;
+		DocumentContext jPathDocCon;
 		jPathDocCon = JsonPath.parse(new File(jsonFilePath));
 		String result;
 		result = jPathDocCon.read(jsonPath).toString();

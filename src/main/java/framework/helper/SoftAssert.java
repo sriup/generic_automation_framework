@@ -1,17 +1,11 @@
 package framework.helper;
 
-import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.testng.asserts.IAssert;
 import org.testng.collections.Maps;
@@ -37,8 +31,8 @@ import io.qameta.allure.model.Status;
 public class SoftAssert extends org.testng.asserts.SoftAssert {
 
 	private final Map<AssertionError, IAssert<?>> m_errors = Maps.newLinkedHashMap();
-	private FwBaseClass fwBaseClass;
-	private WebDriver driver;
+	private final FwBaseClass fwBaseClass;
+	private final WebDriver driver;
 
 	/**
 	 * SoftAssert constructor
@@ -111,8 +105,7 @@ public class SoftAssert extends org.testng.asserts.SoftAssert {
 	 *                If soft assert failed it will show the exception details as
 	 *                message
 	 * @param status  soft assertion status
-	 * @return image bytes
-	 * @throws Exception
+	 * @throws Exception the exception
 	 */
 	@Step("SoftAssert :\n{message}")
 	public void addScreenshotInAllureReport(String message, Status status) throws Exception {

@@ -14,10 +14,10 @@ import framework.logs.LogAccess;
 public class FakeDataUtil {
 
 	/** The Faker object. */
-	Faker faker;
+	final Faker faker;
 
 	/** The Log Access object */
-	private LogAccess logAccess;
+	private final LogAccess logAccess;
 
 	/**
 	 * Instantiates Faker object
