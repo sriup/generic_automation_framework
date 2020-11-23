@@ -1,9 +1,7 @@
 package framework.commonfunctions;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -37,10 +35,10 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import io.qameta.allure.Step;
 
 /**
- * 
+ *
  * All the methods related to the browser operations will be handled in this
  * class.
- * 
+ *
  * @see org.openqa.selenium.remote.RemoteWebDriver
  */
 public class BrowserFunctions {
@@ -64,7 +62,7 @@ public class BrowserFunctions {
 
 	/**
 	 * Gets the browser name
-	 * 
+	 *
 	 * @return the browser name
 	 */
 	public String getBrowserName() {
@@ -75,7 +73,7 @@ public class BrowserFunctions {
 	 * Sets the download folder path.<br>
 	 * <font color="blue"><b>Note : </b></font> This will set the download folder
 	 * path as part of driver capabilities.
-	 * 
+	 *
 	 * @param downloadPath the path where the files should be download when download
 	 *                     from browser
 	 * @throws Exception the exception
@@ -199,7 +197,7 @@ public class BrowserFunctions {
 	/**
 	 * Close the current window, quitting the browser if it's the last window
 	 * currently open.
-	 * 
+	 *
 	 * @see org.openqa.selenium.remote.RemoteWebDriver#close() close
 	 */
 	@Step("Closing browser")
@@ -210,7 +208,7 @@ public class BrowserFunctions {
 
 	/**
 	 * Quits this driver, closing every associated window.
-	 * 
+	 *
 	 * @see org.openqa.selenium.remote.RemoteWebDriver#quit() quit
 	 */
 	@Step("Quiting the browser")
@@ -272,18 +270,24 @@ public class BrowserFunctions {
 //		Map<String, String> mobileEmulation = new HashMap<>();
 //
 //		mobileEmulation.put("deviceName", "iPhone X");
-		
+
 		chromePrefs.put("profile.default_content_settings.popups", 0);
 		chromePrefs.put("download.default_directory", this.getDownloadFolderPath());
 		chromePrefs.put("profile.default_content_setting_values.automatic_downloads", 1);
-				
+
 		ChromeOptions options = new ChromeOptions();
 		options.setExperimentalOption("prefs", chromePrefs);
 		options.setCapability("ACCEPT_SSL_CERTS", true);
 		options.setCapability("pageLoadStrategy", "none");
+
+		HashMap<String, Object> chromeLocalStatePrefs = new HashMap<String, Object>();
+		List<String> experimentalFlags = new ArrayList<String>();
+		experimentalFlags.add("calculate-native-win-occlusion@2");
+		chromeLocalStatePrefs.put("browser.enabled_labs_experiments", experimentalFlags);
+		options.setExperimentalOption("localState", chromeLocalStatePrefs);
 		//options.setExperimentalOption("mobileEmulation", mobileEmulation);
-		
-		
+
+
 		threadDriver = new ThreadLocal<RemoteWebDriver>();
 		setWebDriver(new ChromeDriver(options));
 		return getWebDriver();
@@ -300,7 +304,7 @@ public class BrowserFunctions {
 	 * ! If you want to see the preferences you can click the menu button menu ,
 	 * click Help and select Troubleshooting Information. The Troubleshooting
 	 * Information tab will open. And then click on `Profile Folder`
-	 * 
+	 *
 	 * @return the web driver
 	 * @throws Exception the exception
 	 */
@@ -380,47 +384,47 @@ public class BrowserFunctions {
 						+ getWebDriverLocation(BrowserEnums.Edge).replace(".", "_") + File.separatorChar
 						+ "msedgedriver.exe");
 		//TODO: Need to work on the edge options to change the download path location
-		
+
 	        EdgeDriverService edgeDriverService = EdgeDriverService.createDefaultService();
-	        
+
 	        threadDriver = new ThreadLocal<RemoteWebDriver>();
-	        
+
 	        EdgeOptions edgeOptions = new EdgeOptions();
-	       
-	        
+
+
 			setWebDriver(new EdgeDriver(edgeDriverService, edgeOptions));
 
-	        // set the download path and the download behavior        
+	        // set the download path and the download behavior
 	        Map<String, Object> commandParameters = new HashMap<>();
-	        
+
 	        commandParameters.put("cmd", "Page.setDownloadBehavior");
-	        
+
 	        Map<String, String> parameters = new HashMap<>();
-	        
+
 	        parameters.put("behavior", "allow");
-	        
+
 	        parameters.put("downloadPath", getDownloadFolderPath());
-	       
-	        
+
+
 	        commandParameters.put("params", parameters);
-	        
+
 	        ObjectMapper objectMapper = new ObjectMapper();
-	        
+
 	        HttpClient httpClient = HttpClientBuilder.create().build();
-	        
+
 	        String command = objectMapper.writeValueAsString(commandParameters);
-	        
+
 	        // get the remote driver session id
 	        SessionId session = ((RemoteWebDriver)this.getWebDriver()).getSessionId();
-	        
+
 	        String postRequestUri = edgeDriverService.getUrl().toString() + "/session/" + session + "/chromium/send_command";
-	        
+
 	        HttpPost postRequest = new HttpPost(postRequestUri);
-	        
+
 	        postRequest.addHeader("content-type", "application/json");
-	        
+
 	        postRequest.setEntity(new StringEntity(command));
-	        
+
 	        httpClient.execute(postRequest);
 
 	        return getWebDriver();
