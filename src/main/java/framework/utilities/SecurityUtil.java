@@ -155,7 +155,7 @@ public class SecurityUtil {
 			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 			// initialize with decryption mode
 			cipher.init(Cipher.DECRYPT_MODE, aesKey, new IvParameterSpec(base64Decode(ivValue)));
-			// Get the decypted value
+			// Get the decrypted value
 			byte[] byteText = base64Decode(text);
 			// Convert the value from bytes to standard text
 			decrypted = new String(cipher.doFinal(byteText));
