@@ -739,14 +739,20 @@ public class CommonFunctions {
      * @throws Exception the exception
      */
     public String highlightElement(WebDriver driver, WebElement element) throws Exception {
-        this.logAccess.getLogger().debug("Highlighting element :- " + element);
-        // get the original
-        String originalStyle = getOriginalStyle(element);
-        // scroll element to the center
-        scrollElement(driver, element, "center");
-        // highlight the web element
-        String highlightJavaScript = "arguments[0].style.background=\"" + this.highlightBgColor + "\";";
-        executeJs(driver, element, highlightJavaScript);
+        String originalStyle = "";
+        try {
+            this.logAccess.getLogger().debug("Highlighting element :- " + element);
+            // get the original
+            originalStyle = getOriginalStyle(element);
+            // scroll element to the center
+            scrollElement(driver, element, "center");
+            // highlight the web element
+            String highlightJavaScript = "arguments[0].style.background=\"" + this.highlightBgColor + "\";";
+            executeJs(driver, element, highlightJavaScript);
+        } catch (Exception e) {
+            //ignore exception as sometimes the element might either not exist
+            // or might get refreshed
+        }
         return originalStyle;
     }
 
@@ -1792,7 +1798,7 @@ public class CommonFunctions {
      *                       {@link #captureFullPageScreenShot(WebDriver, WebElement, boolean, String)}
      *                       method to show the header only once in the full page
      *                       screenshot</font>
-     * @return               the screenshot path
+     * @return the screenshot path
      * @throws Exception the exception
      */
     public String captureFullPageScreenShot(WebDriver driver, String screenShotName) throws Exception {
@@ -1828,7 +1834,7 @@ public class CommonFunctions {
      *                         Note: Use {@link #screenShotsPath screenShotsPath}
      *                         setter to set the path where you want to store the
      *                         screenshots.
-     * @return                 the screenshot path
+     * @return the screenshot path
      * @throws Exception the exception
      */
     public String captureFullPageScreenShot(WebDriver driver, WebElement headerElement, boolean notIncludeHeader,
@@ -1867,7 +1873,7 @@ public class CommonFunctions {
      *                         Note: Use {@link #screenShotsPath screenShotsPath}
      *                         setter to set the path where you want to store the
      *                         screenshots.
-     * @return                 the screenshot path
+     * @return the screenshot path
      * @throws Exception the exception
      */
     public String captureFullPageScreenShot(WebDriver driver, By byLocator, boolean notIncludeHeader,
@@ -2179,9 +2185,14 @@ public class CommonFunctions {
      * @param originalStyle the original style
      */
     private void setOriginalStyle(WebDriver driver, WebElement element, String originalStyle) {
-        this.logAccess.getLogger().debug("Setting original style \"" + originalStyle + "\" to element :- " + element);
-        String js = "arguments[0].setAttribute('style', '" + originalStyle + "');";
-        executeJs(driver, element, js);
+        try {
+            this.logAccess.getLogger().debug("Setting original style \"" + originalStyle + "\" to element :- " + element);
+            String js = "arguments[0].setAttribute('style', '" + originalStyle + "');";
+            executeJs(driver, element, js);
+        } catch (Exception e) {
+            // ignore exceptions as there might be cases where either the element
+            // is refreshed or no more exist or might the element reference might updated (stale element)
+        }
     }
 
     /**
@@ -2312,7 +2323,7 @@ public class CommonFunctions {
         int pageHeight = ((Number) js.executeScript("return document.body.scrollHeight")).intValue();
 
         // Calculate the number of full screen shots
-        double fullFraction = pageHeight / (windowHeight-5);
+        double fullFraction = pageHeight / (windowHeight - 5);
         int fullShots = (int) fullFraction; // this simply removes the decimals
 
         // decide the start index based on the window and page height
@@ -2394,7 +2405,7 @@ public class CommonFunctions {
         int pageHeight = ((Number) js.executeScript("return document.body.scrollHeight")).intValue();
 
         // Calculate the number of full screen shots
-        double fullFraction = pageHeight / (windowHeight-5);
+        double fullFraction = pageHeight / (windowHeight - 5);
         int fullShots = (int) fullFraction; // this simply removes the decimals
 
         // decide the start index based on the window and page height
@@ -2423,7 +2434,7 @@ public class CommonFunctions {
             // capture the small chunk
             BufferedImage lastChunk = lastPageBufferImage.getSubimage(0,
                     (int) (lastPageBufferImage.getHeight()
-                                                - (lastChunkHeight * pxRatio)),
+                            - (lastChunkHeight * pxRatio)),
                     lastPageBufferImage.getWidth(), (int) (lastChunkHeight * pxRatio));
 
             ImageIO.write(lastChunk, "png", tmpFile);

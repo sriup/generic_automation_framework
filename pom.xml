@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>automation.generic</groupId>
 	<artifactId>framework</artifactId>
-	<version>beta-0.6.1</version>
+	<version>beta-0.6.2</version>
 	<packaging>jar</packaging>
 
 	<properties>
