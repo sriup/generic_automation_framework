@@ -788,8 +788,7 @@ public class CommonFunctions {
         // set element original style
         try {
             setOriginalStyle(driver, element, originalStyle);
-        } catch (NoSuchElementException | StaleElementReferenceException
-                | ElementNotInteractableException ignoreException) { // TODO need to track this not intractable
+        } catch (Exception e) { // TODO need to track this not intractable
             // we don't have to either print the trace or throw the exception
             // here as there are situations where the element might not present
             // after performing some actions like click
