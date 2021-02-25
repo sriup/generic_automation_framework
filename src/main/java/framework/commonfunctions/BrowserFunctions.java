@@ -3,10 +3,12 @@ package framework.commonfunctions;
 import java.io.File;
 import java.util.*;
 
+import framework.constants.CommonVariables;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -143,28 +145,40 @@ public class BrowserFunctions {
 		this.logAccess.getLogger().info("Launching browser :-  " + browserName);
 		this.logAccess.getLogger().info("Downloads folder :- " + getDownloadFolderPath());
 		this.browserName = browserName;
+		WebDriver driver = null;
 
 		switch (browserName.trim().toLowerCase()) {
 		case "chrome":
 			DownloadWebDrivers.downloadDriver(BrowserEnums.Chrome);
-			return launchChrome();
+			driver = launchChrome();
+			break;
 		case "firefox":
 			DownloadWebDrivers.downloadDriver(BrowserEnums.Firefox);
-			return launchFirefox();
+			driver =  launchFirefox();
+			break;
 		case "edge":
 			DownloadWebDrivers.downloadDriver(BrowserEnums.Edge);
-			return launchEdge();
+			driver = launchEdge();
+			break;
 		case "ie":
 		case "internetexplorer":
-			return launchInternetExplorer(options);
+			driver = launchInternetExplorer(options);
+			break;
 		case "phantomjs":
-			return launchPhantomJS();
+			driver =  launchPhantomJS();
+			break;
 		default:
 			this.logAccess.getLogger().info(
 					"Unexpected value : " + browserName + "\n only supported browsers are: chrome, firefox, edge, ie");
 			throw new IllegalArgumentException(
 					"Unexpected value : " + browserName + "\n only supported browsers are: chrome, firefox, edge, ie");
 		}
+
+		if(driver != null){
+			Capabilities caps = ((RemoteWebDriver) getWebDriver()).getCapabilities();
+			CommonVariables.launchedBrowsers.put(caps.getBrowserName(),caps.getVersion());
+		}
+		return driver;
 
 	}
 
@@ -179,6 +193,7 @@ public class BrowserFunctions {
 		this.logAccess.getLogger().info("Navigating to URL :- " + URL);
 		this.threadDriver.get().manage().window().maximize();
 		this.threadDriver.get().get(URL);
+		CommonVariables.navigatedURLs.put(URL,URL);
 	}
 
 	/**

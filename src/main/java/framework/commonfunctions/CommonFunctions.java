@@ -3,6 +3,7 @@ package framework.commonfunctions;
 import framework.constants.CommonVariables;
 import framework.enums.BrowserEnums;
 import framework.enums.ExpectedConditionsEnums;
+import framework.helper.SoftAssert;
 import framework.logs.LogAccess;
 import framework.utilities.*;
 import org.apache.commons.io.FileUtils;
@@ -1894,12 +1895,48 @@ public class CommonFunctions {
      * @param expectedFileName    the expected file name
      * @param maxTimeOutInSeconds the maximum time script should wait for the
      *                            download to complete
+     * @return the file download status
+     */
+    public boolean waitUntilDownloadCompleted(WebDriver driver, String downloadFolderPath, String expectedFileName,
+                                              int maxTimeOutInSeconds, SoftAssert softAssert) {
+
+        boolean isFileDownloaded = false; // is file downloaded
+        this.logAccess.getLogger().info("Waiting for " + downloadFolderPath + File.separator + expectedFileName + " file.");
+        WebDriverWait wait = new WebDriverWait(driver, maxTimeOutInSeconds);
+        File fileToCheck = new File(downloadFolderPath).toPath().resolve(expectedFileName).toFile();
+        try {
+            wait.until((WebDriver wd) -> fileToCheck.exists());
+            isFileDownloaded = true;
+        }catch(Exception e){
+            this.logAccess.getLogger().info("---<Download Failed>------");
+            this.logAccess.getLogger().info(e.getMessage());
+        }
+
+        // assert the download status
+        softAssert.assertTrue(isFileDownloaded,fileToCheck.toString() + " file download is failed..");
+
+        return isFileDownloaded;
+
+    }
+    /**
+     * This method will wait until the file download is completed and waits for
+     * specified max time
+     *
+     * @param driver              the {@link org.openqa.selenium.WebDriver
+     *                            WebDriver}
+     * @param downloadFolderPath  the download folder path
+     *                            {@link BrowserFunctions#getDownloadFolderPath()
+     *                            getDownloadFolderPath}
+     * @param expectedFileName    the expected file name
+     * @param maxTimeOutInSeconds the maximum time script should wait for the
+     *                            download to complete
      */
     public void waitUntilDownloadCompleted(WebDriver driver, String downloadFolderPath, String expectedFileName,
                                            int maxTimeOutInSeconds) {
+
+        this.logAccess.getLogger().info("Waiting for " + downloadFolderPath + File.separator + expectedFileName + " file.");
         WebDriverWait wait = new WebDriverWait(driver, maxTimeOutInSeconds);
         File fileToCheck = new File(downloadFolderPath).toPath().resolve(expectedFileName).toFile();
-
         wait.until((WebDriver wd) -> fileToCheck.exists());
 
     }
