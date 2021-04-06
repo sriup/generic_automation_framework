@@ -104,4 +104,6 @@ public class CommonVariables {
      * store launched browsers information
      */
     public static HashMap<String, String> launchedBrowsers = new HashMap<>();
+
+    public static boolean captureFullPageOnSoftAssert = true;
 }

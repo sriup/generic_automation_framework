@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import framework.constants.CommonVariables;
 import org.openqa.selenium.WebDriver;
 import org.testng.asserts.IAssert;
 import org.testng.collections.Maps;
@@ -15,7 +16,6 @@ import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import io.qameta.allure.model.Status;
 
-//TODO move this to framework and consider taking full page screenshot
 /**
  * This custom SoftAssert will extend TestNg SoftAssert and override methods to
  * achieve custom actions when the soft assert is performed.<br>
@@ -109,8 +109,25 @@ public class SoftAssert extends org.testng.asserts.SoftAssert {
 	 */
 	@Step("SoftAssert :\n{message}")
 	public void addScreenshotInAllureReport(String message, Status status) throws Exception {
-		String screenshotPath = fwBaseClass.getCommonFunctions().captureFullPageScreenShot(driver, "_sa_failed");
-//		File screenshot = null;	
+		String screenshotPath;
+
+		// get current url
+		String currentUrl = driver.getCurrentUrl();
+
+		// Note: Taking full page screenshot on the lightning application
+		// is causing issue with the css changes so marking will take the
+		// visible area screenshot rather full page on soft assert failure.
+		if (currentUrl.toLowerCase().contains("lightning")) {
+			CommonVariables.captureFullPageOnSoftAssert = false;
+		}
+
+		if(CommonVariables.captureFullPageOnSoftAssert){
+			screenshotPath = fwBaseClass.getCommonFunctions().captureFullPageScreenShot(driver, "_sa_failed");
+		}else{
+			screenshotPath = fwBaseClass.getCommonFunctions().captureScreenShot(driver, "_sa_failed");
+		}
+
+//		File screenshot = null;
 //		String screenshotPath = fwBaseClass.getScreenshotPath() + File.separatorChar
 //				+ new SimpleDateFormat("MM_dd_yyyy_hh_mm_ss_SS").format((new Date()))  + "_sa_failed.png";
 //		screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
