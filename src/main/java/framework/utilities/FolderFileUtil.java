@@ -354,6 +354,27 @@ public class FolderFileUtil {
 
 	/**
 	 * Copying the File from one location to the other location.
+	 *
+	 * @param oldFilePath Provide the Old Absolute source File path
+	 * @param fileName the filename
+	 * @param newFilePath Provide the New Absolute target File path
+	 * @param newFileName    the new filename
+	 * @param standardCopyOption  the {@link StandardCopyOption}
+	 * @return It will return the New File object
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public File copyFile(String oldFilePath, String fileName, String newFilePath, String newFileName, StandardCopyOption standardCopyOption)
+			throws IOException {
+
+		File oldFile = new File(oldFilePath + File.separatorChar + fileName);
+
+		File newFile = new File(newFilePath + File.separatorChar + newFileName);
+
+		return copyFile(oldFile, newFile, standardCopyOption);
+	}
+
+	/**
+	 * Copying the File from one location to the other location.
 	 * 
 	 * @param oldFile The object of the old file
 	 * @param newFile The object of the new file

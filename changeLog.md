@@ -1,3 +1,15 @@
+beta - 0.7.1
+============
+• Added method to copy file using new folder file path and new file name
+• Added method to parse and parse the timestamp
+• Added method to get the duration between two stamps
+
+beta - 0.7
+==========
+• Updated the dependencies in the pom.xml based on the latest stable versions.
+• Added logic to have control on the SoftAssert screenshot taking choice
+• Removed IE related steps in the CommonFunctions
+
 beta - 0.6.2
 ============
 •	minor release to handle the stale element exception while a highlight and un-highlight elements
