@@ -356,21 +356,41 @@ public class FolderFileUtil {
 	 * Copying the File from one location to the other location.
 	 *
 	 * @param oldFilePath Provide the Old Absolute source File path
-	 * @param fileName the filename
+	 * @param oldFileName the filename
 	 * @param newFilePath Provide the New Absolute target File path
 	 * @param newFileName    the new filename
 	 * @param standardCopyOption  the {@link StandardCopyOption}
 	 * @return It will return the New File object
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public File copyFile(String oldFilePath, String fileName, String newFilePath, String newFileName, StandardCopyOption standardCopyOption)
+	public File copyFile(String oldFilePath, String oldFileName, String newFilePath, String newFileName, StandardCopyOption standardCopyOption)
 			throws IOException {
 
-		File oldFile = new File(oldFilePath + File.separatorChar + fileName);
+		File oldFile = new File(oldFilePath + File.separatorChar + oldFileName);
 
 		File newFile = new File(newFilePath + File.separatorChar + newFileName);
 
 		return copyFile(oldFile, newFile, standardCopyOption);
+	}
+
+	/**
+	 * Copying the File from one location to the other location.
+	 *
+	 * @param oldFilePath Provide the Old Absolute source File path
+	 * @param oldFileName the filename
+	 * @param newFilePath Provide the New Absolute target File path
+	 * @param newFileName    the new filename
+	 * @return It will return the New File object
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public File copyFile(String oldFilePath, String oldFileName, String newFilePath, String newFileName)
+			throws IOException {
+
+		File oldFile = new File(oldFilePath + File.separatorChar + oldFileName);
+
+		File newFile = new File(newFilePath + File.separatorChar + newFileName);
+
+		return copyFile(oldFile, newFile);
 	}
 
 	/**
