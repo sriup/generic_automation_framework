@@ -402,7 +402,7 @@ public class FolderFileUtil {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public File copyFile(File oldFile, File newFile, StandardCopyOption standardOption) throws IOException {
-
+		FileUtils.forceMkdirParent(newFile);
 		Files.copy(oldFile.toPath(), newFile.toPath(), standardOption);
 
 		this.logAccess.getLogger().debug("The file '" + oldFile.getName() + "' got copied from '"
