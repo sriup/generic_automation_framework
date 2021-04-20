@@ -356,7 +356,7 @@ public class FolderFileUtil {
 	 * Copying the File from one location to the other location.
 	 *
 	 * @param oldFilePath Provide the Old Absolute source File path
-	 * @param oldFileName the filename
+	 * @param oldFileName the old filename
 	 * @param newFilePath Provide the New Absolute target File path
 	 * @param newFileName    the new filename
 	 * @param standardCopyOption  the {@link StandardCopyOption}
@@ -377,7 +377,7 @@ public class FolderFileUtil {
 	 * Copying the File from one location to the other location.
 	 *
 	 * @param oldFilePath Provide the Old Absolute source File path
-	 * @param oldFileName the filename
+	 * @param oldFileName the old filename
 	 * @param newFilePath Provide the New Absolute target File path
 	 * @param newFileName    the new filename
 	 * @return It will return the New File object
@@ -398,6 +398,7 @@ public class FolderFileUtil {
 	 * 
 	 * @param oldFile The object of the old file
 	 * @param newFile The object of the new file
+	 * @param standardOption  the {@link StandardCopyOption}
 	 * @return It will return the New File object
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
