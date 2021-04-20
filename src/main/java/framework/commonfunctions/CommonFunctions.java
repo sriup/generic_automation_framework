@@ -29,114 +29,42 @@ import java.util.*;
 public class CommonFunctions {
 
 	/**
-	 * Folder path where the captured screenshots should be stored.
-	 */
-	private String screenShotsPath;
-
-	/**
 	 * LogAccess object.
 	 */
 	private final LogAccess logAccess;
-
 	/**
 	 * DateTimeUtil object.
 	 */
 	private final DateTimeUtil dateTimeUtil;
-
 	/**
 	 * GenericUtil object
 	 */
 	private final GenericUtil genericUtil;
-
-	/**
-	 * Gets the dateTimeUtil object.
-	 *
-	 * @return the instance of DateTimeUtils
-	 */
-	public DateTimeUtil getDateTimeUtil() {
-		return dateTimeUtil;
-	}
-
 	/**
 	 * FolderFileUtil object.
 	 */
 	private final FolderFileUtil folderFileUtil;
-
-	/**
-	 * Gets the folderFileUtil object.
-	 *
-	 * @return the folderFileUtil
-	 */
-	public FolderFileUtil getFolderFileUtil() {
-		return folderFileUtil;
-	}
-
 	/**
 	 * The Excel Utility.
 	 */
 	private final ExcelUtil excelUtil;
-
-	/**
-	 * Gets the excelUtil.
-	 *
-	 * @return the excelUtil
-	 */
-	public ExcelUtil getExcelUtil() {
-		return excelUtil;
-	}
-
 	/**
 	 * The Fake Data Utility.
 	 */
 	private final FakeDataUtil fakeDataUtil;
-
-	/**
-	 * Gets the FakeDataUtil.
-	 *
-	 * @return the FakeDataUtil
-	 */
-	public FakeDataUtil getFakeDataUtil() {
-		return fakeDataUtil;
-	}
-
 	/**
 	 * The Security Utility.
 	 */
 	private final SecurityUtil securityUtil;
-
-	/**
-	 * Gets the SecurityUtil.
-	 *
-	 * @return the SecurityUtil
-	 */
-	public SecurityUtil getSecurityUtil() {
-		return securityUtil;
-	}
-
 	/**
 	 * The Zip Utility.
 	 */
 	private final ZipUtil zipUtil;
-
+	/**
+	 * Folder path where the captured screenshots should be stored.
+	 */
+	private String screenShotsPath;
 	private String highlightBgColor = "orange";
-
-	/**
-	 * Gets the ZipUtil.
-	 *
-	 * @return the ZipUtil
-	 */
-	public ZipUtil getZipUtil() {
-		return this.zipUtil;
-	}
-
-	/**
-	 * Gets the Generic Util
-	 *
-	 * @return the GenericUtil
-	 */
-	public GenericUtil genericUtil() {
-		return this.genericUtil;
-	}
 
 	/**
 	 * Instantiates a new common functions.<br>
@@ -173,6 +101,69 @@ public class CommonFunctions {
 	}
 
 	/**
+	 * Gets the dateTimeUtil object.
+	 *
+	 * @return the instance of DateTimeUtils
+	 */
+	public DateTimeUtil getDateTimeUtil() {
+		return dateTimeUtil;
+	}
+
+	/**
+	 * Gets the folderFileUtil object.
+	 *
+	 * @return the folderFileUtil
+	 */
+	public FolderFileUtil getFolderFileUtil() {
+		return folderFileUtil;
+	}
+
+	/**
+	 * Gets the excelUtil.
+	 *
+	 * @return the excelUtil
+	 */
+	public ExcelUtil getExcelUtil() {
+		return excelUtil;
+	}
+
+	/**
+	 * Gets the FakeDataUtil.
+	 *
+	 * @return the FakeDataUtil
+	 */
+	public FakeDataUtil getFakeDataUtil() {
+		return fakeDataUtil;
+	}
+
+	/**
+	 * Gets the SecurityUtil.
+	 *
+	 * @return the SecurityUtil
+	 */
+	public SecurityUtil getSecurityUtil() {
+		return securityUtil;
+	}
+
+	/**
+	 * Gets the ZipUtil.
+	 *
+	 * @return the ZipUtil
+	 */
+	public ZipUtil getZipUtil() {
+		return this.zipUtil;
+	}
+
+	/**
+	 * Gets the Generic Util
+	 *
+	 * @return the GenericUtil
+	 */
+	public GenericUtil genericUtil() {
+		return this.genericUtil;
+	}
+
+	/**
 	 * Sets the highlight color
 	 *
 	 * @param color the background color for highlight
@@ -200,7 +191,7 @@ public class CommonFunctions {
 		this.screenShotsPath = screenShotsPath;
 	}
 
-	/**
+		/**
 	 * Sets the date time format for the screenshot. <br>
 	 * <font color="blue">Note:<i> This will be prepended to the screenshot
 	 * name.</i></font>

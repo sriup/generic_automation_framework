@@ -354,14 +354,56 @@ public class FolderFileUtil {
 
 	/**
 	 * Copying the File from one location to the other location.
+	 *
+	 * @param oldFilePath Provide the Old Absolute source File path
+	 * @param oldFileName the old filename
+	 * @param newFilePath Provide the New Absolute target File path
+	 * @param newFileName    the new filename
+	 * @param standardCopyOption  the {@link StandardCopyOption}
+	 * @return It will return the New File object
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public File copyFile(String oldFilePath, String oldFileName, String newFilePath, String newFileName, StandardCopyOption standardCopyOption)
+			throws IOException {
+
+		File oldFile = new File(oldFilePath + File.separatorChar + oldFileName);
+
+		File newFile = new File(newFilePath + File.separatorChar + newFileName);
+
+		return copyFile(oldFile, newFile, standardCopyOption);
+	}
+
+	/**
+	 * Copying the File from one location to the other location.
+	 *
+	 * @param oldFilePath Provide the Old Absolute source File path
+	 * @param oldFileName the old filename
+	 * @param newFilePath Provide the New Absolute target File path
+	 * @param newFileName    the new filename
+	 * @return It will return the New File object
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public File copyFile(String oldFilePath, String oldFileName, String newFilePath, String newFileName)
+			throws IOException {
+
+		File oldFile = new File(oldFilePath + File.separatorChar + oldFileName);
+
+		File newFile = new File(newFilePath + File.separatorChar + newFileName);
+
+		return copyFile(oldFile, newFile);
+	}
+
+	/**
+	 * Copying the File from one location to the other location.
 	 * 
 	 * @param oldFile The object of the old file
 	 * @param newFile The object of the new file
+	 * @param standardOption  the {@link StandardCopyOption}
 	 * @return It will return the New File object
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public File copyFile(File oldFile, File newFile, StandardCopyOption standardOption) throws IOException {
-
+		FileUtils.forceMkdirParent(newFile);
 		Files.copy(oldFile.toPath(), newFile.toPath(), standardOption);
 
 		this.logAccess.getLogger().debug("The file '" + oldFile.getName() + "' got copied from '"

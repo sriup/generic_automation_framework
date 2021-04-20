@@ -394,4 +394,48 @@ public class DateTimeUtil {
         return "Q" + qtr;
     }
 
+
+    /**
+     * Parsing the timestamp to get the custom date time format
+     *
+     * @param timestamp timestamp
+     * @param dateFormat Custom Date format
+     * @return parsedDateTime DateTime in the String format
+     * @throws ParseException The ParseException
+     */
+    public String parseTimestampToDateTime(long timestamp, String dateFormat) throws ParseException {
+
+        Date dateTime = new Date(timestamp);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+        String parsedDateTime = simpleDateFormat.format(dateTime);
+
+        this.logAccess.getLogger().debug("parsedDateTime :- " + parsedDateTime);
+
+        return parsedDateTime;
+    }
+
+    /**
+     * gets the time duration between timestamps
+     * @param startTimeStamp the start timestamp
+     * @param endTimeStamp the end timestamp
+     * @return the time duration in "xxHrs xxMins xxSecs"
+     */
+    public String getDuration(long startTimeStamp, long endTimeStamp){
+        long elapsedTimeStamp = endTimeStamp - startTimeStamp;
+
+        int totalSeconds = (int) (elapsedTimeStamp/1000);
+
+        int hours =  (totalSeconds / 3600);
+
+        int minutes = (totalSeconds % 3600)/60;
+
+        int seconds = (totalSeconds % 3600) % 60  ;
+
+        return hours + "Hrs " + minutes + "Mins " + seconds + "Secs";
+    }
+
+
+
+
 }
