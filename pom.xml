@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>automation.generic</groupId>
 	<artifactId>framework</artifactId>
-	<version>beta-0.7.1</version>
+	<version>beta-0.7.2</version>
 	<packaging>jar</packaging>
 
 	<properties>
@@ -34,7 +34,7 @@
 				<version>3.0.0-M4</version>
 				<configuration>
 					<suiteXmlFiles>
-						<!-- <suiteXmlFile>${suite}</suiteXmlFile> -->
+						 <suiteXmlFile>${suite}</suiteXmlFile>
 					</suiteXmlFiles>
 					<systemProperties>
 						<property>
