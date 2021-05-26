@@ -1,9 +1,14 @@
 package framework.commonfunctions;
 
-import java.io.File;
-import java.util.*;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import framework.constants.CommonVariables;
+import framework.enums.BrowserEnums;
+import framework.logs.LogAccess;
+import framework.utilities.FolderFileUtil;
+import framework.utilities.JsonUtil;
+import io.github.bonigarcia.wdm.Architecture;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import io.qameta.allure.Step;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -22,19 +27,13 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import framework.enums.BrowserEnums;
-import framework.logs.LogAccess;
-import framework.utilities.FolderFileUtil;
-import framework.utilities.JsonUtil;
-import io.github.bonigarcia.wdm.Architecture;
-import io.github.bonigarcia.wdm.WebDriverManager;
-import io.qameta.allure.Step;
+import java.io.File;
+import java.util.*;
 
 /**
  *
@@ -292,8 +291,8 @@ public class BrowserFunctions {
 
 		ChromeOptions options = new ChromeOptions();
 		options.setExperimentalOption("prefs", chromePrefs);
-		options.setCapability("ACCEPT_SSL_CERTS", true);
-		options.setCapability("pageLoadStrategy", "none");
+		options.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+		options.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, "none");
 
 		HashMap<String, Object> chromeLocalStatePrefs = new HashMap<String, Object>();
 		List<String> experimentalFlags = new ArrayList<String>();
@@ -381,7 +380,6 @@ public class BrowserFunctions {
 		// options.addPreference("dom.ipc.processCount", 1);
 
 		setWebDriver(new FirefoxDriver(options));
-		Thread.sleep(10000);
 		return getWebDriver();
 
 	}

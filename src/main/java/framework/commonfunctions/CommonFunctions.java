@@ -18,7 +18,6 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.*;
 
@@ -191,7 +190,7 @@ public class CommonFunctions {
 		this.screenShotsPath = screenShotsPath;
 	}
 
-		/**
+	/**
 	 * Sets the date time format for the screenshot. <br>
 	 * <font color="blue">Note:<i> This will be prepended to the screenshot
 	 * name.</i></font>
@@ -672,7 +671,7 @@ public class CommonFunctions {
 	public boolean isElementEnabled(WebDriver driver, WebElement element, int maxTimeout) {
 		this.logAccess.getLogger().info("checking if element is enabled  :- " + element);
 		long currentTimestamp = (new Date()).getTime();
-		long endTimestamp = currentTimestamp + maxTimeout * 1000;
+		long endTimestamp = currentTimestamp + maxTimeout * 1000L;
 		boolean conditionalCheck = false;
 		while ((new Date()).getTime() < endTimestamp && !conditionalCheck) {
 			conditionalCheck = element.isEnabled();
@@ -708,7 +707,7 @@ public class CommonFunctions {
 	public boolean isElementEnabled(WebDriver driver, By byLocator, int maxTimeout) throws Exception {
 		this.logAccess.getLogger().info("checking if element is enabled  :- " + byLocator);
 		long currentTimestamp = (new Date()).getTime();
-		long endTimestamp = currentTimestamp + maxTimeout * 1000;
+		long endTimestamp = currentTimestamp + maxTimeout * 1000L;
 		boolean conditionalCheck = false;
 		while ((new Date()).getTime() < endTimestamp && !conditionalCheck) {
 			conditionalCheck = getElement(driver, byLocator).isEnabled();
@@ -880,9 +879,32 @@ public class CommonFunctions {
 	// click element
 	public void clickOnElement(WebDriver driver, WebElement element, boolean isCaptureScreenShot, boolean captureBefore,
 							   String screenShotName) throws Exception {
+		clickOnElement(driver, element, isCaptureScreenShot, captureBefore, screenShotName, CommonVariables.MED_TIMEOUT);
+	}
+
+	/**
+	 * Click on element.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param element             the {@link org.openqa.selenium.WebElement element}
+	 * @param isCaptureScreenShot the is capture screen shot
+	 * @param captureBefore       the capture before
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @param maxTimeOut          the maximum time to wait for the element
+	 * @throws Exception the exception
+	 */
+	// click element
+	public void clickOnElement(WebDriver driver, WebElement element, boolean isCaptureScreenShot, boolean captureBefore,
+							   String screenShotName, int maxTimeOut) throws Exception {
 		this.logAccess.getLogger().info("Clicking on element  :- " + element);
 
-		WebElement tempElement = getElement(driver, element);
+		WebElement tempElement = getElement(driver, element, maxTimeOut);
 		// highlight element
 		String originalStyle = highlightElement(driver, tempElement);
 		// capture before (private capture screenshot)
@@ -921,8 +943,25 @@ public class CommonFunctions {
 	 */
 	public void clickOnElement(WebDriver driver, By byLocator, boolean isCaptureScreenShot, boolean captureBefore,
 							   String screenShotName) throws Exception {
+		clickOnElement(driver, byLocator, isCaptureScreenShot, captureBefore, screenShotName, CommonVariables.MED_TIMEOUT);
+	}
+
+
+	/**
+	 * Click on element.
+	 *
+	 * @param driver              the driver
+	 * @param byLocator           the by locator
+	 * @param isCaptureScreenShot the is capture screen shot
+	 * @param captureBefore       the capture before
+	 * @param screenShotName      the screen shot name
+	 * @param maxTimeOut 		  the maximum time to wait for the element
+	 * @throws Exception the exception
+	 */
+	public void clickOnElement(WebDriver driver, By byLocator, boolean isCaptureScreenShot, boolean captureBefore,
+							   String screenShotName, int maxTimeOut) throws Exception {
 		WebElement element = getElement(driver, byLocator);
-		clickOnElement(driver, element, isCaptureScreenShot, captureBefore, screenShotName);
+		clickOnElement(driver, element, isCaptureScreenShot, captureBefore, screenShotName, maxTimeOut);
 	}
 
 	/**
@@ -969,14 +1008,15 @@ public class CommonFunctions {
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
+	 * @param maxTimeOut the maximum time to wait for the element
 	 * @throws Exception the exception
 	 */
 	public void inputValue(WebDriver driver, WebElement element, String value, boolean isCaptureScreenshot,
-						   String screenShotName) throws Exception {
+						   String screenShotName, int maxTimeOut) throws Exception {
 
 		this.logAccess.getLogger().info("Element :- " + element);
 		// get the element
-		WebElement tempElement = getElement(driver, element);
+		WebElement tempElement = getElement(driver, element, maxTimeOut);
 		if (tempElement.getAttribute("type").equals("password")) {
 			this.logAccess.getLogger().info("Masked value :- " + "x".repeat(value.length()));
 		} else {
@@ -1007,6 +1047,44 @@ public class CommonFunctions {
 	/**
 	 * Input value.
 	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param element             the {@link org.openqa.selenium.WebElement element}
+	 * @param value               the value to be set in the element
+	 * @param isCaptureScreenshot toggle to capture screenshot
+	 * @param screenShotName      the screen shot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @throws Exception the exception
+	 */
+	public void inputValue(WebDriver driver, WebElement element, String value, boolean isCaptureScreenshot,
+						   String screenShotName) throws Exception {
+		inputValue(driver, element, value, isCaptureScreenshot, screenShotName, CommonVariables.MED_TIMEOUT);
+	}
+
+	/**
+	 * Input value.
+	 *
+	 * @param driver              the driver
+	 * @param byLocator           the by locator
+	 * @param value               the value
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screen shot name
+	 * @param maxTimeOut the maximum time to wait for the element
+	 * @throws Exception the exception
+	 */
+	public void inputValue(WebDriver driver, By byLocator, String value, boolean isCaptureScreenshot,
+						   String screenShotName, int maxTimeOut) throws Exception {
+		WebElement element = getElement(driver, byLocator);
+		inputValue(driver, element, value, isCaptureScreenshot, screenShotName, maxTimeOut);
+	}
+
+	/**
+	 * Input value.
+	 *
 	 * @param driver              the driver
 	 * @param byLocator           the by locator
 	 * @param value               the value
@@ -1016,8 +1094,7 @@ public class CommonFunctions {
 	 */
 	public void inputValue(WebDriver driver, By byLocator, String value, boolean isCaptureScreenshot,
 						   String screenShotName) throws Exception {
-		WebElement element = getElement(driver, byLocator);
-		inputValue(driver, element, value, isCaptureScreenshot, screenShotName);
+		inputValue(driver, byLocator, value, isCaptureScreenshot, screenShotName, CommonVariables.MED_TIMEOUT);
 	}
 
 	/**
@@ -1261,14 +1338,15 @@ public class CommonFunctions {
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
+	 * @param maxTimeOut the maximum time to wait for the element
 	 * @throws Exception the exception
 	 */
 	public void selectItemByIndex(WebDriver driver, WebElement element, int index, boolean isCaptureScreenshot,
-								  String screenShotName) throws Exception {
+								  String screenShotName, int maxTimeOut) throws Exception {
 		this.logAccess.getLogger().info("Index :-  " + index);
 		this.logAccess.getLogger().info("Element :- " + element);
 		// get the element
-		WebElement tempElement = getElement(driver, element);
+		WebElement tempElement = getElement(driver, element, maxTimeOut);
 
 		// select item by index
 		Select listElement = new Select(tempElement);
@@ -1278,6 +1356,67 @@ public class CommonFunctions {
 		String originalStyle = highlightElement(driver, tempElement);
 
 		// capture
+		if (isCaptureScreenshot) {
+			captureScreenShot(driver, screenShotName);
+		}
+
+		// un-highlight
+		unHighlightElement(driver, tempElement, originalStyle);
+	}
+
+	/**
+	 * Select item by index.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param element             the {@link org.openqa.selenium.WebElement element}
+	 * @param index               the index
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @throws Exception the exception
+	 */
+	public void selectItemByIndex(WebDriver driver, WebElement element, int index, boolean isCaptureScreenshot,
+								  String screenShotName) throws Exception {
+		selectItemByIndex(driver,element,index,isCaptureScreenshot,screenShotName, CommonVariables.MED_TIMEOUT);
+	}
+
+	/**
+	 * Select drop down list item based on value.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param element             the {@link org.openqa.selenium.WebElement element}
+	 * @param value               the list item value to be selected
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @param maxTimeOut the maximum time to wait for the element
+	 * @throws Exception the exception
+	 */
+	public void selectItemByValue(WebDriver driver, WebElement element, String value, boolean isCaptureScreenshot,
+								  String screenShotName, int maxTimeOut) throws Exception {
+		this.logAccess.getLogger().info("Value :-  " + value);
+		this.logAccess.getLogger().info("Element :- " + element);
+		// get the element
+		WebElement tempElement = getElement(driver, element, maxTimeOut);
+
+		// select item by value
+		Select dropDown = new Select(tempElement);
+		dropDown.selectByValue(value);
+
+		// highlight element
+		String originalStyle = highlightElement(driver, tempElement);
+
+		// capture (private capture screenshot)
 		if (isCaptureScreenshot) {
 			captureScreenShot(driver, screenShotName);
 		}
@@ -1304,14 +1443,36 @@ public class CommonFunctions {
 	 */
 	public void selectItemByValue(WebDriver driver, WebElement element, String value, boolean isCaptureScreenshot,
 								  String screenShotName) throws Exception {
-		this.logAccess.getLogger().info("Value :-  " + value);
+		selectItemByValue(driver, element,value,isCaptureScreenshot,screenShotName, CommonVariables.MED_TIMEOUT);
+	}
+
+	/**
+	 * Select list item based on the visible text.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param element             the {@link org.openqa.selenium.WebElement element}
+	 * @param visibleText         the visible text of the list item
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @param maxTimeOut the maximum timeout to wait for the element
+	 * @throws Exception the exception
+	 */
+	public void selectItemByVisibleText(WebDriver driver, WebElement element, String visibleText,
+										boolean isCaptureScreenshot, String screenShotName, int maxTimeOut) throws Exception {
+		this.logAccess.getLogger().info("Visible Text :-  " + visibleText);
 		this.logAccess.getLogger().info("Element :- " + element);
 		// get the element
-		WebElement tempElement = getElement(driver, element);
+		WebElement tempElement = getElement(driver, element, maxTimeOut);
 
-		// select item by value
+		// select item by visible text
 		Select dropDown = new Select(tempElement);
-		dropDown.selectByValue(value);
+		dropDown.selectByVisibleText(visibleText);
 
 		// highlight element
 		String originalStyle = highlightElement(driver, tempElement);
@@ -1343,14 +1504,35 @@ public class CommonFunctions {
 	 */
 	public void selectItemByVisibleText(WebDriver driver, WebElement element, String visibleText,
 										boolean isCaptureScreenshot, String screenShotName) throws Exception {
-		this.logAccess.getLogger().info("Visible Text :-  " + visibleText);
+		selectItemByVisibleText(driver, element, visibleText,isCaptureScreenshot, screenShotName, CommonVariables.MED_TIMEOUT);
+	}
+
+	/**
+	 * Select list item based on the partial visible text.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param element             the {@link org.openqa.selenium.WebElement element}
+	 * @param partialVisibleText  the partial visible text of the list item
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @param maxTimeOut the maximum time to wait for the element
+	 * @throws Exception the exception
+	 */
+	public void selectItemByPartialVisibleText(WebDriver driver, WebElement element, String partialVisibleText,
+											   boolean isCaptureScreenshot, String screenShotName, int maxTimeOut) throws Exception {
+		this.logAccess.getLogger().info("Partial visible Text :-  " + partialVisibleText);
 		this.logAccess.getLogger().info("Element :- " + element);
 		// get the element
-		WebElement tempElement = getElement(driver, element);
-
-		// select item by visible text
-		Select dropDown = new Select(tempElement);
-		dropDown.selectByVisibleText(visibleText);
+		WebElement tempElement = getElement(driver, element, maxTimeOut);
+		WebElement option = tempElement
+				.findElement(By.xpath("./option[contains(text(),'" + partialVisibleText + "')]"));
+		option.click();
 
 		// highlight element
 		String originalStyle = highlightElement(driver, tempElement);
@@ -1382,24 +1564,7 @@ public class CommonFunctions {
 	 */
 	public void selectItemByPartialVisibleText(WebDriver driver, WebElement element, String partialVisibleText,
 											   boolean isCaptureScreenshot, String screenShotName) throws Exception {
-		this.logAccess.getLogger().info("Partial visible Text :-  " + partialVisibleText);
-		this.logAccess.getLogger().info("Element :- " + element);
-		// get the element
-		WebElement tempElement = getElement(driver, element);
-		WebElement option = tempElement
-				.findElement(By.xpath("./option[contains(text(),'" + partialVisibleText + "')]"));
-		option.click();
-
-		// highlight element
-		String originalStyle = highlightElement(driver, tempElement);
-
-		// capture (private capture screenshot)
-		if (isCaptureScreenshot) {
-			captureScreenShot(driver, screenShotName);
-		}
-
-		// un-highlight
-		unHighlightElement(driver, tempElement, originalStyle);
+		selectItemByPartialVisibleText(driver, element, partialVisibleText,isCaptureScreenshot,screenShotName,CommonVariables.MED_TIMEOUT);
 	}
 
 	/**
@@ -1424,6 +1589,28 @@ public class CommonFunctions {
 	}
 
 	/**
+	 * Select item by index.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param byLocator           the by locator
+	 * @param index               the index
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @param maxTimeOut the maximum time to wait for the element
+	 * @throws Exception the exception
+	 */
+	public void selectItemByIndex(WebDriver driver, By byLocator, int index, boolean isCaptureScreenshot,
+								  String screenShotName, int maxTimeOut) throws Exception {
+		selectItemByIndex(driver, getElement(driver, byLocator), index, isCaptureScreenshot, screenShotName, maxTimeOut);
+	}
+
+	/**
 	 * Select drop down list item based on value.
 	 *
 	 * @param driver              the {@link org.openqa.selenium.WebDriver
@@ -1442,6 +1629,28 @@ public class CommonFunctions {
 	public void selectItemByValue(WebDriver driver, By byLocator, String value, boolean isCaptureScreenshot,
 								  String screenShotName) throws Exception {
 		selectItemByValue(driver, getElement(driver, byLocator), value, isCaptureScreenshot, screenShotName);
+	}
+
+	/**
+	 * Select drop down list item based on value.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param byLocator           the by locator
+	 * @param value               the list item value to be selected
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @param maxTimeOut the maximum time to wait for the element
+	 * @throws Exception the exception
+	 */
+	public void selectItemByValue(WebDriver driver, By byLocator, String value, boolean isCaptureScreenshot,
+								  String screenShotName, int maxTimeOut) throws Exception {
+		selectItemByValue(driver, getElement(driver, byLocator), value, isCaptureScreenshot, screenShotName, maxTimeOut);
 	}
 
 	/**
@@ -1467,6 +1676,29 @@ public class CommonFunctions {
 	}
 
 	/**
+	 * Select list item based on the visible text.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param byLocator           the by locator
+	 * @param visibleText         the visible text of the list item
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @param maxTimeOut the maximum time to wait for the element
+	 * @throws Exception the exception
+	 */
+	public void selectItemByVisibleText(WebDriver driver, By byLocator, String visibleText, boolean isCaptureScreenshot,
+										String screenShotName, int maxTimeOut) throws Exception {
+		selectItemByVisibleText(driver, getElement(driver, byLocator), visibleText, isCaptureScreenshot,
+				screenShotName, maxTimeOut);
+	}
+
+	/**
 	 * Select list item based on the partial visible text.
 	 *
 	 * @param driver              the {@link org.openqa.selenium.WebDriver
@@ -1489,6 +1721,29 @@ public class CommonFunctions {
 	}
 
 	/**
+	 * Select list item based on the partial visible text.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param byLocator           the by locator
+	 * @param partialVisibleText  the partial visible text of the list item
+	 * @param isCaptureScreenshot the is capture screenshot
+	 * @param screenShotName      the screenshot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @param maxTimeOut the maximum time to wait for the element
+	 * @throws Exception the exception
+	 */
+	public void selectItemByPartialVisibleText(WebDriver driver, By byLocator, String partialVisibleText,
+											   boolean isCaptureScreenshot, String screenShotName, int maxTimeOut) throws Exception {
+		selectItemByPartialVisibleText(driver, getElement(driver, byLocator), partialVisibleText, isCaptureScreenshot,
+				screenShotName, maxTimeOut);
+	}
+
+	/**
 	 * Get the visible (i.e. not hidden by CSS) text of this element, including
 	 * sub-elements.
 	 *
@@ -1502,15 +1757,76 @@ public class CommonFunctions {
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
+	 * @param maxTimeOut 	the maximum time to wait for the element
+	 * @return the visible text of this element.
+	 * @throws Exception the exception
+	 */
+	public String getText(WebDriver driver, WebElement element, boolean isCaptureScreenShot, String screenShotName, int maxTimeOut)
+			throws Exception {
+		this.logAccess.getLogger().info("Getting text form element :- " + element);
+		String elementText;
+		// get the element
+		WebElement tempElement = getElement(driver, element, maxTimeOut);
+		// highlight the element
+		String originalStyle = highlightElement(driver, tempElement);
+		// get the element text
+		elementText = tempElement.getText();
+		// capture screenshot
+		if (isCaptureScreenShot) {
+			captureScreenShot(driver, screenShotName);
+		}
+		// unhighlight the element
+		unHighlightElement(driver, tempElement, originalStyle);
+		return elementText;
+	}
+
+	/**
+	 * Get the visible (i.e. not hidden by CSS) text of this element, including
+	 * sub-elements.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param element             the {@link org.openqa.selenium.WebElement element}
+	 * @param isCaptureScreenShot the is capture screen shot
+	 * @param screenShotName      the screen shot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 *
 	 * @return the visible text of this element.
 	 * @throws Exception the exception
 	 */
 	public String getText(WebDriver driver, WebElement element, boolean isCaptureScreenShot, String screenShotName)
 			throws Exception {
-		this.logAccess.getLogger().info("Getting text form element :- " + element);
+		return getText(driver, element, isCaptureScreenShot,screenShotName, CommonVariables.MED_TIMEOUT);
+	}
+
+	/**
+	 * Get the visible (i.e. not hidden by CSS) text of this element, including
+	 * sub-elements.
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param byLocator           the by locator
+	 * @param isCaptureScreenShot the is capture screen shot
+	 * @param screenShotName      the screen shot name <br>
+	 *                            Date time Stamp will be <i>prepended</i> to the
+	 *                            screenshot name by default.<br>
+	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
+	 *                            setter to set the path where you want to store the
+	 *                            screenshots.
+	 * @param maxTimeOut  the maximum to wait for the element
+	 * @return the visible text of this element.
+	 * @throws Exception the exception
+	 */
+	public String getText(WebDriver driver, By byLocator, boolean isCaptureScreenShot, String screenShotName, int maxTimeOut)
+			throws Exception {
+		this.logAccess.getLogger().info("Getting text form element :- " + byLocator);
 		String elementText;
 		// get the element
-		WebElement tempElement = getElement(driver, element);
+		WebElement tempElement = getElement(driver, byLocator, maxTimeOut);
 		// highlight the element
 		String originalStyle = highlightElement(driver, tempElement);
 		// get the element text
@@ -1543,21 +1859,7 @@ public class CommonFunctions {
 	 */
 	public String getText(WebDriver driver, By byLocator, boolean isCaptureScreenShot, String screenShotName)
 			throws Exception {
-		this.logAccess.getLogger().info("Getting text form element :- " + byLocator);
-		String elementText;
-		// get the element
-		WebElement tempElement = getElement(driver, byLocator);
-		// highlight the element
-		String originalStyle = highlightElement(driver, tempElement);
-		// get the element text
-		elementText = tempElement.getText();
-		// capture screenshot
-		if (isCaptureScreenShot) {
-			captureScreenShot(driver, screenShotName);
-		}
-		// unhighlight the element
-		unHighlightElement(driver, tempElement, originalStyle);
-		return elementText;
+		return getText(driver, byLocator, isCaptureScreenShot, screenShotName, CommonVariables.MED_TIMEOUT);
 	}
 
 	/**
@@ -1751,7 +2053,7 @@ public class CommonFunctions {
 	// screenshots
 	public String captureScreenShot(WebDriver driver, String screenShotName) throws Exception {
 		this.logAccess.getLogger().debug("Capturing screenshot");
-		String tempScreenshotName = this.screenShotsPath + "\\" + getScreenShotTime() + "_" + screenShotName + ".png";
+		String tempScreenshotName = this.screenShotsPath + File.separatorChar + getScreenShotTime() + "_" + screenShotName + ".png";
 
 		File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 		FileUtils.copyFile(screenshot, new File(tempScreenshotName));

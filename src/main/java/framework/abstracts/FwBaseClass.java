@@ -1,7 +1,8 @@
-package framework.abstracts;
+/**
+ *
+ */
 
-import java.io.File;
-import java.util.HashMap;
+package framework.abstracts;
 
 import framework.commonfunctions.BrowserFunctions;
 import framework.commonfunctions.CommonFunctions;
@@ -13,6 +14,9 @@ import framework.logs.LogAccess;
 import framework.utilities.AllureUtil;
 import framework.utilities.DateTimeUtil;
 import framework.utilities.FolderFileUtil;
+
+import java.io.File;
+import java.util.HashMap;
 
 /**
  * This class will be extended in application/project level BaseClass
