@@ -1,5 +1,7 @@
 package framework.utilities;
 
+import framework.logs.LogAccess;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,8 +11,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 import java.util.TimeZone;
-
-import framework.logs.LogAccess;
 
 /**
  * The Class DateTimeUtils.
@@ -434,8 +434,4 @@ public class DateTimeUtil {
 
         return hours + "Hrs " + minutes + "Mins " + seconds + "Secs";
     }
-
-
-
-
 }

@@ -2053,7 +2053,7 @@ public class CommonFunctions {
 	// screenshots
 	public String captureScreenShot(WebDriver driver, String screenShotName) throws Exception {
 		this.logAccess.getLogger().debug("Capturing screenshot");
-		String tempScreenshotName = this.screenShotsPath + "\\" + getScreenShotTime() + "_" + screenShotName + ".png";
+		String tempScreenshotName = this.screenShotsPath + File.separatorChar + getScreenShotTime() + "_" + screenShotName + ".png";
 
 		File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 		FileUtils.copyFile(screenshot, new File(tempScreenshotName));
