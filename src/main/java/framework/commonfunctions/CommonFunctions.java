@@ -485,9 +485,10 @@ public class CommonFunctions {
 		this.logAccess.getLogger().info("checking if element is present  :- " + element);
 		// wait for the {@link org.openqa.selenium.WebElement element} to present
 		try {
-			waitForElement(driver, element, ExpectedConditionsEnums.PRESENCE, CommonVariables.MED_TIMEOUT);
+			WebElement targetEle = waitForElement(driver, element, ExpectedConditionsEnums.PRESENCE, CommonVariables.MED_TIMEOUT);
 			// return true if the element is present
-			return true;
+			return targetEle != null;
+
 		} catch (Exception e) {
 			// return false if the element is not
 			// present
@@ -508,9 +509,11 @@ public class CommonFunctions {
 		// wait for the {@link org.openqa.selenium.WebElement element} to present for
 		// specified time
 		try {
-			waitForElement(driver, element, ExpectedConditionsEnums.PRESENCE, maxTimeout);
+			WebElement targetEle = waitForElement(driver, element, ExpectedConditionsEnums.PRESENCE, maxTimeout);
+
 			// return true if the element is present
-			return true;
+			return targetEle != null;
+
 		} catch (Exception e) {
 			// return false if the element is not
 			// present
@@ -530,9 +533,11 @@ public class CommonFunctions {
 		// wait for the {@link org.openqa.selenium.WebElement element} to present for
 		// specified time
 		try {
-			waitForElement(driver, byLocator, ExpectedConditionsEnums.PRESENCE, CommonVariables.MED_TIMEOUT);
+			WebElement targetEle = waitForElement(driver, byLocator, ExpectedConditionsEnums.PRESENCE, CommonVariables.MED_TIMEOUT);
+
 			// return true if the /element is visible
-			return true;
+			return targetEle != null;
+
 		} catch (Exception e) {
 			// return false if the element is not
 			// visible
@@ -553,9 +558,9 @@ public class CommonFunctions {
 		// wait for the {@link org.openqa.selenium.WebElement element} to present for
 		// specified time
 		try {
-			waitForElement(driver, byLocator, ExpectedConditionsEnums.PRESENCE, maxTimeout);
+			WebElement targetEle = waitForElement(driver, byLocator, ExpectedConditionsEnums.PRESENCE, maxTimeout);
 			// return true if the /element is visible
-			return true;
+			return targetEle != null;
 		} catch (Exception e) {
 			// return false if the element is not
 			// visible
@@ -576,9 +581,11 @@ public class CommonFunctions {
 		// wait for the {@link org.openqa.selenium.WebElement element} to present for
 		// specified time
 		try {
-			waitForElement(driver, byLocator, ExpectedConditionsEnums.VISIBLE, maxTimeout);
+			WebElement targetEle = waitForElement(driver, byLocator, ExpectedConditionsEnums.VISIBLE, maxTimeout);
+
 			// return true if the element is visible
-			return true;
+			return targetEle != null;
+
 		} catch (Exception e) {
 			// return false if the element is not
 			// visible
@@ -597,9 +604,11 @@ public class CommonFunctions {
 		this.logAccess.getLogger().info("checking if element is displayed  :- " + byLocator);
 		// wait for the element to present for specified time
 		try {
-			waitForElement(driver, byLocator, ExpectedConditionsEnums.VISIBLE, CommonVariables.MED_TIMEOUT);
+			WebElement targetEle = waitForElement(driver, byLocator, ExpectedConditionsEnums.VISIBLE, CommonVariables.MED_TIMEOUT);
+
 			// return true if the element is visible
-			return true;
+			return targetEle != null;
+
 		} catch (Exception e) {
 			// return false if the element is not
 			// visible
@@ -618,9 +627,9 @@ public class CommonFunctions {
 	public boolean isElementDisplayed(WebDriver driver, WebElement element, int maxTimeout) {
 		this.logAccess.getLogger().info("checking if element is displayed  :- " + element);
 		try {
-			waitForElement(driver, element, ExpectedConditionsEnums.VISIBLE, maxTimeout);
+			WebElement targetEle = waitForElement(driver, element, ExpectedConditionsEnums.VISIBLE, maxTimeout);
 			// return true if the element is visible
-			return true;
+			return targetEle != null;
 		} catch (Exception e) {
 			// return false if the element is not
 			// visible
@@ -638,9 +647,10 @@ public class CommonFunctions {
 	public boolean isElementDisplayed(WebDriver driver, WebElement element) {
 		this.logAccess.getLogger().info("checking if element is displayed  :- " + element);
 		try {
-			waitForElement(driver, element, ExpectedConditionsEnums.VISIBLE, CommonVariables.MED_TIMEOUT);
+			WebElement targetEle = waitForElement(driver, element, ExpectedConditionsEnums.VISIBLE, CommonVariables.MED_TIMEOUT);
 			// return true if the element is visible
-			return true;
+			return targetEle != null;
+
 		} catch (Exception e) {
 			// return false if the element is not
 			// visible
