@@ -1,3 +1,12 @@
+beta - 0.9
+============
+• Removed the log message when the header is Authorization
+
+• Updated the isElementDisplayed and isElementPresence methods to
+    return false is the element is null.
+    
+
+
 beta - 0.8
 ============
 • Introduced Jira Connector for jira integration with the automation scripts.

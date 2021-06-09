@@ -76,12 +76,19 @@ public class ApiMethods {
 	 * @param headers     headers
 	 * @return response object {@link io.restassured.response.Response Response}
 	 */
-	public Response sendRequest(String requestType, String uri, HashMap<String, String> headers) {
+	public Response sendRequest(String requestType, String uri, Map<String, String> headers) {
 		this.logAccess.getLogger().debug("Sending " + requestType + " request to " + uri);
 		RequestSpecification httpRequest = RestAssured.given();
 		// add all headers to the request
 		headers.forEach((k, v) -> httpRequest.header(k, v));
-		this.logAccess.getLogger().debug("headers \n " + headers.toString());
+
+		for (Map.Entry<String, String> header : headers.entrySet()) {
+			// print the header if it's not authorization related.
+			if(!header.getKey().equalsIgnoreCase("authorization")){
+				this.logAccess.getLogger().debug("headers \n " + headers.toString());
+			}
+		}
+
 		Response response;
 		// send request
 		if (requestType.toLowerCase().equalsIgnoreCase("get")) {
