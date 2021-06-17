@@ -347,11 +347,32 @@ public class CommonFunctions {
 	 * @param maxTimeout the max timeout in seconds
 	 * @throws Exception the exception
 	 */
-	public void waitForInvisibilityOfElement(WebDriver driver, WebElement element, int maxTimeout) throws Exception {
+	public boolean waitForInvisibilityOfElement(WebDriver driver, WebElement element, int maxTimeout) throws Exception {
+		return waitForInvisibilityOfElement(driver, element, CommonVariables.MIN_TIMEOUT, maxTimeout);
+	}
+
+	/**
+	 * Wait for invisibility of element. Method will wait for
+	 * {@link CommonVariables#MIN_TIMEOUT} before checking for element invisibility.
+	 *
+	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param element    the {@link org.openqa.selenium.WebElement element}
+	 * @param initialWaitTime the time to be waited for the element to be present in
+	 * 	 *                        seconds
+	 * @param maxTimeout the max timeout in seconds
+	 * @throws Exception the exception
+	 * @return the status of element invisibility<br>
+	 *	<b>Note:</b><br>
+	 *	   <ul>
+	 *	       <li>true: if the element is invisible</li>
+	 *	       <li>false: if the element is visible</li>
+	 *	   </ul>
+	 */
+	public boolean waitForInvisibilityOfElement(WebDriver driver, WebElement element, int initialWaitTime, int maxTimeout) throws Exception {
 		this.logAccess.getLogger().info("waiting for element to be invisible  :- " + element);
 
 		try {
-			waitForElement(driver, element, ExpectedConditionsEnums.VISIBLE, CommonVariables.MIN_TIMEOUT);
+			waitForElement(driver, element, ExpectedConditionsEnums.VISIBLE, initialWaitTime);
 		} catch (Exception ignoreException) {
 			// ignore the exception and continue with the script
 		}
@@ -360,19 +381,19 @@ public class CommonFunctions {
 		int waitingSeconds = maxTimeout * 1000;
 		long endTimestamp = currentTimestamp + waitingSeconds;
 
-		boolean isElementInvisible = true;
+		boolean isElementVisible = true;
 
 		this.logAccess.getLogger().info("End timestamp for Invisibility of an Element is " + endTimestamp);
 
 		try {
 
-			while ((new Date()).getTime() < endTimestamp && isElementInvisible) {
+			while ((new Date()).getTime() < endTimestamp && isElementVisible) {
 
-				isElementInvisible = isElementPresent(driver, element, CommonVariables.NO_TIMEOUT);
+				isElementVisible = isElementPresent(driver, element, CommonVariables.NO_TIMEOUT);
 
-				if (isElementInvisible) {
+				if (isElementVisible) {
 					// Checking if element is visible though it is in the DOM.
-					isElementInvisible = element.isDisplayed();
+					isElementVisible = element.isDisplayed();
 
 				}
 				Thread.sleep(500);
@@ -381,8 +402,9 @@ public class CommonFunctions {
 			// intentionally left it blank (we can ignore the above exceptions when waiting
 			// for element in-visibility)
 		}
-
+		return !isElementVisible;
 	}
+
 
 	/**
 	 * Wait for invisibility of element by locator. Method will wait for
@@ -390,41 +412,12 @@ public class CommonFunctions {
 	 *
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param byLocator  the by locator
-	 * @param maxTimeout the max timeout in seconds
+	 * @param maxTimeout the time to be waited for the element to be present in
+	 * 	 *                        seconds
 	 * @throws Exception the exception
 	 */
-	public void waitForInvisibilityOfElement(WebDriver driver, By byLocator, int maxTimeout) throws Exception {
-		this.logAccess.getLogger().info("waiting for element to be invisible  :- " + byLocator);
-
-		try {
-			waitForElement(driver, byLocator, ExpectedConditionsEnums.PRESENCE, CommonVariables.MIN_TIMEOUT);
-		} catch (Exception ignoreException) {
-			// ignore the exception and continue with the script
-		}
-
-		long currentTimestamp = (new Date()).getTime();
-		int waitingSeconds = maxTimeout * 1000;
-		long endTimestamp = currentTimestamp + waitingSeconds;
-
-		boolean isElementInvisible = true;
-
-		this.logAccess.getLogger().info("End timestamp for Invisibility of an Element is " + endTimestamp);
-		try {
-			while ((new Date()).getTime() < endTimestamp && isElementInvisible) {
-
-				isElementInvisible = isElementPresent(driver, byLocator, CommonVariables.NO_TIMEOUT);
-
-				if (isElementInvisible) {
-					// Checking if element is visible though it is in the DOM.
-					isElementInvisible = isElementDisplayed(driver, byLocator, CommonVariables.NO_TIMEOUT);
-				}
-				Thread.sleep(500);
-			}
-		} catch (NoSuchElementException | StaleElementReferenceException ignoreException) {
-			// intentionally left it blank (we can ignore the above exceptions when waiting
-			// for element in-visibility)
-		}
-
+	public boolean waitForInvisibilityOfElement(WebDriver driver, By byLocator, int maxTimeout) throws Exception {
+		return waitForInvisibilityOfElement(driver,byLocator, CommonVariables.MIN_TIMEOUT, maxTimeout);
 	}
 
 	/**
@@ -438,7 +431,7 @@ public class CommonFunctions {
 	 * @param maxTimeout      the max timeout in seconds
 	 * @throws Exception the exception
 	 */
-	public void waitForInvisibilityOfElement(WebDriver driver, By byLocator, int initialWaitTime, int maxTimeout)
+	public boolean waitForInvisibilityOfElement(WebDriver driver, By byLocator, int initialWaitTime, int maxTimeout)
 			throws Exception {
 		this.logAccess.getLogger().info("waiting for element to be invisible  :- " + byLocator);
 
@@ -452,17 +445,17 @@ public class CommonFunctions {
 		int waitingSeconds = maxTimeout * 1000;
 		long endTimestamp = currentTimestamp + waitingSeconds;
 
-		boolean isElementInvisible = true;
+		boolean isElementVisible = true;
 
 		this.logAccess.getLogger().info("End timestamp for Invisibility of an Element is " + endTimestamp);
 		try {
-			while ((new Date()).getTime() < endTimestamp && isElementInvisible) {
+			while ((new Date()).getTime() < endTimestamp && isElementVisible) {
 
-				isElementInvisible = isElementPresent(driver, byLocator, CommonVariables.NO_TIMEOUT);
+				isElementVisible = isElementPresent(driver, byLocator, CommonVariables.NO_TIMEOUT);
 
-				if (isElementInvisible) {
+				if (isElementVisible) {
 					// Checking if element is visible though it is in the DOM.
-					isElementInvisible = isElementDisplayed(driver, byLocator, CommonVariables.NO_TIMEOUT);
+					isElementVisible = isElementDisplayed(driver, byLocator, CommonVariables.NO_TIMEOUT);
 				}
 				Thread.sleep(500);
 			}
@@ -470,7 +463,7 @@ public class CommonFunctions {
 			// intentionally left it blank (we can ignore the above exceptions when waiting
 			// for element in-visibility)
 		}
-
+		return !isElementVisible;
 	}
 
 	/**
@@ -2545,6 +2538,7 @@ public class CommonFunctions {
 										int maxTimeout) throws Exception {
 		// driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
 		WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
+
 		WebElement returnElement;
 		switch (expectedCondition) {
 			case CLICKABLE:
