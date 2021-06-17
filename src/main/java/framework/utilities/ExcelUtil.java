@@ -421,7 +421,7 @@ public class ExcelUtil {
 	public String getCellData(Cell cell) {
 		String cellValue = "";
 
-		CellType cellType = cell.getCellTypeEnum();
+		CellType cellType = cell.getCellType();
 
 		if (cellType == CellType.STRING) {
 			cellValue = cell.toString().trim();

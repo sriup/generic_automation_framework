@@ -443,7 +443,7 @@ public class CommonFunctions {
 		this.logAccess.getLogger().info("waiting for element to be invisible  :- " + byLocator);
 
 		try {
-			waitForElement(driver, byLocator, ExpectedConditionsEnums.PRESENCE, initialWaitTime);
+			waitForElement(driver, byLocator, ExpectedConditionsEnums.VISIBLE, initialWaitTime);
 		} catch (Exception ignoreException) {
 			// ignore the exception and continue with the script
 		}
@@ -2063,7 +2063,8 @@ public class CommonFunctions {
 	// screenshots
 	public String captureScreenShot(WebDriver driver, String screenShotName) throws Exception {
 		this.logAccess.getLogger().debug("Capturing screenshot");
-		String tempScreenshotName = this.screenShotsPath + File.separatorChar + getScreenShotTime() + "_" + screenShotName + ".png";
+		String tempScreenshotName = this.screenShotsPath + File.separatorChar + getScreenShotTime() + "_"
+				+ screenShotName.replaceAll("[^-A-Za-z0-9]", "_").replace("__","_")  + ".png";
 
 		File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 		FileUtils.copyFile(screenshot, new File(tempScreenshotName));
@@ -2101,7 +2102,8 @@ public class CommonFunctions {
 					+ getScreenShotTime() + "_" + screenShotName;
 			folderFileUtil.createFolder(tempScreenShotsFolderName);
 			capturePageChunks(driver, tempScreenShotsFolderName);
-			return mergeImagesToSingleImage(tempScreenShotsFolderName, screenShotName + ".png");
+			return mergeImagesToSingleImage(tempScreenShotsFolderName,
+					screenShotName.replaceAll("^[-A-Za-z0-9]", "_").replace("__","_")  + ".png");
 		}
 	}
 
@@ -2140,7 +2142,8 @@ public class CommonFunctions {
 			folderFileUtil.createFolder(tempScreenShotsFolderName);
 
 			capturePageChunks(driver, tempScreenShotsFolderName, headerElement, true);
-			return mergeImagesToSingleImage(tempScreenShotsFolderName, screenShotName + ".png");
+			return mergeImagesToSingleImage(tempScreenShotsFolderName,
+					screenShotName.replaceAll("[^-A-Za-z0-9]", "_").replace("__","_")  + ".png");
 		}
 
 	}
