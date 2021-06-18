@@ -2096,7 +2096,7 @@ public class CommonFunctions {
 			folderFileUtil.createFolder(tempScreenShotsFolderName);
 			capturePageChunks(driver, tempScreenShotsFolderName);
 			return mergeImagesToSingleImage(tempScreenShotsFolderName,
-					screenShotName.replaceAll("^[-A-Za-z0-9]", "_").replace("__","_")  + ".png");
+					screenShotName.replaceAll("[^-A-Za-z0-9]", "_").replace("__","_")  + ".png");
 		}
 	}
 
