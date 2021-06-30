@@ -120,8 +120,14 @@ public class JiraConnector {
             if (currentCellValue.equalsIgnoreCase(columnName) || currentCellValue.isEmpty()) {
                 continue;
             }
-            // get the defect value from defect column
-            defectIdsSet.add(currentCellValue);
+            // get the defect value from defect column and iterate
+            for(String defect : currentCellValue.split(",")){
+                // add defect to defectIdsSet
+                if(!defect.contains("ALM") && !defect.trim().equals("")) {
+                    defectIdsSet.add(defect.trim());
+                }
+            }
+
         }
 
         // build the jira defects string

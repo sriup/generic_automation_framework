@@ -1,5 +1,8 @@
 package framework.utilities;
 
+import framework.logs.LogAccess;
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,10 +11,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.apache.commons.io.FileUtils;
-
-import framework.logs.LogAccess;
 
 /**
  * All methods related to the file and folder.
