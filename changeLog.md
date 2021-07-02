@@ -1,3 +1,14 @@
+beta - 0.10.1
+============
+• Added methods to create, commit changes to a branch and perform action on the pull request
+. Added method in ApiMethods to send the request data as part of method call.
+
+
+beta - 0.10
+============
+• Corrected regular expression to display the screenshot name correctly
+
+
 beta - 0.9
 ============
 • Removed the log message when the header is Authorization

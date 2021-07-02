@@ -1,6 +1,10 @@
 package framework.enums;
 
-public class ContentTypesEnums {
-    APPLICATION_JSON:
-        "Application/json"
+public enum  ContentTypesEnums {
+
+    /*application/json*/
+    APPLICATION_JSON,
+
+    /*multipart/form-data */
+    MULTIPART_FORMDATA
 }

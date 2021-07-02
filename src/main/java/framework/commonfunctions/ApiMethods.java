@@ -1,5 +1,7 @@
 package framework.commonfunctions;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import framework.enums.ContentTypesEnums;
 import framework.logs.LogAccess;
 import framework.utilities.FolderFileUtil;
 import io.restassured.RestAssured;
@@ -23,7 +25,7 @@ public class ApiMethods {
 
 	/**
 	 * Instantiates a new APIMethods object to set the log access.
-	 * 
+	 *
 	 * @param logAccess instance of{@link LogAccess}
 	 */
 	public ApiMethods(LogAccess logAccess) {
@@ -36,11 +38,11 @@ public class ApiMethods {
 
 	/**
 	 * makes Get request to the rest API
-	 * 
+	 *
 	 * @param requestType request type
 	 * @param uri         uri/endpoint
 	 * @return the response object {@link io.restassured.response.Response Response}
-	 * 
+	 *
 	 */
 	public Response sendRequest(String requestType, String uri) {
 		this.logAccess.getLogger().debug("Sending " + requestType + " request to " + uri);
@@ -119,8 +121,8 @@ public class ApiMethods {
 	 * @param data        data
 	 * @return response object {@link io.restassured.response.Response Response}
 	 */
-	public Response sendReqResponse(String requestType, String uri, HashMap<String, String> headers,
-			HashMap<String, String> data) {
+	public Response sendRequest(String requestType, String uri, HashMap<String, String> headers,
+								HashMap<String, Object> data) {
 		this.logAccess.getLogger().debug("Sending " + requestType + " request to " + uri);
 		RequestSpecification httpRequest = RestAssured.given();
 
@@ -154,6 +156,95 @@ public class ApiMethods {
 	}
 
 	/**
+	 * @param requestType request type
+	 * @param uri         uri/endpoint
+	 * @param headers     headers
+	 * @param bodyPayload payload to be sent as part of request body
+	 * @return response object {@link io.restassured.response.Response Response}
+	 */
+	public Response sendRequest(String requestType, String uri, HashMap<String, String> headers, ObjectNode bodyPayload) {
+		this.logAccess.getLogger().debug("Sending " + requestType + " request to " + uri);
+		RequestSpecification httpRequest = RestAssured.given();
+
+
+		// add all headers to the request
+		headers.forEach((k, v) -> httpRequest.header(k, v));
+		this.logAccess.getLogger().debug("headers \n " + headers.toString());
+		httpRequest.body(bodyPayload);
+
+		this.logAccess.getLogger().debug("data \n " + bodyPayload.toString());
+		Response response;
+		// send request
+		if (requestType.toLowerCase().equalsIgnoreCase("get")) {
+			response = httpRequest.get(uri);
+		} else if (requestType.toLowerCase().equalsIgnoreCase("post")) {
+			response = httpRequest.post(uri);
+		} else if (requestType.toLowerCase().equalsIgnoreCase("put")) {
+			response = httpRequest.put(uri);
+		} else if (requestType.toLowerCase().equalsIgnoreCase("patch")) {
+			response = httpRequest.patch(uri);
+		} else if (requestType.toLowerCase().equalsIgnoreCase("delete")) {
+			response = httpRequest.delete(uri);
+		} else {
+			this.logAccess.getLogger().debug("Unexpected value : " + requestType
+					+ "\n only supported request types are: GET, POST, PUT, PATCH, DELETE");
+
+			throw new IllegalArgumentException("Unexpected value : " + requestType
+					+ "\n only supported request types are: GET, POST, PUT, PATCH, DELETE");
+		}
+		this.logAccess.getLogger().debug(response.body().prettyPrint());
+		return response;
+	}
+
+	/**
+	 * @param requestType request type
+	 * @param uri         uri/endpoint
+	 * @param headers     headers
+	 * @param data        data
+	 * @return response object {@link io.restassured.response.Response Response}
+	 */
+	public Response sendRequest(String requestType, String uri, HashMap<String, String> headers, ContentTypesEnums contentType,
+								HashMap<String, Object> data) {
+		this.logAccess.getLogger().debug("Sending " + requestType + " request to " + uri);
+		RequestSpecification httpRequest = RestAssured.given();
+
+
+		// add all headers to the request
+		headers.forEach((k, v) -> httpRequest.header(k, v));
+		this.logAccess.getLogger().debug("headers \n " + headers.toString());
+		if(contentType.toString().equalsIgnoreCase("MULTIPART_FORMDATA")){
+			httpRequest.header("content-type","multipart/form-data");
+			data.forEach((k, v) -> httpRequest.multiPart(k, v));
+		}else if(contentType.toString().equalsIgnoreCase("APPLICATION_JSON")){
+			httpRequest.body(data);
+		}
+
+		this.logAccess.getLogger().debug("data \n " + data.toString());
+		Response response;
+		// send request
+		if (requestType.toLowerCase().equalsIgnoreCase("get")) {
+			response = httpRequest.get(uri);
+		} else if (requestType.toLowerCase().equalsIgnoreCase("post")) {
+			response = httpRequest.post(uri);
+		} else if (requestType.toLowerCase().equalsIgnoreCase("put")) {
+			response = httpRequest.put(uri);
+		} else if (requestType.toLowerCase().equalsIgnoreCase("patch")) {
+			response = httpRequest.patch(uri);
+		} else if (requestType.toLowerCase().equalsIgnoreCase("delete")) {
+			response = httpRequest.delete(uri);
+		} else {
+			this.logAccess.getLogger().debug("Unexpected value : " + requestType
+					+ "\n only supported request types are: GET, POST, PUT, PATCH, DELETE");
+
+			throw new IllegalArgumentException("Unexpected value : " + requestType
+					+ "\n only supported request types are: GET, POST, PUT, PATCH, DELETE");
+		}
+		this.logAccess.getLogger().debug(response.body().prettyPrint());
+		return response;
+	}
+
+
+	/**
 	 * get the value based on the jsonpath<br>
 	 * <b>Note:</b><br> Please refer to
 	 * 		<a href='https://www.javadoc.io/doc/io.rest-assured/json-path/3.0.0/io/restassured/path/json/JsonPath.html'>JSonPath Reference</a>
@@ -168,7 +259,7 @@ public class ApiMethods {
 		this.logAccess.getLogger().debug("JSonPath : " + jsonPath + "\n Result : " + result);
 		return result;
 	}
-	
+
 	/**
 	 * @param folderPath      folder path to store file name
 	 * @param fileName        file name to store the response content

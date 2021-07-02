@@ -1,21 +1,24 @@
 package framework.utilities;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import framework.commonfunctions.ApiMethods;
 import framework.enums.ContentTypesEnums;
 import framework.logs.LogAccess;
 import io.restassured.response.Response;
 
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
 
 public class BitBucketUtil {
 
+    /* bitbucket api */
+    private String bitBucketAPIBaseURL =  "https://api.bitbucket.org/2.0/repositories/";
+
     /* the log access. */
-    private final LogAccess logAccess;
+    private LogAccess logAccess;
 
     // the workspace
     protected String workspace;
@@ -25,6 +28,9 @@ public class BitBucketUtil {
 
     // the slug (also known as repository name)
     protected String slug;
+
+    // pr number
+    private String prNumber;
 
     public BitBucketUtil(LogAccess logAccess, String workspace, String encodedCredentials, String repoName) {
         this.workspace = workspace;
@@ -37,10 +43,10 @@ public class BitBucketUtil {
 
     }
 
-    public BitBucketUtil(LogAccess logAccess, String workspace, String userName, String password, String repoName) throws Exception {
+    public BitBucketUtil(LogAccess logAccess, String workspace, String userName, String password, String repoName) {
         this.workspace = workspace;
 
-        this.encodedCredentials = Base64.getEncoder().encodeToString((userName + ":" + password).getBytes("UTF-8"));
+        this.encodedCredentials = Base64.getEncoder().encodeToString((userName + ":" + password).getBytes(StandardCharsets.UTF_8));
 
         this.slug = repoName;
 
@@ -48,21 +54,32 @@ public class BitBucketUtil {
 
     }
 
-    public void createBranch(String sourceBranch, String newBranchName) throws Exception {
+    /**
+     * create branch from the source branch
+     * <br><b>Note:</b>
+     *  This method will create a fork from the source branch no changes will be committed as part of this method.
+     * @param sourceBranch the source branch name
+     * @param newBranchName the new branch name
+     */
+    public void createBranch(String sourceBranch, String newBranchName){
 
         // Bitbucket API URL
-        String uri = "https://api.bitbucket.org/2.0/repositories/" + this.workspace + "/" + this.slug + "/src/";
+        String uri = bitBucketAPIBaseURL + this.workspace + "/" + this.slug + "/src/";
 
+        // create api methods instance
         ApiMethods apiMethods = new ApiMethods(this.logAccess);
 
+        // create headers map
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Authorization", "Basic " + encodedCredentials);
 
-        HashMap<String, String> data = new HashMap<>();
+        // create request multipart form data
+        HashMap<String, Object> data = new HashMap<>();
         data.put("parents",sourceBranch);
         data.put("branch", newBranchName);
 
-        Response response = apiMethods.sendRequest("post", uri, headers, data);
+        // send request and capture the response
+        Response response = apiMethods.sendRequest("post", uri, headers,ContentTypesEnums.MULTIPART_FORMDATA, data);
 
         // check if the request is successful
         this.logAccess.getLogger().debug(newBranchName + "creation is " +
@@ -70,87 +87,114 @@ public class BitBucketUtil {
                 "Response code:" + response.getStatusCode());
     }
 
-    public void commitChanges(String branchName, String fileName) throws Exception {
+    /**
+     * commits the specified file into the branch
+     * @param branchName the branch to which the changes should be committed.
+     * @param branchFilePath the path of the file in the repo
+     * @param absFilePath the absolute file path of the local file that should be committed.
+     */
+    public void commitChanges(String branchName, String branchFilePath, String absFilePath) {
         // Bitbucket API URL
-        URL endPointURL = new URL("https://api.bitbucket.org/2.0/repositories/" + this.workspace + "/" + this.slug + "/src/");
+        String uri = bitBucketAPIBaseURL + this.workspace + "/" + this.slug + "/src/";
 
-        // create the connection object
-        HttpURLConnection connection = (HttpURLConnection) endPointURL.openConnection();
+        ApiMethods apiMethods = new ApiMethods(this.logAccess);
 
-        // add authentication
-        connection.addRequestProperty("Authorization", "Basic " + encodedCredentials);
-
-        connection.setRequestMethod("POST");
-
-        connection.setDoOutput(true);
-        // Setting the form data in the post request
-        OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
-
-        // adding new/modified file
-        out.write("branch=" + branchName + "&" + "/" + fileName + "=@" + fileName);
-
-        out.close();
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Basic " + encodedCredentials);
 
 
-        connection.connect();
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("branch", branchName);
+        data.put(branchFilePath, new File(absFilePath));
+
+        Response response = apiMethods.sendRequest("post", uri, headers,ContentTypesEnums.MULTIPART_FORMDATA, data);
 
         // check if the request is successful
-        this.logAccess.getLogger().debug("\"" + fileName + "\"" +
-                (connection.getResponseCode() == 201 ? "committed successful.\n" : "commit is failed.\n") +
-                connection.getResponseCode() + " - " + connection.getResponseMessage());
+        this.logAccess.getLogger().debug("Commit changes to " + branchName + " is " +
+                (response.getStatusCode() == 201 ? "successful.\n" : "failed.\n") +
+                "Response code:" + response.getStatusCode());
 
     }
 
-    public String createPullRequest(String sourceBranch, String targetBranch, String prComment) throws Exception {
+    /**
+     * creates pull request
+     * @param sourceBranch the source branch name
+     * @param targetBranch the target branch name
+     * @return the pull request number
+     */
 
-        // create the payload string
-        String payLoad = String.format("{\"title\":\"%s\",\"source\":{\"branch\":{\"name\":\"%s\"}},\"destination\":{\"branch\":{\"name\":\"%s\"}}}", prComment, sourceBranch, targetBranch);
-        this.logAccess.getLogger().info(payLoad);
-
-        // convert the payload to byte format
-        byte[] payLoadBytes = payLoad.getBytes(StandardCharsets.UTF_8);
-
-        // get the payload Content-Length
-        int payLoadContentLength = payLoadBytes.length;
+    public String createPullRequest(String sourceBranch, String targetBranch){
 
         ApiMethods apiMethods = new ApiMethods(this.logAccess);
-        String uri = "https://api.bitbucket.org/2.0/repositories/" + this.workspace + "/" + this.slug + "/pullrequests/";
+        String uri = bitBucketAPIBaseURL + this.workspace + "/" + this.slug + "/pullrequests/";
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Authorization", "Basic " + encodedCredentials);
         headers.put("Content-Type", "application/json");
-        // headers.put("Content-Length", Integer.toString(payLoadContentLength));
 
-        HashMap<String, String> data = new HashMap<>();
-        data.put("\"title\"",prComment);
-        data.put("\"source\"", "{\"branch\":{\"name\":\"" + sourceBranch + "\"}}");
-        data.put("\"destination\"", "{\"branch\":{\"name\":\"" + targetBranch + "\"}}");
+        ObjectMapper mapper = new ObjectMapper();
 
-        Response response = apiMethods.sendRequest("post", uri, headers,data);
-        String prNumber = apiMethods.getValue(response, "values.id");
+        ObjectNode payload = mapper.createObjectNode();
+        payload.put("title", "bot created request");
+
+
+        ObjectNode sourceNode = mapper.createObjectNode();
+        sourceNode.set("branch", mapper.createObjectNode().put("name", sourceBranch));
+
+        ObjectNode targetNode = mapper.createObjectNode();
+        targetNode.set("branch", mapper.createObjectNode().put("name", targetBranch));
+
+        payload.set("source", sourceNode);
+        payload.set("destination", targetNode);
+
+        Response response = apiMethods.sendRequest("post", uri, headers, payload);
 
         // check if the request is successful
         this.logAccess.getLogger().debug(sourceBranch + " => " + targetBranch + " Pull Request (PR) " +
                 (response.getStatusCode() == 201 ? "created successful.\n" : "creation is failed.\n") +
                 "Response code:" + response.getStatusCode());
+        // get the pull request id from the response
+        this.prNumber =  apiMethods.getValue(response, "id");
 
-        return prNumber.replace("[","").replace("]","");
-
-
+        return this.prNumber;
     }
 
-    public void actionOnPR(int prNumber, String action, String message) throws Exception{
+    /**
+     * approve and merges the latest pr created using {@link #createPullRequest}
+     */
+
+    public void approveAndMergePR(){
+        actionOnPR("approve");
+        actionOnPR("merge");
+    }
+
+    /**
+     * performs the defined action on the latest Pull request.
+     * @param action the action to perform on the PR<br>
+     *    <b>Note:</b>The available actions are<br>
+     *      <ul>
+     *              <li>approve</li>
+     *               <li>decline</li>
+     *               <li>merge</li>
+     *      </ul>
+     */
+    private void actionOnPR(String action) {
 
         // Bitbucket API URL
-        String uri = "https://api.bitbucket.org/2.0/repositories/" + this.workspace + "/" + this.slug + "/pullrequests/" + prNumber + "/" + action;
+        String uri = bitBucketAPIBaseURL + this.workspace + "/" + this.slug + "/pullrequests/" + this.prNumber + "/" + action;
 
         ApiMethods apiMethods = new ApiMethods(this.logAccess);
         HashMap <String, String> headers = new HashMap<>();
-        HashMap <String, String> data = new HashMap<>();
-        data.put("message",message);
-        Response response = apiMethods.sendRequest("post", uri, headers, ContentTypesEnums.APPLICATION_JSON,data);
+        headers.put("Authorization", "Basic " + encodedCredentials);
+        headers.put("Content-Type", "application/json");
+        ObjectMapper mapper = new ObjectMapper();
+
+        ObjectNode payload = mapper.createObjectNode();
+        payload.put("message", action + "d by bot.");
+
+        Response response = apiMethods.sendRequest("post", uri, headers, payload);
 
         // check if the request is successful
-        this.logAccess.getLogger().debug("Pull Request#" + prNumber + " - " + action  + (response.getStatusCode() == 201 ? " successful.\n" : " failed.\n") +
+        this.logAccess.getLogger().debug("Pull Request#" + this.prNumber + " - " + action  + (response.getStatusCode() == 200 ? " successful.\n" : " failed.\n") +
                 "Response code:" + response.getStatusCode());
     }
 
