@@ -1,18 +1,14 @@
 package framework.logs;
 
-import java.io.File;
-/*
-  The Class LogAccess.
- */
-import java.io.OutputStreamWriter;
-
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
-
+import framework.commonfunctions.CommonFunctions;
+import framework.constants.CommonVariables;
 import framework.enums.LogVerboseEnums;
+import org.apache.log4j.*;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
+import java.io.File;
+import java.io.OutputStreamWriter;
 
 /**
  * The Class LogAccess.
@@ -187,4 +183,25 @@ public class LogAccess {
 
 	}
 
+    /**
+     * Input value.
+     *
+     * @param driver              the {@link WebDriver
+     *                            WebDriver}
+     * @param element             the {@link WebElement element}
+     * @param value               the value to be set in the element
+     * @param isCaptureScreenshot toggle to capture screenshot
+     * @param screenShotName      the screen shot name <br>
+     *                            Date time Stamp will be <i>prepended</i> to the
+     *                            screenshot name by default.<br>
+     *                            Note: Use {@link framework.abstracts.FwBaseClass#setScreenshotPath(String)}
+     *                            setter to set the path where you want to store the
+     *                            screenshots.
+     * @param commonFunctions	the {@link CommonFunctions} instance
+     * @throws Exception the exception
+     */
+    public void inputValue(WebDriver driver, WebElement element, String value, boolean isCaptureScreenshot,
+						   String screenShotName, CommonFunctions commonFunctions) throws Exception {
+        commonFunctions.inputValue(driver, element, value, isCaptureScreenshot, screenShotName, CommonVariables.MED_TIMEOUT);
+    }
 }

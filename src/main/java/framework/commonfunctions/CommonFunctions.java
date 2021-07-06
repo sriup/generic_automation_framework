@@ -1020,7 +1020,11 @@ public class CommonFunctions {
 		this.logAccess.getLogger().info("Element :- " + element);
 		// get the element
 		WebElement tempElement = getElement(driver, element, maxTimeOut);
-		if (tempElement.getAttribute("type").equals("password")) {
+
+		// Check if the tag name is input, there are cases where we can enter the
+		// data but the field is not input and it's not possible to check the type
+		// attribute in those scenarios.
+		if (tempElement.getAttribute("tagName").equalsIgnoreCase("input") && tempElement.getAttribute("type").equals("password")) {
 			this.logAccess.getLogger().info("Masked value :- " + "x".repeat(value.length()));
 		} else {
 			this.logAccess.getLogger().info("value :- " + value);
@@ -1045,27 +1049,6 @@ public class CommonFunctions {
 		}
 		// un-highlight
 		unHighlightElement(driver, tempElement, originalStyle);
-	}
-
-	/**
-	 * Input value.
-	 *
-	 * @param driver              the {@link org.openqa.selenium.WebDriver
-	 *                            WebDriver}
-	 * @param element             the {@link org.openqa.selenium.WebElement element}
-	 * @param value               the value to be set in the element
-	 * @param isCaptureScreenshot toggle to capture screenshot
-	 * @param screenShotName      the screen shot name <br>
-	 *                            Date time Stamp will be <i>prepended</i> to the
-	 *                            screenshot name by default.<br>
-	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
-	 *                            setter to set the path where you want to store the
-	 *                            screenshots.
-	 * @throws Exception the exception
-	 */
-	public void inputValue(WebDriver driver, WebElement element, String value, boolean isCaptureScreenshot,
-						   String screenShotName) throws Exception {
-		inputValue(driver, element, value, isCaptureScreenshot, screenShotName, CommonVariables.MED_TIMEOUT);
 	}
 
 	/**
