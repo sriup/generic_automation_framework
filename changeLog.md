@@ -1,3 +1,23 @@
+beta - 0.10.1
+============
+• Added methods to create, commit changes to a branch and perform action on the pull request
+. Added method in ApiMethods to send the request data as part of method call.
+
+
+beta - 0.10
+============
+• Corrected regular expression to display the screenshot name correctly
+
+
+beta - 0.9
+============
+• Removed the log message when the header is Authorization
+
+• Updated the isElementDisplayed and isElementPresence methods to
+    return false is the element is null.
+    
+
+
 beta - 0.8
 ============
 • Introduced Jira Connector for jira integration with the automation scripts.

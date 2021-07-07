@@ -1,29 +1,16 @@
 package framework.utilities;
 
+import framework.logs.LogAccess;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import framework.logs.LogAccess;
+import java.util.*;
 
 /**
  * All the methods related to the excel operations will be handled in this
@@ -434,7 +421,7 @@ public class ExcelUtil {
 	public String getCellData(Cell cell) {
 		String cellValue = "";
 
-		CellType cellType = cell.getCellTypeEnum();
+		CellType cellType = cell.getCellType();
 
 		if (cellType == CellType.STRING) {
 			cellValue = cell.toString().trim();
@@ -585,7 +572,7 @@ public class ExcelUtil {
 	 * @return the row data
 	 */
 	public Map<String, String> getRowData(String sheetName, int rowNumber) {
-		Map<String, String> map = new HashMap<String, String>();
+		Map<String, String> map = new HashMap<>();
 		String[] headers = getColumnHeaders(sheetName);
 		String columnName, value;
 		for (int columnIndex = 0; columnIndex < headers.length; columnIndex++) {
@@ -606,7 +593,7 @@ public class ExcelUtil {
 	 * @return the row data
 	 */
 	public Map<String, String> getRowData(int sheetIndex, int rowNumber) {
-		Map<String, String> map = new HashMap<String, String>();
+		Map<String, String> map = new HashMap<>();
 		String[] headers = getColumnHeaders(sheetIndex);
 		String columnName, value;
 		for (int columnIndex = 0; columnIndex < headers.length; columnIndex++) {
@@ -622,14 +609,13 @@ public class ExcelUtil {
 	 * Gets the filtered row if it matches all the column values
 	 * 
 	 * @param sheetName      Name of the work sheet
-	 * @param filtersDataMap Column values in the HashMap to filter the row <br>
+	 * @param filtersDataMap Column values in the Map to filter the row <br>
 	 *                       <font color="blue"><b>Example:</b> Below is the example
 	 *                       for the filtersDataMap to get all the rows which match
-	 *                       the specified k,v in the HashMap<br>
+	 *                       the specified k,v in the Map<br>
 	 * 
 	 *                       <pre>
-	 *                       HashMap<String, String> filtersDataMap = new
-	 *                       HashMap<String, String>();
+	 *                       Map<String, String> filtersDataMap = new HashMap<>();
 	 *                       filtersDataMap.put("TestMethod", "Test_001");
 	 *                       filtersDataMap.put("ExecutionFlag", "Y");
 	 *                       filtersDataMap.put("Role", "Admin");
@@ -638,7 +624,7 @@ public class ExcelUtil {
 	 *                       </font>
 	 * @return The filtered row if it matches all the expected column values
 	 */
-	public Row getFilteredRow(String sheetName, HashMap<String, String> filtersDataMap) {
+	public Row getFilteredRow(String sheetName, Map<String, String> filtersDataMap) {
 
 		Sheet sheet = this.wb.getSheet(sheetName);
 
@@ -678,14 +664,13 @@ public class ExcelUtil {
 	 * Gets the list of filtered rows if it matches all the column values
 	 * 
 	 * @param sheetName      Name of the work sheet
-	 * @param filtersDataMap Column values in the HashMap to filter the row <br>
+	 * @param filtersDataMap Column values in the Map to filter the row <br>
 	 *                       <font color="blue"><b>Example:</b> Below is the example
 	 *                       for the filtersDataMap to get all the rows which match
-	 *                       the specified k,v in the HashMap<br>
+	 *                       the specified k,v in the Map<br>
 	 * 
 	 *                       <pre>
-	 *                       HashMap<String, String> filtersDataMap = new
-	 *                       HashMap<String, String>();
+	 *                       Map<String, String> filtersDataMap = new HashMap<>();
 	 *                       filtersDataMap.put("TestMethod", "Test_001");
 	 *                       filtersDataMap.put("ExecutionFlag", "Y");
 	 *                       filtersDataMap.put("Role", "Admin");
@@ -695,7 +680,7 @@ public class ExcelUtil {
 	 * @return The list of filtered rows if it matches all the expected column
 	 *         values
 	 */
-	public List<Row> getFilteredRows(String sheetName, HashMap<String, String> filtersDataMap) {
+	public List<Row> getFilteredRows(String sheetName, Map<String, String> filtersDataMap) {
 
 		List<Row> filteredRows = new ArrayList<Row>();
 
