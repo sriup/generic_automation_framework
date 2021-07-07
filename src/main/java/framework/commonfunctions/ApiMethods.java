@@ -156,9 +156,9 @@ public class ApiMethods {
 	}
 
 	/**
-	 * @param requestType request type
-	 * @param uri         uri/endpoint
-	 * @param headers     headers
+	 * @param requestType the request type
+	 * @param uri         the uri/endpoint
+	 * @param headers     the headers
 	 * @param bodyPayload payload to be sent as part of request body
 	 * @return response object {@link io.restassured.response.Response Response}
 	 */
@@ -197,10 +197,12 @@ public class ApiMethods {
 	}
 
 	/**
-	 * @param requestType request type
-	 * @param uri         uri/endpoint
-	 * @param headers     headers
-	 * @param data        data
+	 * @param requestType the request type
+	 * @param uri         the uri/endpoint
+	 * @param headers     the headers
+	 * @param data        the body data <br>
+	 *                    <b>Note:</b> Use {@link #sendRequest(String, String, HashMap, ObjectNode)} in the case of
+	 *                    multipart body data
 	 * @return response object {@link io.restassured.response.Response Response}
 	 */
 	public Response sendRequest(String requestType, String uri, HashMap<String, String> headers, ContentTypesEnums contentType,

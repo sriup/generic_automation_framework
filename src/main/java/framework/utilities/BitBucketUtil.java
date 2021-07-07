@@ -32,6 +32,13 @@ public class BitBucketUtil {
     // pr number
     private String prNumber;
 
+    /**
+     * Constructor to use bitbucket token
+     * @param logAccess the {@link LogAccess} instance
+     * @param workspace the workspace
+     * @param encodedCredentials the encoded BitBucket Credential token
+     * @param repoName the repository name
+     */
     public BitBucketUtil(LogAccess logAccess, String workspace, String encodedCredentials, String repoName) {
         this.workspace = workspace;
 
@@ -43,6 +50,14 @@ public class BitBucketUtil {
 
     }
 
+    /**
+     * Constructor to use bitbucket username and password
+     * @param logAccess the {@link LogAccess} instance
+     * @param workspace the workspace
+     * @param userName the Bitbucket user name (use complete email address)
+     * @param password the password
+     * @param repoName the repository name
+     */
     public BitBucketUtil(LogAccess logAccess, String workspace, String userName, String password, String repoName) {
         this.workspace = workspace;
 
