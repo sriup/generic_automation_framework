@@ -1,7 +1,10 @@
 beta - 0.10.1
 ============
 • Added methods to create, commit changes to a branch and perform action on the pull request
-. Added method in ApiMethods to send the request data as part of method call.
+
+• Added method in ApiMethods to send the request data as part of method call.
+
+• Added EmailUtil 
 
 
 beta - 0.10

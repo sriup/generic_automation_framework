@@ -17,6 +17,10 @@ public class CommonVariables {
      */
 
     public static final String BROWSER_SELECT = System.getProperty("browser");
+    public static final String EMAIL_RECIPIENTS="recipients";
+    public static final String EMAIL_SUBJECT = "subject";
+    public static final String EMAIL_BODY = "body";
+    public static final String EMAIL_ATTACHMENT_FILE_PATH = "attachment";
 
     /* The implicit wait time */
     //public static int IMPLICIT_WAIT = 15;
