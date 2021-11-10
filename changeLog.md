@@ -1,3 +1,12 @@
+beta - 0.10.2
+============
+• Added methods to highlight the element border, waitUntilDownloadCompleted to handle 
+  negative expected conditions.
+  
+• Added getRows with fall back mechanism, so that if max number of rows sent to the
+    method are not available it will get the maximum available rows based on the
+    fallback param value.
+
 beta - 0.10.1
 ============
 • Added methods to create, commit changes to a branch and perform action on the pull request

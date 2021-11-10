@@ -345,7 +345,7 @@ public class DateTimeUtil {
 
     /**
      * Fetching the Date, Year and Month between the provided range of years and
-     * return it in the "MM/dd/YYYY" format.
+     * return it in the "MM/dd/yyyy" format.
      *
      * @param min Minimum Year
      * @param max Maximum Year
@@ -353,9 +353,9 @@ public class DateTimeUtil {
      */
     public String getDateYearMonth(int min, int max) {
 
-        String date = getDateYearMonth(min, max, "MM/dd/YYYY");
+        String date = getDateYearMonth(min, max, "MM/dd/yyyy");
 
-        this.logAccess.getLogger().debug("Date, Year and Month in MM/dd/YYYY format :- " + date);
+        this.logAccess.getLogger().debug("Date, Year and Month in MM/dd/yyyy format :- " + date);
 
         return date;
     }

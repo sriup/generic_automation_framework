@@ -387,7 +387,7 @@ public class CommonFunctions {
 
 		try {
 
-			while ((new Date()).getTime() < endTimestamp && isElementVisible) {
+			do{
 
 				isElementVisible = isElementPresent(driver, element, CommonVariables.NO_TIMEOUT);
 
@@ -397,7 +397,7 @@ public class CommonFunctions {
 
 				}
 				Thread.sleep(500);
-			}
+			} while ((new Date()).getTime() < endTimestamp && isElementVisible);
 		} catch (NoSuchElementException | StaleElementReferenceException ignoreException) {
 			// intentionally left it blank (we can ignore the above exceptions when waiting
 			// for element in-visibility)
@@ -449,7 +449,7 @@ public class CommonFunctions {
 
 		this.logAccess.getLogger().info("End timestamp for Invisibility of an Element is " + endTimestamp);
 		try {
-			while ((new Date()).getTime() < endTimestamp && isElementVisible) {
+			do{
 
 				isElementVisible = isElementPresent(driver, byLocator, CommonVariables.NO_TIMEOUT);
 
@@ -458,7 +458,7 @@ public class CommonFunctions {
 					isElementVisible = isElementDisplayed(driver, byLocator, CommonVariables.NO_TIMEOUT);
 				}
 				Thread.sleep(500);
-			}
+			} while ((new Date()).getTime() < endTimestamp && isElementVisible);
 		} catch (NoSuchElementException | StaleElementReferenceException ignoreException) {
 			// intentionally left it blank (we can ignore the above exceptions when waiting
 			// for element in-visibility)
@@ -676,9 +676,9 @@ public class CommonFunctions {
 		long currentTimestamp = (new Date()).getTime();
 		long endTimestamp = currentTimestamp + maxTimeout * 1000L;
 		boolean conditionalCheck = false;
-		while ((new Date()).getTime() < endTimestamp && !conditionalCheck) {
+		do{
 			conditionalCheck = element.isEnabled();
-		}
+		} while ((new Date()).getTime() < endTimestamp && !conditionalCheck);
 		return conditionalCheck;
 	}
 
@@ -712,10 +712,10 @@ public class CommonFunctions {
 		long currentTimestamp = (new Date()).getTime();
 		long endTimestamp = currentTimestamp + maxTimeout * 1000L;
 		boolean conditionalCheck = false;
-		while ((new Date()).getTime() < endTimestamp && !conditionalCheck) {
+		do {
 			conditionalCheck = getElement(driver, byLocator).isEnabled();
 			Thread.sleep(500);
-		}
+		} while ((new Date()).getTime() < endTimestamp && !conditionalCheck);
 		return conditionalCheck;
 	}
 
@@ -748,6 +748,78 @@ public class CommonFunctions {
 			// or might get refreshed
 		}
 		return originalStyle;
+	}
+
+	/**
+	 * Highlights the element.
+	 *
+	 * @param driver  the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param element the {@link org.openqa.selenium.WebElement element} <br>
+	 *                This method will highlight the element and does not set back
+	 *                the original style. <br>
+	 *
+	 * @param bordersOnly the border highlight status<br>
+	 *                   <ul>
+	 *                   	<li>true - will highlight the elements borders only.</li>
+	 *                   	<li>false - will highlight the element using normal highlighting
+	 *                  	 	i.e. the entire element background.
+	 *                   	</li>
+	 *                   </ul>
+	 *					<font color="blue"><b>Note:</b> Use {@link #unHighlightElement
+	 * 	                 unHighlightElement} method to set back the original style of
+	 * 	                 the element.</font>
+	 * @return the String with original style of the element
+	 * @throws Exception the exception
+	 */
+	public String highlightElement(WebDriver driver, WebElement element, boolean bordersOnly) throws Exception {
+		String originalStyle = "";
+		try {
+			this.logAccess.getLogger().debug("Highlighting element" + (bordersOnly? " border" : "") + ":- " + element);
+			// get the original
+			originalStyle = getOriginalStyle(element);
+			// scroll element to the center
+			scrollElement(driver, element, "center");
+			String highlightJavaScript;
+			if(bordersOnly){
+				// highlight the web element
+				highlightJavaScript =  "arguments[0].style.border=\"3px solid \"" + this.highlightBgColor + "\";";
+			}else {
+				// highlight the web element
+				highlightJavaScript = "arguments[0].style.background=\"" + this.highlightBgColor + "\";";
+			}
+			executeJs(driver, element, highlightJavaScript);
+		} catch (Exception e) {
+			//ignore exception as sometimes the element might either not exist
+			// or might get refreshed
+		}
+		return originalStyle;
+	}
+
+	/**
+	 * Highlights the element.
+	 *
+	 * @param driver    the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator the by locator <br>
+	 *                  This method will highlight the element and does not set back
+	 *                  the original style. <br>
+	 *
+	 * @param bordersOnly the border highlight status<br>
+	 *                   <ul>
+	 *                   	<li>true - will highlight the elements borders only.</li>
+	 *                   	<li>false - will highlight the element using normal highlighting
+	 *                  	 	i.e. the entire element background.
+	 *                   	</li>
+	 *                   </ul>
+	 *                    <font color="blue"><b>Note:</b> Use
+	 *                    {@link #unHighlightElement unHighlightElement} method to set
+	 * 	                  back the original style of the element.</font>
+	 * @return the String with original style of the element
+	 * @throws Exception the exception
+	 */
+	public String highlightElement(WebDriver driver, By byLocator, boolean bordersOnly) throws Exception {
+		this.logAccess.getLogger().debug("Highlighting element :- " + byLocator);
+		// highlight the element and return the original style
+		return highlightElement(driver, getElement(driver, byLocator), bordersOnly);
 	}
 
 	/**
@@ -1021,34 +1093,39 @@ public class CommonFunctions {
 		// get the element
 		WebElement tempElement = getElement(driver, element, maxTimeOut);
 
-		// Check if the tag name is input, there are cases where we can enter the
-		// data but the field is not input and it's not possible to check the type
-		// attribute in those scenarios.
-		if (tempElement.getAttribute("tagName").equalsIgnoreCase("input") && tempElement.getAttribute("type").equals("password")) {
-			this.logAccess.getLogger().info("Masked value :- " + "x".repeat(value.length()));
-		} else {
-			this.logAccess.getLogger().info("value :- " + value);
-		}
+		if(isElementEnabled(driver, tempElement)) {
 
-		// click in the field
-		try {
-			tempElement.click();
-		} catch (ElementClickInterceptedException enie) {
-			executeJs(driver, tempElement, "arguments[0].click()");
-		}
-		// clear any existing values
-		tempElement.clear();
-		// enter value in the field
-		tempElement.sendKeys(value);
+			// Check if the tag name is input, there are cases where we can enter the
+			// data but the field is not input and it's not possible to check the type
+			// attribute in those scenarios.
+			if (tempElement.getAttribute("tagName").equalsIgnoreCase("input") && tempElement.getAttribute("type").equals("password")) {
+				this.logAccess.getLogger().info("Masked value :- " + "x".repeat(value.length()));
+			} else {
+				this.logAccess.getLogger().info("value :- " + value);
+			}
 
-		// highlight element
-		String originalStyle = highlightElement(driver, tempElement);
-		// capture (private capture screenshot)
-		if (isCaptureScreenshot) {
-			captureScreenShot(driver, screenShotName);
+			// click in the field
+			try {
+				tempElement.click();
+			} catch (ElementClickInterceptedException enie) {
+				executeJs(driver, tempElement, "arguments[0].click()");
+			}
+			// clear any existing values
+			tempElement.clear();
+			// enter value in the field
+			tempElement.sendKeys(value);
+
+			// highlight element
+			String originalStyle = highlightElement(driver, tempElement);
+			// capture (private capture screenshot)
+			if (isCaptureScreenshot) {
+				captureScreenShot(driver, screenShotName);
+			}
+			// un-highlight
+			unHighlightElement(driver, tempElement, originalStyle);
+		}else{
+			throw new ElementNotInteractableException(tempElement + " is disabled.");
 		}
-		// un-highlight
-		unHighlightElement(driver, tempElement, originalStyle);
 	}
 
 	/**
@@ -2185,6 +2262,40 @@ public class CommonFunctions {
 
 		return isFileDownloaded;
 
+	}
+
+	/**
+	 * This method will wait until the file download is completed and waits for
+	 * specified max time
+	 *
+	 * @param driver              the {@link org.openqa.selenium.WebDriver
+	 *                            WebDriver}
+	 * @param downloadFolderPath  the download folder path
+	 *                            {@link BrowserFunctions#getDownloadFolderPath()
+	 *                            getDownloadFolderPath}
+	 * @param expectedFileName    the expected file name
+	 * @param maxTimeOutInSeconds the maximum time script should wait for the
+	 *                            download to complete
+	 * @param expStatus			  the expected status
+	 * @param softAssert 		  the soft asser instance
+	 */
+	public void waitUntilDownloadCompleted(WebDriver driver, String downloadFolderPath, String expectedFileName,
+											  int maxTimeOutInSeconds, boolean expStatus, SoftAssert softAssert) {
+
+		boolean isFileDownloaded = false; // is file downloaded
+		this.logAccess.getLogger().info("Waiting for " + downloadFolderPath + File.separator + expectedFileName + " file.");
+		WebDriverWait wait = new WebDriverWait(driver, maxTimeOutInSeconds);
+		File fileToCheck = new File(downloadFolderPath).toPath().resolve(expectedFileName).toFile();
+		try {
+			wait.until((WebDriver wd) -> fileToCheck.exists());
+			isFileDownloaded = true;
+		} catch (Exception e) {
+			this.logAccess.getLogger().info("---<Download Failed>------");
+			this.logAccess.getLogger().info(e.getMessage());
+		}
+
+		// assert the download status
+		softAssert.assertEquals(isFileDownloaded, expStatus, fileToCheck.toString() + " file " + (expStatus ? "download is not downloaded.":"downloaded."));
 	}
 
 	/**
