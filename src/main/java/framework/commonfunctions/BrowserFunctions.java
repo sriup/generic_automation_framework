@@ -279,7 +279,7 @@ public class BrowserFunctions {
 						+ getWebDriverLocation(BrowserEnums.Chrome).replace(".", "_") + File.separatorChar
 						+ "chromedriver.exe");
 		// !! Chrome Options !!
-		HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
+		HashMap<String, Object> chromePrefs = new HashMap<>();
 //		
 //		Map<String, String> mobileEmulation = new HashMap<>();
 //
@@ -294,15 +294,15 @@ public class BrowserFunctions {
 		options.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 		options.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, "none");
 
-		HashMap<String, Object> chromeLocalStatePrefs = new HashMap<String, Object>();
-		List<String> experimentalFlags = new ArrayList<String>();
+		HashMap<String, Object> chromeLocalStatePrefs = new HashMap<>();
+		List<String> experimentalFlags = new ArrayList<>();
 		experimentalFlags.add("calculate-native-win-occlusion@2");
 		chromeLocalStatePrefs.put("browser.enabled_labs_experiments", experimentalFlags);
 		options.setExperimentalOption("localState", chromeLocalStatePrefs);
 		//options.setExperimentalOption("mobileEmulation", mobileEmulation);
 
 
-		threadDriver = new ThreadLocal<RemoteWebDriver>();
+		threadDriver = new ThreadLocal<>();
 		setWebDriver(new ChromeDriver(options));
 		return getWebDriver();
 	}
@@ -328,7 +328,7 @@ public class BrowserFunctions {
 						+ BrowserEnums.Firefox.toString() + File.separatorChar
 						+ getWebDriverLocation(BrowserEnums.Firefox).replace(".", "_") + File.separatorChar
 						+ "geckodriver.exe");
-		threadDriver = new ThreadLocal<RemoteWebDriver>();
+		threadDriver = new ThreadLocal<>();
 
 		FirefoxProfile profile = new FirefoxProfile();
 
@@ -454,7 +454,7 @@ public class BrowserFunctions {
 		WebDriverManager.iedriver().setup();
 		String binaryPath = WebDriverManager.iedriver().getBinaryPath();
 		System.setProperty("webdriver.ie.driver", binaryPath);
-		threadDriver = new ThreadLocal<RemoteWebDriver>();
+		threadDriver = new ThreadLocal<>();
 		InternetExplorerOptions options = new InternetExplorerOptions();
 		// ignore zoom level
 		// options.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
@@ -485,7 +485,7 @@ public class BrowserFunctions {
 		caps.setCapability("takesScreenshot", true);
 		String[] service_args = { "--web-security=no", "--ssl-protocol=any", "--ignore-ssl-errors=yes" };
 		caps.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX, service_args);
-		threadDriver = new ThreadLocal<RemoteWebDriver>();
+		threadDriver = new ThreadLocal<>();
 		threadDriver.set(new PhantomJSDriver(caps));
 		return threadDriver.get();
 	}

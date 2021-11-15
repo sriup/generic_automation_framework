@@ -245,25 +245,33 @@ public class ExcelUtil {
 
 	/**
 	 * Gets the row
-	 * 
+	 *
 	 * @param sheetIndex  the index of the sheet number (0-based physical and
 	 *                    logical)
 	 * @param startRowNum Row index starts from
 	 * @param endRowNum   Row index up to
+	 * @param isFallBack  return the rows based on the maximum number of rows and <i>endRowNum</i>.
+	 * <ul>
+	 *     <li>true: get's maximum rows available from the sheet if maximum rows is less than <i>endRowNum</i>.</li>
+	 *     <li>false: throws exception if the maximum rows count is less than <i>endRowNum</i>.</li>
+	 *
+	 * </ul>
 	 * @return List of rows
 	 */
-	public List<Row> getRows(int sheetIndex, int startRowNum, int endRowNum) {
+	public List<Row> getRows(int sheetIndex, int startRowNum, int endRowNum, boolean isFallBack) {
 		// get row based on the index
 		int maxRows = getRowCount(sheetIndex);
 
-		boolean isWithinRange = (startRowNum <= maxRows && endRowNum >= maxRows);
+		boolean isWithinRange = (startRowNum <= maxRows && endRowNum <= maxRows);
 
-		if (!isWithinRange) {
+		if (!isWithinRange && !isFallBack) {
 			throw new ArrayIndexOutOfBoundsException("Invalid row range : StartRowNum '" + startRowNum
 					+ "' and endRowNum '" + endRowNum + "'. Max rows are '" + maxRows + "'");
 		}
 
-		List<Row> rowsList = new ArrayList<Row>();
+		List<Row> rowsList = new ArrayList<>();
+
+		endRowNum = Math.min(endRowNum, maxRows);
 
 		for (int currentRowIndex = startRowNum; currentRowIndex <= endRowNum; currentRowIndex++) {
 
@@ -278,6 +286,20 @@ public class ExcelUtil {
 	/**
 	 * Gets the row
 	 * 
+	 * @param sheetIndex  the index of the sheet number (0-based physical and
+	 *                    logical)
+	 * @param startRowNum Row index starts from
+	 * @param endRowNum   Row index up to
+	 * @return List of rows
+	 */
+	public List<Row> getRows(int sheetIndex, int startRowNum, int endRowNum) {
+
+		return getRows(sheetIndex, startRowNum, endRowNum, false);
+	}
+
+	/**
+	 * Gets the row
+	 * 
 	 * @param sheetName   Name of the work sheet
 	 * @param startRowNum Row index starts from
 	 * @param endRowNum   Row index up to
@@ -287,7 +309,7 @@ public class ExcelUtil {
 
 		int sheetIndex = getSheetIndex(sheetName);
 
-		return getRows(sheetIndex, startRowNum, endRowNum);
+		return getRows(sheetIndex, startRowNum, endRowNum, false);
 	}
 
 	/**
@@ -527,12 +549,27 @@ public class ExcelUtil {
 	 */
 	public String getCellData(String sheetName, Row row, String columnName) {
 
+		return getCellData(sheetName, row, columnName, true);
+	}
+
+	/**
+	 * Gets the cell data
+	 *
+	 * @param sheetName  Name of the work sheet
+	 * @param row        Excel row
+	 * @param columnName the column name
+	 * @pram  addLogMsg  flag to decide whether the details should be logged to logger or not.
+	 * @return the cell data
+	 */
+	public String getCellData(String sheetName, Row row, String columnName, boolean addLogMsg) {
+
 		int sheetIndex = getSheetIndex(sheetName);
 
 		String cellValue = getCellData(sheetIndex, row, columnName);
 
-		this.logAccess.getLogger().debug("Current cell value is '" + cellValue + "'");
-
+		if(addLogMsg) {
+			this.logAccess.getLogger().debug("Current cell value is '" + cellValue + "'");
+		}
 		return cellValue;
 	}
 
@@ -559,10 +596,6 @@ public class ExcelUtil {
 
 		return cellValue;
 	}
-
-	// get row data return map
-
-	// get sheet data
 
 	/**
 	 * Gets the row data.
@@ -1146,6 +1179,7 @@ public class ExcelUtil {
 		FileOutputStream outputStream;
 		outputStream = new FileOutputStream(excelFilePath + File.separatorChar + excelFileName);
 		wb.write(outputStream);
+		outputStream.close();
 	}
 
 	/**
