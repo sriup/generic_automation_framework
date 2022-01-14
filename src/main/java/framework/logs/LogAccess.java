@@ -1,14 +1,15 @@
 package framework.logs;
 
-import framework.commonfunctions.CommonFunctions;
-import framework.constants.CommonVariables;
 import framework.enums.LogVerboseEnums;
-import org.apache.log4j.*;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.builder.api.*;
+import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 
 import java.io.File;
-import java.io.OutputStreamWriter;
 
 /**
  * The Class LogAccess.
@@ -20,9 +21,6 @@ public class LogAccess {
 
 	/** The logger file name. */
 	private String loggerFileName;
-
-	/** The log. */
-	private Logger log;
 
 	/** The log level. */
 	private final LogVerboseEnums logLevel;
@@ -38,6 +36,11 @@ public class LogAccess {
 
 		this.setLoggerFileName(filename);
 
+		ThreadContext.put("threadName", filename);
+
+
+		ThreadContext.put("logLevel", this.logLevel.toString().toUpperCase());
+
 		this.setIsInitialized(false);
 
 	}
@@ -46,20 +49,6 @@ public class LogAccess {
 	 * Creating the Console Appender and File Appender.
 	 */
 	private void initializeLogger() {
-
-		Logger.getLogger("org.apache.http").setLevel(org.apache.log4j.Level.OFF);
-		ConsoleAppender ca = new ConsoleAppender();
-		ca.setThreshold(getLogLevel());
-		ca.setWriter(new OutputStreamWriter(System.out));
-		ca.setLayout(new PatternLayout("%d{YYYY-MM-dd HH:mm:ss} - [%M] %m%n"));
-		ca.activateOptions();
-		log.addAppender(ca);
-		log.info("appender filename in LogAccess class is: " + loggerFileName);
-
-		FileAppender appender = new FileAppender();
-		
-
-		appender.setAppend(true);
 
 		String filePath = System.getProperty("user.dir") + File.separator + "target" + File.separator + "logs";
 
@@ -76,16 +65,28 @@ public class LogAccess {
 			e.printStackTrace();
 		}
 
-		appender.setFile(filePath + File.separator + loggerFileName + ".log");
+		String logFilePath = filePath + File.separator + loggerFileName + ".log";
+		String pattern = "%d{YYYY-MM-dd HH:mm:ss} - [%M] %m%n";
 
-		appender.setThreshold(Level.ALL);
-		
-		PatternLayout layOut = new PatternLayout();
-		layOut.setConversionPattern("%d{YYYY-MM-dd HH:mm:ss} - [%M] %m%n");
-		appender.setLayout(layOut);
-		appender.activateOptions();
-		log.addAppender(appender);
+		ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
 
+		builder.setStatusLevel(Level.DEBUG);
+		builder.setConfigurationName("FrameworkLogger");
+
+		LayoutComponentBuilder layoutBuilder = builder.newLayout("PatternLayout")
+				.addAttribute("pattern", pattern);
+
+		AppenderComponentBuilder fileAppenderBuilder = builder.newAppender("LogToFile", "File")
+				.addAttribute("fileName", logFilePath)
+				.add(layoutBuilder);
+
+		builder.add(fileAppenderBuilder);
+
+		RootLoggerComponentBuilder rootLogger = builder.newRootLogger(Level.DEBUG);
+		rootLogger.add(builder.newAppenderRef("LogToFile"));
+		builder.add(rootLogger);
+
+		Configurator.reconfigure(builder.build());
 	}
 
 	/**
@@ -95,18 +96,7 @@ public class LogAccess {
 	 */
 	public Logger getLogger() {
 
-		if (!isInitialized) {
-			System.out.println("Initializing the logger");
-
-			log = Logger.getLogger(loggerFileName);
-
-			Logger.getRootLogger().setAdditivity(false);
-			log.setLevel(Level.ALL);
-
-			initializeLogger();
-			isInitialized = true;
-		}
-		return this.log;
+		return LogManager.getLogger(this.loggerFileName);
 	}
 
 	/**
@@ -182,26 +172,4 @@ public class LogAccess {
 		}
 
 	}
-
-    /**
-     * Input value.
-     *
-     * @param driver              the {@link WebDriver
-     *                            WebDriver}
-     * @param element             the {@link WebElement element}
-     * @param value               the value to be set in the element
-     * @param isCaptureScreenshot toggle to capture screenshot
-     * @param screenShotName      the screen shot name <br>
-     *                            Date time Stamp will be <i>prepended</i> to the
-     *                            screenshot name by default.<br>
-     *                            Note: Use {@link framework.abstracts.FwBaseClass#setScreenshotPath(String)}
-     *                            setter to set the path where you want to store the
-     *                            screenshots.
-     * @param commonFunctions	the {@link CommonFunctions} instance
-     * @throws Exception the exception
-     */
-    public void inputValue(WebDriver driver, WebElement element, String value, boolean isCaptureScreenshot,
-						   String screenShotName, CommonFunctions commonFunctions) throws Exception {
-        commonFunctions.inputValue(driver, element, value, isCaptureScreenshot, screenShotName, CommonVariables.MED_TIMEOUT);
-    }
 }
