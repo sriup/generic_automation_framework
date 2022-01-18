@@ -1,14 +1,10 @@
 package framework.logs;
 
-import framework.commonfunctions.CommonFunctions;
-import framework.constants.CommonVariables;
 import framework.enums.LogVerboseEnums;
-import org.apache.log4j.*;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-
-import java.io.File;
-import java.io.OutputStreamWriter;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 
 /**
  * The Class LogAccess.
@@ -38,55 +34,58 @@ public class LogAccess {
 
 		this.setLoggerFileName(filename);
 
+		ThreadContext.put("threadName", filename);
+
+
+		ThreadContext.put("logLevel", this.logLevel.toString().toUpperCase());
+
 		this.setIsInitialized(false);
 
 	}
 
-	/**
-	 * Creating the Console Appender and File Appender.
-	 */
-	private void initializeLogger() {
-
-		Logger.getLogger("org.apache.http").setLevel(org.apache.log4j.Level.OFF);
-		ConsoleAppender ca = new ConsoleAppender();
-		ca.setThreshold(getLogLevel());
-		ca.setWriter(new OutputStreamWriter(System.out));
-		ca.setLayout(new PatternLayout("%d{YYYY-MM-dd HH:mm:ss} - [%M] %m%n"));
-		ca.activateOptions();
-		log.addAppender(ca);
-		log.info("appender filename in LogAccess class is: " + loggerFileName);
-
-		FileAppender appender = new FileAppender();
-		
-
-		appender.setAppend(true);
-
-		String filePath = System.getProperty("user.dir") + File.separator + "target" + File.separator + "logs";
-
-		try {
-
-			File folderFile = new File(filePath);
-			if (!folderFile.exists()) {
-				if (folderFile.mkdirs()) {
-					System.out.println("Folder is created");
-				}
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		appender.setFile(filePath + File.separator + loggerFileName + ".log");
-
-		appender.setThreshold(Level.ALL);
-		
-		PatternLayout layOut = new PatternLayout();
-		layOut.setConversionPattern("%d{YYYY-MM-dd HH:mm:ss} - [%M] %m%n");
-		appender.setLayout(layOut);
-		appender.activateOptions();
-		log.addAppender(appender);
-
-	}
+//	/**
+//	 * Creating the Console Appender and File Appender.
+//	 */
+//	private void initializeLogger() {
+//
+//		String filePath = System.getProperty("user.dir") + File.separator + "target" + File.separator + "logs";
+//
+//		try {
+//
+//			File folderFile = new File(filePath);
+//			if (!folderFile.exists()) {
+//				if (folderFile.mkdirs()) {
+//					System.out.println("Folder is created");
+//				}
+//			}
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//
+//		String logFilePath = filePath + File.separator + loggerFileName + ".log";
+//		String pattern = "%d{YYYY-MM-dd HH:mm:ss} - [%M] %m%n";
+//
+//		ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+//
+//		builder.setStatusLevel(Level.ALL);
+//		builder.setConfigurationName("FrameworkLogger");
+//
+//		LayoutComponentBuilder layoutBuilder = builder.newLayout("PatternLayout")
+//				.addAttribute("pattern", pattern);
+//
+//		AppenderComponentBuilder fileAppenderBuilder = builder.newAppender("LogToFile", "File")
+//				.addAttribute("fileName", logFilePath)
+//				.add(layoutBuilder);
+//
+//		builder.add(fileAppenderBuilder);
+//
+//		RootLoggerComponentBuilder rootLogger = builder.newRootLogger(Level.ALL);
+//		rootLogger.add(builder.newAppenderRef("LogToFile"));
+//		builder.add(rootLogger);
+//
+//		Configurator.reconfigure(builder.build());
+//	}
 
 	/**
 	 * Initializing the logger if the initializationFlag is false.
@@ -98,25 +97,13 @@ public class LogAccess {
 		if (!isInitialized) {
 			System.out.println("Initializing the logger");
 
-			log = Logger.getLogger(loggerFileName);
+			log = LogManager.getLogger(this.loggerFileName);
 
-			Logger.getRootLogger().setAdditivity(false);
-			log.setLevel(Level.ALL);
-
-			initializeLogger();
 			isInitialized = true;
 		}
 		return this.log;
 	}
 
-	/**
-	 * Fetching the Initialization flag.
-	 *
-	 * @return true, if is initialized
-	 */
-	public boolean isInitialized() {
-		return isInitialized;
-	}
 
 	/**
 	 * Setting the Initialization flag.
@@ -182,26 +169,4 @@ public class LogAccess {
 		}
 
 	}
-
-    /**
-     * Input value.
-     *
-     * @param driver              the {@link WebDriver
-     *                            WebDriver}
-     * @param element             the {@link WebElement element}
-     * @param value               the value to be set in the element
-     * @param isCaptureScreenshot toggle to capture screenshot
-     * @param screenShotName      the screen shot name <br>
-     *                            Date time Stamp will be <i>prepended</i> to the
-     *                            screenshot name by default.<br>
-     *                            Note: Use {@link framework.abstracts.FwBaseClass#setScreenshotPath(String)}
-     *                            setter to set the path where you want to store the
-     *                            screenshots.
-     * @param commonFunctions	the {@link CommonFunctions} instance
-     * @throws Exception the exception
-     */
-    public void inputValue(WebDriver driver, WebElement element, String value, boolean isCaptureScreenshot,
-						   String screenShotName, CommonFunctions commonFunctions) throws Exception {
-        commonFunctions.inputValue(driver, element, value, isCaptureScreenshot, screenShotName, CommonVariables.MED_TIMEOUT);
-    }
 }
