@@ -1,12 +1,6 @@
 package framework.commonfunctions;
 
-import java.io.File;
-import java.net.URL;
-
-import org.apache.commons.io.FileUtils;
-
 import com.jayway.jsonpath.DocumentContext;
-
 import framework.constants.CommonVariables;
 import framework.enums.BrowserEnums;
 import framework.enums.LogVerboseEnums;
@@ -16,6 +10,10 @@ import framework.utilities.FolderFileUtil;
 import framework.utilities.ZipUtil;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.net.URL;
 
 public class DownloadWebDrivers {
 	private static ApiMethods apiMethods;
