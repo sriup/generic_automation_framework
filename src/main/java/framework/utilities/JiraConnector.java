@@ -178,7 +178,7 @@ public class JiraConnector {
 
                 if(response.getStatusCode() == 200){
                     isSuccessfullyLogged = true;
-                } else if (response.getStatusCode() != 200) {
+                } else {
                     throw new Exception(response.getBody().print());
                 }
 
