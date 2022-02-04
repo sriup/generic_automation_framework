@@ -26,6 +26,10 @@ public class JiraConnector {
     private static String jiraAppUrl;
     private static String jiraAppBasicAuthToken;
 
+    private static boolean isSuccessfullyLogged;
+
+    private static boolean isIssuesStatusTriggered;
+
     /**
      * Initializing JiraConnector instance <br>
      * <p>
@@ -151,6 +155,9 @@ public class JiraConnector {
 
 
         if (!defectIds.isEmpty()) {
+
+            isIssuesStatusTriggered = true;
+
             // log access object
             LogAccess defectsLogAccess = new LogAccess("DefectsLog", LogVerboseEnums.ALL);
 
@@ -169,7 +176,9 @@ public class JiraConnector {
                 // capture response
                 Response response = apiMethods.sendRequest("get", endPointURI, headers);
 
-                if (response.getStatusCode() != 200) {
+                if(response.getStatusCode() == 200){
+                    isSuccessfullyLogged = true;
+                } else {
                     throw new Exception(response.getBody().print());
                 }
 
@@ -207,10 +216,23 @@ public class JiraConnector {
         if (defectsInfoMap.containsKey(defectId.trim())) {
             defectStatus = defectsInfoMap.get(defectId);
         } else {
-            // get the status with fresh call if it's not present in the map
-            defectStatus = getIssuesStatus(defectId).get(defectId.trim());
+
+            if(!isIssuesStatusTriggered){
+                // get the status with fresh call if it's not present in the map
+                getIssuesStatus(defectId);
+            }
+
+            if(!isSuccessfullyLogged){
+                defectStatus = "JIRA Access Denied";
+            } else if(isSuccessfullyLogged && !defectsInfoMap.containsKey(defectId.trim())){
+                defectStatus = "Defect Info not fetched";
+            } else {
+                defectStatus = defectsInfoMap.get(defectId.trim());
+            }
+
         }
 
         return defectStatus;
     }
+
 }
