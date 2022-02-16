@@ -176,19 +176,20 @@ public class JiraConnector {
                 // capture response
                 Response response = apiMethods.sendRequest("get", endPointURI, headers);
 
-                if(response.getStatusCode() == 200){
+                if(response.getStatusCode() == 200) {
                     isSuccessfullyLogged = true;
-                } else {
-                    throw new Exception(response.getBody().print());
-                }
 
-                // store each defect information
-                for (String issue : defectIds.split(",")) {
-                    // get the status of the defect
-                    String status = apiMethods.getValue(response, "issues.findAll{issues -> issues.key=='" + issue.trim() + "'}.fields.status.name[0]");
 
-                    // add to the defects map
-                    defectsInfoMap.put(issue.trim(), status);
+                    // store each defect information
+                    for (String issue : defectIds.split(",")) {
+                        // get the status of the defect
+                        String status = apiMethods.getValue(response, "issues.findAll{issues -> issues.key=='" + issue.trim() + "'}.fields.status.name[0]");
+
+                        // add to the defects map
+                        defectsInfoMap.put(issue.trim(), status);
+                    }
+                }else{
+                    defectsLogAccess.getLogger().warn(response.getBody().prettyPrint());
                 }
             } catch (Exception e) {
                 // TODO need to handle this exception case, for now printing the exception in the console log
