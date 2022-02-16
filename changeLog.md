@@ -1,3 +1,12 @@
+beta - 0.10.5
+============
+• updated Jira utility methods to handle the exceptoins and unauth scenarios rather stopping the script execution.
+
+beta - 0.10.3 & 0.10.4
+======================
+• Handled Log4J2 updates and LogAccess modifications.
+
+
 beta - 0.10.2
 ============
 • Added methods to highlight the element border, waitUntilDownloadCompleted to handle 
