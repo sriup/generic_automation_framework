@@ -1232,4 +1232,27 @@ public class ExcelUtil {
 		this.wb = wb;
 	}
 
+
+	/**
+	 * Gets the list of sheetNames from the file
+	 * @param wb   the workbook
+	 * @return the list of sheetnames
+	 */
+	public List<String> getSheetNames(Workbook wb){
+
+		int numberOfSheets = wb.getNumberOfSheets();
+
+		List<String> sheetNamesList = new ArrayList<>();
+
+		for (int currentSheetIndex = 0; currentSheetIndex < numberOfSheets; currentSheetIndex++){
+
+			String currentSheetName = wb.getSheetName(currentSheetIndex);
+
+			sheetNamesList.add(currentSheetName);
+
+		}
+
+		return sheetNamesList;
+	}
+
 }
