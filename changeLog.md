@@ -1,3 +1,8 @@
+beta - 0.10.6
+============
+• Adding method to get the sheet names in the Excel workbook.
+
+
 beta - 0.10.5
 ============
 • updated Jira utility methods to handle the exceptoins and unauth scenarios rather stopping the script execution.

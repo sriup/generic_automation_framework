@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>automation.generic</groupId>
 	<artifactId>framework</artifactId>
-	<version>beta-0.10.5</version>
+	<version>beta-0.10.6</version>
 	<packaging>jar</packaging>
 
 	<properties>
@@ -162,6 +162,12 @@
 			<artifactId>phantomjsdriver</artifactId>
 			<version>1.4.1</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.codeborne/phantomjsdriver -->
+		<dependency>
+			<groupId>com.paulhammant</groupId>
+			<artifactId>ngwebdriver</artifactId>
+			<version>1.1.6</version>
+		</dependency>
 
 		<dependency>
 			<groupId>io.github.bonigarcia</groupId>
@@ -172,33 +178,27 @@
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
-			<version>7.3.0</version>
+			<version>7.4.0</version>
 			<scope>compile</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.11.2</version>
-		</dependency>
-		
 		<!-- Excel Read/Write -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
-			<version>4.1.2</version>
+			<version>5.0.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
-			<version>4.1.2</version>
+			<version>5.0.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.6</version>
+			<version>2.11.0</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
@@ -209,7 +209,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.10</version>
+			<version>3.12.0</version>
 		</dependency>
 
 		<!-- Reporting -->
@@ -217,18 +217,15 @@
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>[2.16.0,)</version>
+			<version>[2.17.0,)</version>
 			<type>pom</type>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
-			<version>[2.16.0,)</version>
+			<version>[2.17.0,)</version>
 		</dependency>
-
-		<!-- <dependency> <groupId>ru.yandex.qatools.allure</groupId> <artifactId>allure-testng-adaptor</artifactId> 
-			<version>1.4.22</version> </dependency> -->
 
 		<dependency>
 			<groupId>ru.yandex.qatools.allure</groupId>
@@ -238,7 +235,7 @@
 		<dependency>
 			<groupId>io.qameta.allure</groupId>
 			<artifactId>allure-testng</artifactId>
-			<version>2.13.8</version>
+			<version>2.14.0</version>
 		</dependency>
 
 		<dependency>
@@ -254,26 +251,19 @@
 			<version>${aspectj.version}</version>
 		</dependency>
 
-		<!-- database -->
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.20</version>
-		</dependency>
-
 
 		<!-- API related -->
 		<!-- https://mvnrepository.com/artifact/io.rest-assured/rest-assured -->
 		<dependency>
 			<groupId>io.rest-assured</groupId>
 			<artifactId>rest-assured</artifactId>
-			<version>4.3.3</version>
+			<version>4.4.0</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.jayway.jsonpath/json-path -->
 		<dependency>
 			<groupId>com.jayway.jsonpath</groupId>
 			<artifactId>json-path</artifactId>
-			<version>2.4.0</version>
+			<version>2.6.0</version>
 		</dependency>
 
 		<!-- Utilities -->
@@ -288,7 +278,6 @@
 			<groupId>org.jboss.aerogear</groupId>
 			<artifactId>aerogear-otp-java</artifactId>
 			<version>1.0.0</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -297,24 +286,29 @@
 			<version>1.5.0-b01</version>
 		</dependency>
 
-		<!-- Don't delete the items as these dependencies are which are required 
-			for Eclipse EE execution -->
 		<dependency>
-			<groupId>jakarta.xml.bind</groupId>
-			<artifactId>jakarta.xml.bind-api</artifactId>
-			<version>2.3.3</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.glassfish.jaxb</groupId>
-			<artifactId>jaxb-runtime</artifactId>
-			<version>3.0.0-M3</version>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>[2.12.6.1,)</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.googlecode.json-simple</groupId>
 			<artifactId>json-simple</artifactId>
 			<version>1.1.1</version>
+		</dependency>
+
+		<!-- CSV Write -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-csv</artifactId>
+			<version>1.8</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>2.3</version>
 		</dependency>
 	</dependencies>
 </project>
