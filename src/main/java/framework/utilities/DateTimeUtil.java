@@ -1,6 +1,7 @@
 package framework.utilities;
 
 import framework.logs.LogAccess;
+import org.apache.commons.lang.time.DateUtils;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -10,7 +11,6 @@ import java.time.temporal.IsoFields;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
-import java.util.TimeZone;
 
 /**
  * The Class DateTimeUtils.
@@ -153,7 +153,9 @@ public class DateTimeUtil {
     public String getFutureDate(int noOfDays, String dateFormat) {
 
         DateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+
         Calendar cal = Calendar.getInstance();
+
         cal.add(Calendar.DATE, +noOfDays);
 
         String futureDate = simpleDateFormat.format(cal.getTime());
@@ -370,10 +372,14 @@ public class DateTimeUtil {
      * @return Date, Year and Month
      */
     public String getDateYearMonth(int min, int max, String dateFormat) {
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        Calendar calendar = Calendar.getInstance();
+
         int year = min + new Random().nextInt(max - min + 1);
+
         calendar.set(Calendar.YEAR, year);
+
         int day = 1 + new Random().nextInt(calendar.getActualMaximum(Calendar.DAY_OF_YEAR));
+
         calendar.set(Calendar.DAY_OF_YEAR, day);
 
         String date = new SimpleDateFormat(dateFormat).format(calendar.getTime());
@@ -408,6 +414,7 @@ public class DateTimeUtil {
         Date dateTime = new Date(timestamp);
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+
         String parsedDateTime = simpleDateFormat.format(dateTime);
 
         this.logAccess.getLogger().debug("parsedDateTime :- " + parsedDateTime);
@@ -433,5 +440,27 @@ public class DateTimeUtil {
         int seconds = (totalSeconds % 3600) % 60  ;
 
         return hours + "Hrs " + minutes + "Mins " + seconds + "Secs";
+    }
+
+    /**
+     * Parsing the dateTime to get the custom date time format.
+     *
+     * @param dateTimeToParse      date time to be parsed
+     * @param actualDateTimeFormat the date time format of the actual dateTime
+     * @param dateFormat           Custom Date format
+     * @return parsedDateTime DateTime in the String format
+     * @throws ParseException The ParseException
+     */
+    public String parseDateTimeToCustomFormat(String dateTimeToParse, String actualDateTimeFormat, String dateFormat)
+            throws ParseException {
+
+        Date dateTime = DateUtils.parseDate(dateTimeToParse, new String[]{actualDateTimeFormat});
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+        String parsedDateTime = simpleDateFormat.format(dateTime);
+
+        logAccess.getLogger().info("parsedDateTime :- " + parsedDateTime);
+
+        return parsedDateTime;
     }
 }
