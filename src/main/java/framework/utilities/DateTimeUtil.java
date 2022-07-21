@@ -11,7 +11,6 @@ import java.time.temporal.IsoFields;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
-import java.util.TimeZone;
 
 /**
  * The Class DateTimeUtils.
@@ -105,8 +104,6 @@ public class DateTimeUtil {
 
         Calendar cal = Calendar.getInstance();
 
-        cal.setTimeZone(TimeZone.getTimeZone("EST"));
-
         cal.add(Calendar.DATE, -noOfDays);
 
         String previousDate = simpleDateFormat.format(cal.getTime());
@@ -158,8 +155,6 @@ public class DateTimeUtil {
         DateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
 
         Calendar cal = Calendar.getInstance();
-
-        cal.setTimeZone(TimeZone.getTimeZone("EST"));
 
         cal.add(Calendar.DATE, +noOfDays);
 
@@ -377,10 +372,14 @@ public class DateTimeUtil {
      * @return Date, Year and Month
      */
     public String getDateYearMonth(int min, int max, String dateFormat) {
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("EST"));
+        Calendar calendar = Calendar.getInstance();
+
         int year = min + new Random().nextInt(max - min + 1);
+
         calendar.set(Calendar.YEAR, year);
+
         int day = 1 + new Random().nextInt(calendar.getActualMaximum(Calendar.DAY_OF_YEAR));
+
         calendar.set(Calendar.DAY_OF_YEAR, day);
 
         String date = new SimpleDateFormat(dateFormat).format(calendar.getTime());
