@@ -113,7 +113,7 @@ public class DownloadWebDrivers {
 	 *
 	 * @param browserName       the browser name
 	 * @param laterVersion      the later version
-	 * @param url               the URL from where the drier should be download
+	 * @param url               the URL from where the driver should be downloaded
 	 * @param destinationFolder the destination folder where driver should be stored
 	 * @throws Exception the exception
 	 */

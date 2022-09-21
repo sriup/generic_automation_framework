@@ -22,7 +22,21 @@ public class CommonVariables {
     public static final String EMAIL_BODY = "body";
     public static final String EMAIL_ATTACHMENT_FILE_PATH = "attachment";
 
-    /* The implicit wait time */
+    private static long MAX_TEST_TIME_OUT;
+
+    public static long getMaxTestTimeOut() {
+        return MAX_TEST_TIME_OUT;
+    }
+
+    public static void setMaxTestTimeOut(long maxTestTimeOut) {
+        MAX_TEST_TIME_OUT = maxTestTimeOut;
+    }
+
+
+	public static final boolean IS_RUNNING_ON_SBOX =
+            System.getProperty("sbox") != null && !System.getProperty("sbox").isEmpty() && Boolean.parseBoolean(System.getProperty("sbox"));
+
+	/* The implicit wait time */
     //public static int IMPLICIT_WAIT = 15;
 
     /**

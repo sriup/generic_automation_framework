@@ -23,25 +23,39 @@ import java.util.HashMap;
  */
 public abstract class FwBaseClass {
 
-	/** The BrowserFunctions object */
+	/**
+	 * The BrowserFunctions object
+	 */
 	private BrowserFunctions browserFunctions;
 
-	/** The LogAccess object */
+	/**
+	 * The LogAccess object
+	 */
 	protected LogAccess logAccess;
 
-	/** The FolderFileUtil object */
+	/**
+	 * The FolderFileUtil object
+	 */
 	private FolderFileUtil fileUtils;
 
-	/** The screenshot path. */
+	/**
+	 * The screenshot path.
+	 */
 	private String screenshotPath;
 
-	/** SoftAssert Object */
+	/**
+	 * SoftAssert Object
+	 */
 	private SoftAssert softAssert;
 
-	/** AllureUtil Object */
+	/**
+	 * AllureUtil Object
+	 */
 	protected AllureUtil allureUtil;
 
-	/** CommonFunctions Object */
+	/**
+	 * CommonFunctions Object
+	 */
 	protected CommonFunctions commonFunctions;
 
 	private HashMap<String, Object> setBrowserOptions = null;
@@ -61,16 +75,17 @@ public abstract class FwBaseClass {
 	 * </font> <br>
 	 * <font color="red">browser specified in the maven command will
 	 * <b>supersedes</b> the browser specified from test.</font>
-	 * 
 	 *
 	 * @param browserEnum  Select the browser name from the <b>BrowserEnums</b>
 	 *                     class
 	 * @param downloadPath The download path
 	 * @throws Exception the exception
 	 */
-	public void init(BrowserEnums browserEnum, String downloadPath) throws Exception {
+	public void init(BrowserEnums browserEnum, String downloadPath, String methodName) throws Exception {
 
 		String browserName = "";
+
+		boolean isRunningOnSbox;
 
 		if (CommonVariables.BROWSER_SELECT == null || CommonVariables.BROWSER_SELECT.isEmpty()) {
 			browserName = browserEnum.toString();
@@ -85,10 +100,13 @@ public abstract class FwBaseClass {
 		}
 
 		this.browserFunctions = new BrowserFunctions(this.logAccess);
-		browserFunctions.launch(browserName, downloadPath, setBrowserOptions);
+
+		isRunningOnSbox = CommonVariables.IS_RUNNING_ON_SBOX;
+
+		browserFunctions.launch(browserName, downloadPath, isRunningOnSbox, methodName);
 
 		setSoftAssert();
-		
+
 		// initializing the AllureUtil
 		this.allureUtil = new AllureUtil();
 
@@ -102,14 +120,14 @@ public abstract class FwBaseClass {
 	/**
 	 * Sets browser options<br>
 	 * Example:
-	 * 
+	 *
 	 * <pre>
 	 * HashMap<String, Object> ieOptions = new HashMap<String, Object>();
 	 * ieOptions.put("nativeEvents", false);
 	 * </pre>
-	 * 
+	 * <p>
 	 * Note: Currently this is been supported for IE only
-	 * 
+	 *
 	 * @param browserOptions the browser options
 	 */
 	public void setBrowserOptions(HashMap<String, Object> browserOptions) {
@@ -144,7 +162,7 @@ public abstract class FwBaseClass {
 	 * folder appended with date time stamp under "Outputs/Screenshots" folder, if
 	 * createScreenshotPath is not called in the "BaseClass"
 	 * constructor.</font>
-	 * 
+	 *
 	 * @return the screenshot path
 	 */
 	public String getScreenshotPath() {
@@ -162,7 +180,7 @@ public abstract class FwBaseClass {
 	 * <font color="blue"><b>Note :</b> This method in turn calls
 	 * createScreenshotName method that creates the screenshots folder and
 	 * also sets the {@link #screenshotPath}.</font>
-	 * 
+	 *
 	 * @param folderName the screenshots folder name, folder will be created under
 	 *                   "Outputs/Screenshots" folder.
 	 */
@@ -199,7 +217,7 @@ public abstract class FwBaseClass {
 	 * <font color="blue"><b>Note : </b> Folder will be created under
 	 * "Outputs/Screenshots" folder also set's the {@link #screenshotPath}
 	 * variable.</font>
-	 * 
+	 *
 	 * @param folderName the folder name
 	 * @return the absolute path to the screenshots folder
 	 */
@@ -221,7 +239,7 @@ public abstract class FwBaseClass {
 		if (commonFunctions != null) {
 			commonFunctions.setScreenShotsPath(this.screenshotPath);
 		} else {
-			commonFunctions = new CommonFunctions(this.screenshotPath, getLogAccess());
+			commonFunctions = new CommonFunctions(this.screenshotPath, getLogAccess(), this.screenshotPath);
 		}
 
 		return SCREENSHOT_SUBFOLDER_PATH;

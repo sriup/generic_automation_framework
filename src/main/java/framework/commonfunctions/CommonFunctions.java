@@ -3,13 +3,14 @@ package framework.commonfunctions;
 import framework.constants.CommonVariables;
 import framework.enums.BrowserEnums;
 import framework.enums.ExpectedConditionsEnums;
-import framework.helper.SoftAssert;
 import framework.logs.LogAccess;
 import framework.utilities.*;
+import io.restassured.response.Response;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -18,6 +19,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.net.URL;
 import java.util.List;
 import java.util.*;
 
@@ -59,11 +61,15 @@ public class CommonFunctions {
 	 * The Zip Utility.
 	 */
 	private final ZipUtil zipUtil;
+
+	private final ApiMethods apiMethods;
 	/**
 	 * Folder path where the captured screenshots should be stored.
 	 */
 	private String screenShotsPath;
 	private String highlightBgColor = "orange";
+
+	private String downloadFolderPath = null;
 
 	/**
 	 * Instantiates a new common functions.<br>
@@ -87,7 +93,7 @@ public class CommonFunctions {
 	 * @param screenShotsPath the screen shots path
 	 * @param logAccess       Log Access object
 	 */
-	public CommonFunctions(String screenShotsPath, LogAccess logAccess) {
+	public CommonFunctions(String screenShotsPath, LogAccess logAccess, String downloadFolderPath) {
 		this.logAccess = logAccess;
 		this.screenShotsPath = screenShotsPath;
 		dateTimeUtil = new DateTimeUtil(logAccess);
@@ -97,6 +103,9 @@ public class CommonFunctions {
 		securityUtil = new SecurityUtil();
 		zipUtil = new ZipUtil(logAccess);
 		genericUtil = new GenericUtil();
+		apiMethods = new ApiMethods(logAccess);
+		this.downloadFolderPath = downloadFolderPath;
+
 	}
 
 	/**
@@ -2242,27 +2251,27 @@ public class CommonFunctions {
 	 *                            download to complete
 	 * @return the file download status
 	 */
-	public boolean waitUntilDownloadCompleted(WebDriver driver, String downloadFolderPath, String expectedFileName,
-											  int maxTimeOutInSeconds, SoftAssert softAssert) {
-
-		boolean isFileDownloaded = false; // is file downloaded
-		this.logAccess.getLogger().info("Waiting for " + downloadFolderPath + File.separator + expectedFileName + " file.");
-		WebDriverWait wait = new WebDriverWait(driver, maxTimeOutInSeconds);
-		File fileToCheck = new File(downloadFolderPath).toPath().resolve(expectedFileName).toFile();
-		try {
-			wait.until((WebDriver wd) -> fileToCheck.exists());
-			isFileDownloaded = true;
-		} catch (Exception e) {
-			this.logAccess.getLogger().info("---<Download Failed>------");
-			this.logAccess.getLogger().info(e.getMessage());
-		}
-
-		// assert the download status
-		softAssert.assertTrue(isFileDownloaded, fileToCheck.toString() + " file download is failed..");
-
-		return isFileDownloaded;
-
-	}
+//	public boolean waitUntilDownloadCompleted(WebDriver driver, String downloadFolderPath, String expectedFileName,
+//											  int maxTimeOutInSeconds, SoftAssert softAssert) {
+//
+//		boolean isFileDownloaded = false; // is file downloaded
+//		this.logAccess.getLogger().info("Waiting for " + downloadFolderPath + File.separator + expectedFileName + " file.");
+//		WebDriverWait wait = new WebDriverWait(driver, maxTimeOutInSeconds);
+//		File fileToCheck = new File(downloadFolderPath).toPath().resolve(expectedFileName).toFile();
+//		try {
+//			wait.until((WebDriver wd) -> fileToCheck.exists());
+//			isFileDownloaded = true;
+//		} catch (Exception e) {
+//			this.logAccess.getLogger().info("---<Download Failed>------");
+//			this.logAccess.getLogger().info(e.getMessage());
+//		}
+//
+//		// assert the download status
+//		softAssert.assertTrue(isFileDownloaded, fileToCheck.toString() + " file download is failed..");
+//
+//		return isFileDownloaded;
+//
+//	}
 
 	/**
 	 * This method will wait until the file download is completed and waits for
@@ -2279,24 +2288,24 @@ public class CommonFunctions {
 	 * @param expStatus			  the expected status
 	 * @param softAssert 		  the soft asser instance
 	 */
-	public void waitUntilDownloadCompleted(WebDriver driver, String downloadFolderPath, String expectedFileName,
-											  int maxTimeOutInSeconds, boolean expStatus, SoftAssert softAssert) {
-
-		boolean isFileDownloaded = false; // is file downloaded
-		this.logAccess.getLogger().info("Waiting for " + downloadFolderPath + File.separator + expectedFileName + " file.");
-		WebDriverWait wait = new WebDriverWait(driver, maxTimeOutInSeconds);
-		File fileToCheck = new File(downloadFolderPath).toPath().resolve(expectedFileName).toFile();
-		try {
-			wait.until((WebDriver wd) -> fileToCheck.exists());
-			isFileDownloaded = true;
-		} catch (Exception e) {
-			this.logAccess.getLogger().info("---<Download Failed>------");
-			this.logAccess.getLogger().info(e.getMessage());
-		}
-
-		// assert the download status
-		softAssert.assertEquals(isFileDownloaded, expStatus, fileToCheck.toString() + " file " + (expStatus ? "download is not downloaded.":"downloaded."));
-	}
+//	public void waitUntilDownloadCompleted(WebDriver driver, String downloadFolderPath, String expectedFileName,
+//											  int maxTimeOutInSeconds, boolean expStatus, SoftAssert softAssert) {
+//
+//		boolean isFileDownloaded = false; // is file downloaded
+//		this.logAccess.getLogger().info("Waiting for " + downloadFolderPath + File.separator + expectedFileName + " file.");
+//		WebDriverWait wait = new WebDriverWait(driver, maxTimeOutInSeconds);
+//		File fileToCheck = new File(downloadFolderPath).toPath().resolve(expectedFileName).toFile();
+//		try {
+//			wait.until((WebDriver wd) -> fileToCheck.exists());
+//			isFileDownloaded = true;
+//		} catch (Exception e) {
+//			this.logAccess.getLogger().info("---<Download Failed>------");
+//			this.logAccess.getLogger().info(e.getMessage());
+//		}
+//
+//		// assert the download status
+//		softAssert.assertEquals(isFileDownloaded, expStatus, fileToCheck.toString() + " file " + (expStatus ? "download is not downloaded.":"downloaded."));
+//	}
 
 	/**
 	 * This method will wait until the file download is completed and waits for
@@ -2311,25 +2320,27 @@ public class CommonFunctions {
 	 * @param maxTimeOutInSeconds the maximum time script should wait for the
 	 *                            download to complete
 	 */
-	public void waitUntilDownloadCompleted(WebDriver driver, String downloadFolderPath, String expectedFileName,
-										   int maxTimeOutInSeconds) {
-
-		this.logAccess.getLogger().info("Waiting for " + downloadFolderPath + File.separator + expectedFileName + " file.");
-		WebDriverWait wait = new WebDriverWait(driver, maxTimeOutInSeconds);
-		File fileToCheck = new File(downloadFolderPath).toPath().resolve(expectedFileName).toFile();
-		wait.until((WebDriver wd) -> fileToCheck.exists());
-
-	}
+//	public void waitUntilDownloadCompleted(WebDriver driver, String downloadFolderPath, String expectedFileName,
+//										   int maxTimeOutInSeconds) {
+//		this.logAccess.getLogger().info("Waiting for " + downloadFolderPath + File.separator + expectedFileName + " file.");
+//		WebDriverWait wait = new WebDriverWait(driver, maxTimeOutInSeconds);
+//		File fileToCheck = new File(downloadFolderPath).toPath().resolve(expectedFileName).toFile();
+//		wait.until((WebDriver wd) -> fileToCheck.exists());
+//
+//	}
 
 	/**
 	 * This method will wait until the file download is completed and waits for
 	 * specified max time
 	 *
 	 * @param driver the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @return the down loaded file path
+	 * @param maxTimeoutInSeconds the maximum timeout in seconds
+	 * @param sessionId the session id
+	 *
+	 * @return the downloaded file path
 	 * @throws Exception the exception
 	 */
-	public String waitUntilDownloadCompleted(WebDriver driver, int maxTimeoutInSeconds) throws Exception {
+	public String waitUntilDownloadCompleted(WebDriver driver, int maxTimeoutInSeconds, SessionId sessionId) throws Exception {
 		// Store the current window handle
 		String mainWindow = driver.getWindowHandle();
 		String fileName = null;
@@ -2345,7 +2356,7 @@ public class CommonFunctions {
 			JavascriptExecutor js = (JavascriptExecutor) driver;
 
 			if (CommonVariables.BROWSER_SELECT.equalsIgnoreCase("chrome")) {
-				// navigate to chrome downloads
+				// navigate to Chrome downloads
 				driver.get("chrome://downloads");
 				long startTime = (new Date()).getTime();
 
@@ -2376,7 +2387,7 @@ public class CommonFunctions {
 				// download history in FireFox
 			} else if (CommonVariables.BROWSER_SELECT.equalsIgnoreCase("firefox")) {
 
-				// navigate to chrome downloads
+				// navigate to Chrome downloads
 				driver.get("about:downloads");
 
 				new WebDriverWait(driver, maxTimeoutInSeconds)
@@ -2401,6 +2412,8 @@ public class CommonFunctions {
 			// switch back to main window
 			driver.switchTo().window(mainWindow);
 
+			downloadSboxFile(sessionId, downloadFolderPath);
+
 		} catch (Exception e) {
 			// switch back to main window
 			driver.switchTo().window(mainWindow);
@@ -2409,6 +2422,36 @@ public class CommonFunctions {
 		}
 		return fileName;
 
+	}
+
+	/**
+	 * downloads the file(s) all the files in the current browser session from SeleniumBox to the local machine
+	 * @param sessionId	the session id
+	 * @param downloadFolderPath the download folder path
+	 * @throws Exception the exception
+	 */
+	private void downloadSboxFile(SessionId sessionId, String downloadFolderPath) throws Exception {
+
+		// check if selenium box is running
+		if(CommonVariables.IS_RUNNING_ON_SBOX) {
+
+			// get all test artifacts for download using SeleniumBox API
+			Response response = apiMethods.sendRequest("get", "https://selenium.cloud.cms.gov/e34/api/downloads?session=" + sessionId.toString());
+
+			// get list of artifacts from SeleniumBox
+			List<Map> artifacts = response.jsonPath().getList("");
+
+			// iterate through all the artifacts
+			for (Map artifact : artifacts) {
+
+				// create the download location path
+				String downloadFilePath = downloadFolderPath + File.separatorChar + artifact.get("name");
+
+				// download the file to local
+				FileUtils.copyURLToFile(new URL("https://selenium.cloud.cms.gov/" + artifact.get("url")), new File(downloadFilePath));
+
+			}
+		}
 	}
 
 	/**
