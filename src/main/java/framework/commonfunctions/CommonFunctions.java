@@ -2436,7 +2436,7 @@ public class CommonFunctions {
 		if(CommonVariables.IS_RUNNING_ON_SBOX) {
 
 			// get all test artifacts for download using SeleniumBox API
-			Response response = apiMethods.sendRequest("get", "https://selenium.cloud.cms.gov/e34/api/downloads?session=" + sessionId.toString());
+			Response response = apiMethods.sendRequest("get", CommonVariables.HOST_ADDRESS + "/e34/api/downloads?session=" + sessionId.toString());
 
 			// get list of artifacts from SeleniumBox
 			List<Map> artifacts = response.jsonPath().getList("");
@@ -2448,7 +2448,7 @@ public class CommonFunctions {
 				String downloadFilePath = downloadFolderPath + File.separatorChar + artifact.get("name");
 
 				// download the file to local
-				FileUtils.copyURLToFile(new URL("https://selenium.cloud.cms.gov/" + artifact.get("url")), new File(downloadFilePath));
+				FileUtils.copyURLToFile(new URL(CommonVariables.HOST_ADDRESS + "/" + artifact.get("url")), new File(downloadFilePath));
 
 			}
 		}

@@ -71,14 +71,6 @@ public class BrowserFunctions {
 
 	private String browserName;
 
-	public boolean getRunningOnSbox() {
-		return runningOnSbox;
-	}
-
-	public void setRunningOnSbox(boolean runningOnSbox) {
-		this.runningOnSbox = runningOnSbox;
-	}
-
 	public SessionId getSessionId() {
 		return sessionId;
 	}
@@ -88,10 +80,6 @@ public class BrowserFunctions {
 	}
 
 	private SessionId sessionId;
-
-
-
-	private boolean runningOnSbox;
 
 	public String getTestCaseName() {
 		return testCaseName;
@@ -510,16 +498,14 @@ public class BrowserFunctions {
 	 * launches browser either on local or on selenium box
 	 * @param browserName	the browser name
 	 * @param downloadPath	the download path
-	 * @param sbox			specifies if running on SeleniumBox
 	 * @param testCaseName  the test case name
 	 * @return	the remote WebDriver instance
 	 * @throws Exception the Exception
 	 */
-
-	public WebDriver launch(String browserName, String downloadPath, boolean sbox, String testCaseName) throws Exception {
+	public WebDriver launch(String browserName, String downloadPath, String testCaseName) throws Exception {
 
 		//TODO need to remove this below condition once the local grid implementation is done.
-		if (!sbox) {
+		if (!CommonVariables.IS_RUNNING_ON_SBOX) {
 			launch(browserName, downloadPath);
 		} else {
 
@@ -527,16 +513,14 @@ public class BrowserFunctions {
 
 			this.setDownloadFolderpath(downloadPath);
 
-			this.setRunningOnSbox(sbox);
-
 			this.setTestCaseName(testCaseName);
 
 			RemoteWebDriver remoteDriver;
 
 			MutableCapabilities caps = getCapabilities();
 			try {
-				if (getRunningOnSbox()) {
-					remoteDriver = new RemoteWebDriver(new URL("https://selenium.cloud.cms.gov/wd/hub"), caps);
+				if (CommonVariables.IS_RUNNING_ON_SBOX) { // adding this check as we will be removing the initial if condition later
+					remoteDriver = new RemoteWebDriver(new URL(CommonVariables.HOST_ADDRESS + "/wd/hub"), caps);
 					setSessionId(remoteDriver.getSessionId());
 				} else {
 					remoteDriver = new RemoteWebDriver(caps);
@@ -589,10 +573,8 @@ public class BrowserFunctions {
 		sboxCaps.setCapability("e34:token", System.getenv("SBOX_TOKEN"));
 		sboxCaps.setCapability("e34:video", true);
 		sboxCaps.setCapability("e34:timezone", "US/Eastern");
-//		sboxCaps.setCapability("e34:per_test_timeout_ms", CommonVariables.getMaxTestTimeOut());
+		sboxCaps.setCapability("e34:per_test_timeout_ms", CommonVariables.getMaxTestTimeOut()-1000);
 		sboxCaps.setCapability("e34:l_testName", this.getTestCaseName());
-//		sboxCaps.setCapability("platformName", "Windows 10");
-		sboxCaps.setCapability("screenResolution", "1280x1024");
 		return sboxCaps;
 	}
 
@@ -606,7 +588,7 @@ public class BrowserFunctions {
 		FirefoxProfile profile = new FirefoxProfile();
 
 		// set the download folder directory
-		if(!this.getRunningOnSbox()){
+		if(!CommonVariables.IS_RUNNING_ON_SBOX){
 			profile.setPreference("browser.download.dir", this.getDownloadFolderPath());
 		}
 
@@ -653,7 +635,7 @@ public class BrowserFunctions {
 		FirefoxOptions options = new FirefoxOptions();
 		options.setProfile(profile);
 
-		if (getRunningOnSbox()) {
+		if (CommonVariables.IS_RUNNING_ON_SBOX) {
 			options.merge(setSboxOptions());
 		} else {
 
@@ -685,7 +667,7 @@ public class BrowserFunctions {
 
 		chromePrefs.put("profile.default_content_settings.popups", 0);
 
-		if(!this.getRunningOnSbox()){
+		if(!CommonVariables.IS_RUNNING_ON_SBOX){
 			chromePrefs.put("download.default_directory", this.getDownloadFolderPath());
 		}
 		chromePrefs.put("profile.default_content_setting_values.automatic_downloads", 1);
@@ -704,7 +686,7 @@ public class BrowserFunctions {
 //		options.setCapability("screenResolution", "1920X1080");
 
 
-		if (getRunningOnSbox()) {
+		if (CommonVariables.IS_RUNNING_ON_SBOX) {
 			options.merge(setSboxOptions());
 		} else {
 			DownloadWebDrivers.downloadDriver(BrowserEnums.Chrome);
@@ -725,11 +707,11 @@ public class BrowserFunctions {
 	 */
 	private EdgeOptions setEdgeOptions() throws Exception {
 		EdgeOptions options = new EdgeOptions();
-		if(!this.getRunningOnSbox()){
+		if(!CommonVariables.IS_RUNNING_ON_SBOX){
 			options.setCapability("download.default_directory", this.getDownloadFolderPath());
 		}
 
-		if (getRunningOnSbox()) {
+		if (CommonVariables.IS_RUNNING_ON_SBOX) {
 			options.merge(setSboxOptions());
 		} else {
 			System.setProperty("webdriver.edge.driver",

@@ -101,9 +101,7 @@ public abstract class FwBaseClass {
 
 		this.browserFunctions = new BrowserFunctions(this.logAccess);
 
-		isRunningOnSbox = CommonVariables.IS_RUNNING_ON_SBOX;
-
-		browserFunctions.launch(browserName, downloadPath, isRunningOnSbox, methodName);
+		browserFunctions.launch(browserName, downloadPath, methodName);
 
 		setSoftAssert();
 

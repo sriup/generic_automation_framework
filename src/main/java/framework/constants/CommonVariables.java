@@ -32,6 +32,7 @@ public class CommonVariables {
         MAX_TEST_TIME_OUT = maxTestTimeOut;
     }
 
+    public static final String HOST_ADDRESS = System.getenv("SBOX_URL");
 
 	public static final boolean IS_RUNNING_ON_SBOX =
             System.getProperty("sbox") != null && !System.getProperty("sbox").isEmpty() && Boolean.parseBoolean(System.getProperty("sbox"));
