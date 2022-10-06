@@ -18,8 +18,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.RasterFormatException;
 import java.io.File;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.*;
 
@@ -2163,9 +2166,13 @@ public class CommonFunctions {
 			String tempScreenShotsFolderName = screenShotsPath + File.separatorChar + "TempFolder" + File.separatorChar
 					+ getScreenShotTime() + "_" + screenShotName;
 			folderFileUtil.createFolder(tempScreenShotsFolderName);
-			capturePageChunks(driver, tempScreenShotsFolderName);
-			return mergeImagesToSingleImage(tempScreenShotsFolderName,
-					screenShotName.replaceAll("[^-A-Za-z0-9]", "_").replace("__","_")  + ".png");
+			boolean capturedChunks = capturePageChunks(driver, tempScreenShotsFolderName);
+			if(capturedChunks) {
+				return mergeImagesToSingleImage(tempScreenShotsFolderName,
+						screenShotName.replaceAll("[^-A-Za-z0-9]", "_").replace("__", "_") + ".png");
+			}else{
+				return captureScreenShot(driver, screenShotName);
+			}
 		}
 	}
 
@@ -2203,9 +2210,13 @@ public class CommonFunctions {
 					+ getScreenShotTime() + "_" + screenShotName;
 			folderFileUtil.createFolder(tempScreenShotsFolderName);
 
-			capturePageChunks(driver, tempScreenShotsFolderName, headerElement, true);
-			return mergeImagesToSingleImage(tempScreenShotsFolderName,
-					screenShotName.replaceAll("[^-A-Za-z0-9]", "_").replace("__","_")  + ".png");
+			boolean capturedPageChunks = capturePageChunks(driver, tempScreenShotsFolderName, headerElement, true);
+			if(capturedPageChunks) {
+				return mergeImagesToSingleImage(tempScreenShotsFolderName,
+						screenShotName.replaceAll("[^-A-Za-z0-9]", "_").replace("__", "_") + ".png");
+			}else{
+				return captureScreenShot(driver, screenShotName);
+			}
 		}
 
 	}
@@ -2407,12 +2418,15 @@ public class CommonFunctions {
 				// .downloadTypeIcon').src");
 			}
 
+			// download the file from seleniumbox
+			downloadSboxFile(sessionId, downloadFolderPath);
+
 			// close the downloads tab2
 			driver.close();
+
 			// switch back to main window
 			driver.switchTo().window(mainWindow);
 
-			downloadSboxFile(sessionId, downloadFolderPath);
 
 		} catch (Exception e) {
 			// switch back to main window
@@ -2432,6 +2446,7 @@ public class CommonFunctions {
 	 */
 	private void downloadSboxFile(SessionId sessionId, String downloadFolderPath) throws Exception {
 
+
 		// check if selenium box is running
 		if(CommonVariables.IS_RUNNING_ON_SBOX) {
 
@@ -2447,8 +2462,23 @@ public class CommonFunctions {
 				// create the download location path
 				String downloadFilePath = downloadFolderPath + File.separatorChar + artifact.get("name");
 
-				// download the file to local
-				FileUtils.copyURLToFile(new URL(CommonVariables.HOST_ADDRESS + "/" + artifact.get("url")), new File(downloadFilePath));
+
+
+				// download the file only if it's not exists
+				if(!new File(downloadFilePath).exists()) {
+
+					String encodedUrl =  CommonVariables.HOST_ADDRESS +
+							"/downloads/"+artifact.get("internalSessionId") +
+							"/" +
+							URLEncoder.encode((String) artifact.get("name"), StandardCharsets.UTF_8)
+									.replaceAll("\\+","%20");
+
+
+					this.logAccess.getLogger().info("Downloading the file from sbox using encoded url: " + encodedUrl );
+
+					// download the file to local
+					FileUtils.copyURLToFile(new URL(encodedUrl), new File(downloadFilePath));
+				}
 
 			}
 		}
@@ -2765,8 +2795,11 @@ public class CommonFunctions {
 	 *                             and opposite holds good too</font>
 	 * @throws Exception the exception
 	 */
-	private void capturePageChunks(WebDriver driver, String tempImagesFolderPath, WebElement hideElement,
+	private boolean capturePageChunks(WebDriver driver, String tempImagesFolderPath, WebElement hideElement,
 								   boolean notIncludeHeader) throws Exception {
+
+		boolean capturedAllPageChunks = false;
+
 		JavascriptExecutor js = ((JavascriptExecutor) driver);
 		// get the current scroll position
 		int currentXPosition = ((Number) js.executeScript("return window.pageXOffset")).intValue();
@@ -2811,23 +2844,32 @@ public class CommonFunctions {
 				js.executeScript(javaScript, hideElement);
 			}
 		}
-		// get last page chunk
-		int lastChunkHeight = pageHeight - coveredHeight;
-		// get the last part of the page if there is any chunk left over
-		if (lastChunkHeight > 0) {
-			File tmpFile = screenCapture.getScreenshotAs(OutputType.FILE);
-			BufferedImage lastPageBufferImage = ImageIO.read(tmpFile);
-			// get the image vs window px ratio
-			double pxRatio = Math.round(((double) lastPageBufferImage.getHeight() / (double) windowHeight) * 100.0)
-					/ 100.0;
-			// capture the small chunk
-			BufferedImage lastChunk = lastPageBufferImage.getSubimage(0, (int) (lastPageBufferImage.getHeight() - (lastChunkHeight * pxRatio)),
-					lastPageBufferImage.getWidth(), (int) (lastChunkHeight * pxRatio));
 
-			ImageIO.write(lastChunk, "png", tmpFile);
-			folderFileUtil.copyFile(tmpFile,
-					new File(tempImagesFolderPath + File.separatorChar + "lastScreenshot.png"));
+		//TODO need to handle "java.awt.image.RasterFormatException: y lies outside the raster"
+		try {
+			// get last page chunk
+			int lastChunkHeight = pageHeight - coveredHeight;
+			// get the last part of the page if there is any chunk left over
+			if (lastChunkHeight > 0) {
+				File tmpFile = screenCapture.getScreenshotAs(OutputType.FILE);
+				BufferedImage lastPageBufferImage = ImageIO.read(tmpFile);
+				// get the image vs window px ratio
+				double pxRatio = Math.round(((double) lastPageBufferImage.getHeight() / (double) windowHeight) * 100.0)
+						/ 100.0;
+				// capture the small chunk
+				BufferedImage lastChunk = lastPageBufferImage.getSubimage(0, (int) (lastPageBufferImage.getHeight() - (lastChunkHeight * pxRatio)),
+						lastPageBufferImage.getWidth(), (int) (lastChunkHeight * pxRatio));
+
+				ImageIO.write(lastChunk, "png", tmpFile);
+				folderFileUtil.copyFile(tmpFile,
+						new File(tempImagesFolderPath + File.separatorChar + "lastScreenshot.png"));
+
+				capturedAllPageChunks = true;
+			}
+		}catch (RasterFormatException rasterFormatException){
+			this.logAccess.getLogger().warn(rasterFormatException.getMessage());
 		}
+
 		if (notIncludeHeader) {
 			String javaScript = "arguments[0].setAttribute('style', '" + originalStyle + "');";
 			js.executeScript(javaScript, hideElement);
@@ -2836,6 +2878,7 @@ public class CommonFunctions {
 		js.executeScript(
 				"window.scrollTo(" + currentXPosition + "," + currentYPosition + ");");
 
+		return capturedAllPageChunks;
 	}
 
 	/**
@@ -2848,7 +2891,8 @@ public class CommonFunctions {
 	 * @throws Exception the exception
 	 */
 
-	private void capturePageChunks(WebDriver driver, String tempImagesFolderPath) throws Exception {
+	private boolean capturePageChunks(WebDriver driver, String tempImagesFolderPath) throws Exception {
+		boolean capturedAllChunks = false;
 		JavascriptExecutor js = ((JavascriptExecutor) driver);
 		// get the current scroll position
 		int currentXPosition = ((Number) js.executeScript("return window.pageXOffset")).intValue();
@@ -2882,29 +2926,38 @@ public class CommonFunctions {
 			js.executeScript(script);
 			Thread.sleep(500);
 		}
-		// get last page chunk
-		int lastChunkHeight = pageHeight - coveredHeight;
-		// get the last part of the page if there is any chunk left over
-		if (lastChunkHeight > 0) {
-			File tmpFile = screenCapture.getScreenshotAs(OutputType.FILE);
-			BufferedImage lastPageBufferImage = ImageIO.read(tmpFile);
-			// get the image vs window px ratio
-			double pxRatio = Math.round(((double) lastPageBufferImage.getHeight() / (double) windowHeight) * 100.0)
-					/ 100.0;
-			// capture the small chunk
-			BufferedImage lastChunk = lastPageBufferImage.getSubimage(0,
-					(int) (lastPageBufferImage.getHeight()
-							- (lastChunkHeight * pxRatio)),
-					lastPageBufferImage.getWidth(), (int) (lastChunkHeight * pxRatio));
 
-			ImageIO.write(lastChunk, "png", tmpFile);
-			folderFileUtil.copyFile(tmpFile,
-					new File(tempImagesFolderPath + File.separatorChar + "lastScreenshot.png"));
+		//TODO need to handle "java.awt.image.RasterFormatException: y lies outside the raster"
+		try {
+			// get last page chunk
+			int lastChunkHeight = pageHeight - coveredHeight;
+			// get the last part of the page if there is any chunk left over
+			if (lastChunkHeight > 0) {
+				File tmpFile = screenCapture.getScreenshotAs(OutputType.FILE);
+				BufferedImage lastPageBufferImage = ImageIO.read(tmpFile);
+				// get the image vs window px ratio
+				double pxRatio = Math.round(((double) lastPageBufferImage.getHeight() / (double) windowHeight) * 100.0)
+						/ 100.0;
+
+				// capture the small chunk
+				BufferedImage lastChunk = lastPageBufferImage.getSubimage(0,
+						(int) (lastPageBufferImage.getHeight()
+								- (lastChunkHeight * pxRatio)),
+						lastPageBufferImage.getWidth(), (int) (lastChunkHeight * pxRatio));
+
+				ImageIO.write(lastChunk, "png", tmpFile);
+				folderFileUtil.copyFile(tmpFile,
+						new File(tempImagesFolderPath + File.separatorChar + "lastScreenshot.png"));
+				capturedAllChunks = true;
+			}
+		}catch (RasterFormatException rasterFormatException){
+			this.logAccess.getLogger().warn(rasterFormatException.getMessage());
 		}
 
 		// set back to the original position
 		js.executeScript(
 				"window.scrollTo(" + currentXPosition + "," + currentYPosition + ");");
+		return capturedAllChunks;
 	}
 
 	/**

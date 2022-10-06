@@ -13,6 +13,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -535,7 +536,10 @@ public class BrowserFunctions {
 
 			// to handle the file upload when running on remote box
 			remoteDriver.setFileDetector(new LocalFileDetector());
+
+			remoteDriver.manage().window().setSize(new Dimension(1920, 1080));
 		}
+
 		return getWebDriver();
 
 	}
@@ -573,7 +577,7 @@ public class BrowserFunctions {
 		sboxCaps.setCapability("e34:token", System.getenv("SBOX_TOKEN"));
 		sboxCaps.setCapability("e34:video", true);
 		sboxCaps.setCapability("e34:timezone", "US/Eastern");
-		sboxCaps.setCapability("e34:per_test_timeout_ms", CommonVariables.getMaxTestTimeOut()-1000);
+		sboxCaps.setCapability("e34:per_test_timeout_ms", 300000);
 		sboxCaps.setCapability("e34:l_testName", this.getTestCaseName());
 		return sboxCaps;
 	}

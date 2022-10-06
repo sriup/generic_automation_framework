@@ -29,7 +29,7 @@ public class CommonVariables {
     }
 
     public static void setMaxTestTimeOut(long maxTestTimeOut) {
-        MAX_TEST_TIME_OUT = maxTestTimeOut;
+        CommonVariables.MAX_TEST_TIME_OUT = maxTestTimeOut;
     }
 
     public static final String HOST_ADDRESS = System.getenv("SBOX_URL");
