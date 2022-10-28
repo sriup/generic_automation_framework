@@ -2390,6 +2390,7 @@ public class CommonFunctions {
 					fileName = (String) ((JavascriptExecutor) driver).executeScript(
 							"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('div#content #file-link').text");
 					captureScreenShot(driver, "download_file");
+					Thread.sleep(1000);
 					js.executeScript(
 							"document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('#remove').click()");
 				}
@@ -2445,7 +2446,6 @@ public class CommonFunctions {
 	 * @throws Exception the exception
 	 */
 	private void downloadSboxFile(SessionId sessionId, String downloadFolderPath) throws Exception {
-
 
 		// check if selenium box is running
 		if(CommonVariables.IS_RUNNING_ON_SBOX) {

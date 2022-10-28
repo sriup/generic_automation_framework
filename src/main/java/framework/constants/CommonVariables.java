@@ -106,13 +106,19 @@ public class CommonVariables {
      * <td>7</td>
      * <td>MM_dd_yyyy_hh_mm_ss</td>
      * </tr>
-     * * <td>8</td>
+     * <tr>
+     * <td>8</td>
      * <td>MM_dd_yyyy_hh_mm_ss_SS</td>
+     * </tr>
+     * <tr>
+     *     <td>9</td>
+     *     <td>MM/dd/yyyy HH:mm:ss</td>
      * </tr>
      * </table>
      */
     public static final String[] TIME_FORMATS = {"yyyy:MM:dd_hh_mm_ss", "mm:dd:yy", "MM/dd/yyyy", "MM/dd/yyyy hh:mm",
-            "hh:mm", "MM/dd/yyyy h:mma", "MM/dd/yyyy mm:ss a", "MM_dd_yyyy_hh_mm_ss", "MM_dd_yyyy_hh_mm_ss_SS"};
+            "hh:mm", "MM/dd/yyyy h:mma", "MM/dd/yyyy mm:ss a", "MM_dd_yyyy_hh_mm_ss", "MM_dd_yyyy_hh_mm_ss_SS",
+            "MM/dd/yyyy HH:mm:ss"};
 
     /**
      * store navigated urls

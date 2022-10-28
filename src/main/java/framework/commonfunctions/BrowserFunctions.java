@@ -6,7 +6,6 @@ import framework.enums.BrowserEnums;
 import framework.logs.LogAccess;
 import framework.utilities.FolderFileUtil;
 import framework.utilities.JsonUtil;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import io.qameta.allure.Step;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -24,8 +23,6 @@ import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.*;
 
 import java.io.File;
@@ -193,9 +190,9 @@ public class BrowserFunctions {
 				DownloadWebDrivers.downloadDriver(BrowserEnums.Edge);
 				driver = launchEdge();
 				break;
-			case "phantomjs":
-				driver = launchPhantomJS();
-				break;
+//			case "phantomjs":
+//				driver = launchPhantomJS();
+//				break;
 			default:
 				this.logAccess.getLogger().info(
 						"Unexpected value : " + browserName + "\n only supported browsers are: chrome, firefox, edge, ie");
@@ -474,18 +471,18 @@ public class BrowserFunctions {
 
 	}
 
-
-	private WebDriver launchPhantomJS() {
-		WebDriverManager.phantomjs().setup();
-		DesiredCapabilities caps = new DesiredCapabilities();
-		caps.setJavascriptEnabled(true);
-		caps.setCapability("takesScreenshot", true);
-		String[] service_args = {"--web-security=no", "--ssl-protocol=any", "--ignore-ssl-errors=yes"};
-		caps.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX, service_args);
-		threadDriver = new ThreadLocal<>();
-		threadDriver.set(new PhantomJSDriver(caps));
-		return threadDriver.get();
-	}
+//
+//	private WebDriver launchPhantomJS() {
+//		WebDriverManager.phantomjs().setup();
+//		DesiredCapabilities caps = new DesiredCapabilities();
+//		caps.setJavascriptEnabled(true);
+//		caps.setCapability("takesScreenshot", true);
+//		String[] service_args = {"--web-security=no", "--ssl-protocol=any", "--ignore-ssl-errors=yes"};
+//		caps.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX, service_args);
+//		threadDriver = new ThreadLocal<>();
+//		threadDriver.set(new PhantomJSDriver(caps));
+//		return threadDriver.get();
+//	}
 
 	private String getWebDriverLocation(BrowserEnums browserName) throws Exception {
 
