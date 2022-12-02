@@ -40,7 +40,7 @@ public class ApiMethods {
 	 * makes Get request to the rest API
 	 *
 	 * @param requestType request type
-	 * @param uri         uri/endpoint
+	 * @param uri		 uri/endpoint
 	 * @return the response object {@link io.restassured.response.Response Response}
 	 *
 	 */
@@ -74,8 +74,8 @@ public class ApiMethods {
 
 	/**
 	 * @param requestType request type
-	 * @param uri         uri/endpoint
-	 * @param headers     headers
+	 * @param uri		 uri/endpoint
+	 * @param headers	 headers
 	 * @return response object {@link io.restassured.response.Response Response}
 	 */
 	public Response sendRequest(String requestType, String uri, Map<String, String> headers) {
@@ -116,9 +116,9 @@ public class ApiMethods {
 
 	/**
 	 * @param requestType request type
-	 * @param uri         uri/endpoint
-	 * @param headers     headers
-	 * @param data        data
+	 * @param uri		 uri/endpoint
+	 * @param headers	 headers
+	 * @param data		data
 	 * @return response object {@link io.restassured.response.Response Response}
 	 */
 	public Response sendRequest(String requestType, String uri, HashMap<String, String> headers,
@@ -157,8 +157,8 @@ public class ApiMethods {
 
 	/**
 	 * @param requestType the request type
-	 * @param uri         the uri/endpoint
-	 * @param headers     the headers
+	 * @param uri		 the uri/endpoint
+	 * @param headers	 the headers
 	 * @param bodyPayload payload to be sent as part of request body
 	 * @return response object {@link io.restassured.response.Response Response}
 	 */
@@ -198,11 +198,11 @@ public class ApiMethods {
 
 	/**
 	 * @param requestType the request type
-	 * @param uri         the uri/endpoint
-	 * @param headers     the headers
-	 * @param data        the body data <br>
-	 *                    <b>Note:</b> Use {@link #sendRequest(String, String, HashMap, ObjectNode)} in the case of
-	 *                    multipart body data
+	 * @param uri		 the uri/endpoint
+	 * @param headers	 the headers
+	 * @param data		the body data <br>
+	 *					<b>Note:</b> Use {@link #sendRequest(String, String, HashMap, ObjectNode)} in the case of
+	 *					multipart body data
 	 * @return response object {@link io.restassured.response.Response Response}
 	 */
 	public Response sendRequest(String requestType, String uri, HashMap<String, String> headers, ContentTypesEnums contentType,
@@ -263,8 +263,8 @@ public class ApiMethods {
 	}
 
 	/**
-	 * @param folderPath      folder path to store file name
-	 * @param fileName        file name to store the response content
+	 * @param folderPath	  folder path to store file name
+	 * @param fileName		file name to store the response content
 	 * @param responseContent response content to be written in file
 	 * @throws Exception the exception
 	 */
@@ -278,7 +278,7 @@ public class ApiMethods {
 	 * @param folderPath folder path to store file name
 	 * @param fileName   file name to store the response content
 	 * @param response   response object {@link io.restassured.response.Response
-	 *                   Response}
+	 *				   Response}
 	 * @throws Exception the exception
 	 */
 	public void writeResponseToFile(String folderPath, String fileName, Response response) throws Exception {

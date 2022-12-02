@@ -367,18 +367,18 @@ public class CommonFunctions {
 	 * Wait for invisibility of element. Method will wait for
 	 * {@link CommonVariables#MIN_TIMEOUT} before checking for element invisibility.
 	 *
-	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param element    the {@link org.openqa.selenium.WebElement element}
+	 * @param driver          the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param element         the {@link org.openqa.selenium.WebElement element}
 	 * @param initialWaitTime the time to be waited for the element to be present in
-	 * 	 *                        seconds
-	 * @param maxTimeout the max timeout in seconds
-	 * @throws Exception the exception
+	 *                        *						seconds
+	 * @param maxTimeout      the max timeout in seconds
 	 * @return the status of element invisibility<br>
-	 *	<b>Note:</b><br>
-	 *	   <ul>
-	 *	       <li>true: if the element is invisible</li>
-	 *	       <li>false: if the element is visible</li>
-	 *	   </ul>
+	 * <b>Note:</b><br>
+	 * <ul>
+	 * 	 <li>true: if the element is invisible</li>
+	 * 	 <li>false: if the element is visible</li>
+	 * </ul>
+	 * @throws Exception the exception
 	 */
 	public boolean waitForInvisibilityOfElement(WebDriver driver, WebElement element, int initialWaitTime, int maxTimeout) throws Exception {
 		this.logAccess.getLogger().info("waiting for element to be invisible  :- " + element);
@@ -399,7 +399,7 @@ public class CommonFunctions {
 
 		try {
 
-			do{
+			do {
 
 				isElementVisible = isElementPresent(driver, element, CommonVariables.NO_TIMEOUT);
 
@@ -425,11 +425,11 @@ public class CommonFunctions {
 	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param byLocator  the by locator
 	 * @param maxTimeout the time to be waited for the element to be present in
-	 * 	 *                        seconds
+	 *                   *						seconds
 	 * @throws Exception the exception
 	 */
 	public boolean waitForInvisibilityOfElement(WebDriver driver, By byLocator, int maxTimeout) throws Exception {
-		return waitForInvisibilityOfElement(driver,byLocator, CommonVariables.MIN_TIMEOUT, maxTimeout);
+		return waitForInvisibilityOfElement(driver, byLocator, CommonVariables.MIN_TIMEOUT, maxTimeout);
 	}
 
 	/**
@@ -461,7 +461,7 @@ public class CommonFunctions {
 
 		this.logAccess.getLogger().info("End timestamp for Invisibility of an Element is " + endTimestamp);
 		try {
-			do{
+			do {
 
 				isElementVisible = isElementPresent(driver, byLocator, CommonVariables.NO_TIMEOUT);
 
@@ -688,7 +688,7 @@ public class CommonFunctions {
 		long currentTimestamp = (new Date()).getTime();
 		long endTimestamp = currentTimestamp + maxTimeout * 1000L;
 		boolean conditionalCheck = false;
-		do{
+		do {
 			conditionalCheck = element.isEnabled();
 		} while ((new Date()).getTime() < endTimestamp && !conditionalCheck);
 		return conditionalCheck;
@@ -765,37 +765,36 @@ public class CommonFunctions {
 	/**
 	 * Highlights the element.
 	 *
-	 * @param driver  the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param element the {@link org.openqa.selenium.WebElement element} <br>
-	 *                This method will highlight the element and does not set back
-	 *                the original style. <br>
-	 *
+	 * @param driver      the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param element     the {@link org.openqa.selenium.WebElement element} <br>
+	 *                    This method will highlight the element and does not set back
+	 *                    the original style. <br>
 	 * @param bordersOnly the border highlight status<br>
-	 *                   <ul>
-	 *                   	<li>true - will highlight the elements borders only.</li>
-	 *                   	<li>false - will highlight the element using normal highlighting
-	 *                  	 	i.e. the entire element background.
-	 *                   	</li>
-	 *                   </ul>
-	 *					<font color="blue"><b>Note:</b> Use {@link #unHighlightElement
-	 * 	                 unHighlightElement} method to set back the original style of
-	 * 	                 the element.</font>
+	 *                    			 <ul>
+	 *                    			 	<li>true - will highlight the elements borders only.</li>
+	 *                      		   	<li>false - will highlight the element using normal highlighting
+	 *                    				 	i.e. the entire element background.
+	 *                    			 	</li>
+	 *                    			 </ul>
+	 *                    <font color="blue"><b>Note:</b> Use {@link #unHighlightElement
+	 *                    			 unHighlightElement} method to set back the original style of
+	 *                    			 the element.</font>
 	 * @return the String with original style of the element
 	 * @throws Exception the exception
 	 */
 	public String highlightElement(WebDriver driver, WebElement element, boolean bordersOnly) throws Exception {
 		String originalStyle = "";
 		try {
-			this.logAccess.getLogger().debug("Highlighting element" + (bordersOnly? " border" : "") + ":- " + element);
+			this.logAccess.getLogger().debug("Highlighting element" + (bordersOnly ? " border" : "") + ":- " + element);
 			// get the original
 			originalStyle = getOriginalStyle(element);
 			// scroll element to the center
 			scrollElement(driver, element, "center");
 			String highlightJavaScript;
-			if(bordersOnly){
+			if (bordersOnly) {
 				// highlight the web element
-				highlightJavaScript =  "arguments[0].style.border=\"3px solid \"" + this.highlightBgColor + "\";";
-			}else {
+				highlightJavaScript = "arguments[0].style.border=\"3px solid \"" + this.highlightBgColor + "\";";
+			} else {
 				// highlight the web element
 				highlightJavaScript = "arguments[0].style.background=\"" + this.highlightBgColor + "\";";
 			}
@@ -810,21 +809,20 @@ public class CommonFunctions {
 	/**
 	 * Highlights the element.
 	 *
-	 * @param driver    the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @param byLocator the by locator <br>
-	 *                  This method will highlight the element and does not set back
-	 *                  the original style. <br>
-	 *
+	 * @param driver      the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator   the by locator <br>
+	 *                    This method will highlight the element and does not set back
+	 *                    the original style. <br>
 	 * @param bordersOnly the border highlight status<br>
-	 *                   <ul>
-	 *                   	<li>true - will highlight the elements borders only.</li>
-	 *                   	<li>false - will highlight the element using normal highlighting
-	 *                  	 	i.e. the entire element background.
-	 *                   	</li>
-	 *                   </ul>
-	 *                    <font color="blue"><b>Note:</b> Use
-	 *                    {@link #unHighlightElement unHighlightElement} method to set
-	 * 	                  back the original style of the element.</font>
+	 *                    <ul>
+	 *                    	<li>true - will highlight the elements borders only.</li>
+	 *                    	<li>false - will highlight the element using normal highlighting
+	 *                     	i.e. the entire element background.
+	 *                    	</li>
+	 *                    </ul>
+	 *                     <font color="blue"><b>Note:</b> Use
+	 *                     {@link #unHighlightElement unHighlightElement} method to set
+	 *                     back the original style of the element.</font>
 	 * @return the String with original style of the element
 	 * @throws Exception the exception
 	 */
@@ -1042,7 +1040,7 @@ public class CommonFunctions {
 	 * @param isCaptureScreenShot the is capture screen shot
 	 * @param captureBefore       the capture before
 	 * @param screenShotName      the screen shot name
-	 * @param maxTimeOut 		  the maximum time to wait for the element
+	 * @param maxTimeOut          the maximum time to wait for the element
 	 * @throws Exception the exception
 	 */
 	public void clickOnElement(WebDriver driver, By byLocator, boolean isCaptureScreenShot, boolean captureBefore,
@@ -1095,7 +1093,7 @@ public class CommonFunctions {
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
-	 * @param maxTimeOut the maximum time to wait for the element
+	 * @param maxTimeOut          the maximum time to wait for the element
 	 * @throws Exception the exception
 	 */
 	public void inputValue(WebDriver driver, WebElement element, String value, boolean isCaptureScreenshot,
@@ -1105,7 +1103,7 @@ public class CommonFunctions {
 		// get the element
 		WebElement tempElement = getElement(driver, element, maxTimeOut);
 
-		if(isElementEnabled(driver, tempElement)) {
+		if (isElementEnabled(driver, tempElement)) {
 
 			// Check if the tag name is input, there are cases where we can enter the
 			// data but the field is not input and it's not possible to check the type
@@ -1135,7 +1133,7 @@ public class CommonFunctions {
 			}
 			// un-highlight
 			unHighlightElement(driver, tempElement, originalStyle);
-		}else{
+		} else {
 			throw new ElementNotInteractableException(tempElement + " is disabled.");
 		}
 	}
@@ -1148,7 +1146,7 @@ public class CommonFunctions {
 	 * @param value               the value
 	 * @param isCaptureScreenshot the is capture screenshot
 	 * @param screenShotName      the screen shot name
-	 * @param maxTimeOut the maximum time to wait for the element
+	 * @param maxTimeOut          the maximum time to wait for the element
 	 * @throws Exception the exception
 	 */
 	public void inputValue(WebDriver driver, By byLocator, String value, boolean isCaptureScreenshot,
@@ -1413,7 +1411,7 @@ public class CommonFunctions {
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
-	 * @param maxTimeOut the maximum time to wait for the element
+	 * @param maxTimeOut          the maximum time to wait for the element
 	 * @throws Exception the exception
 	 */
 	public void selectItemByIndex(WebDriver driver, WebElement element, int index, boolean isCaptureScreenshot,
@@ -1457,7 +1455,7 @@ public class CommonFunctions {
 	 */
 	public void selectItemByIndex(WebDriver driver, WebElement element, int index, boolean isCaptureScreenshot,
 								  String screenShotName) throws Exception {
-		selectItemByIndex(driver,element,index,isCaptureScreenshot,screenShotName, CommonVariables.MED_TIMEOUT);
+		selectItemByIndex(driver, element, index, isCaptureScreenshot, screenShotName, CommonVariables.MED_TIMEOUT);
 	}
 
 	/**
@@ -1474,7 +1472,7 @@ public class CommonFunctions {
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
-	 * @param maxTimeOut the maximum time to wait for the element
+	 * @param maxTimeOut          the maximum time to wait for the element
 	 * @throws Exception the exception
 	 */
 	public void selectItemByValue(WebDriver driver, WebElement element, String value, boolean isCaptureScreenshot,
@@ -1518,7 +1516,7 @@ public class CommonFunctions {
 	 */
 	public void selectItemByValue(WebDriver driver, WebElement element, String value, boolean isCaptureScreenshot,
 								  String screenShotName) throws Exception {
-		selectItemByValue(driver, element,value,isCaptureScreenshot,screenShotName, CommonVariables.MED_TIMEOUT);
+		selectItemByValue(driver, element, value, isCaptureScreenshot, screenShotName, CommonVariables.MED_TIMEOUT);
 	}
 
 	/**
@@ -1535,7 +1533,7 @@ public class CommonFunctions {
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
-	 * @param maxTimeOut the maximum timeout to wait for the element
+	 * @param maxTimeOut          the maximum timeout to wait for the element
 	 * @throws Exception the exception
 	 */
 	public void selectItemByVisibleText(WebDriver driver, WebElement element, String visibleText,
@@ -1579,7 +1577,7 @@ public class CommonFunctions {
 	 */
 	public void selectItemByVisibleText(WebDriver driver, WebElement element, String visibleText,
 										boolean isCaptureScreenshot, String screenShotName) throws Exception {
-		selectItemByVisibleText(driver, element, visibleText,isCaptureScreenshot, screenShotName, CommonVariables.MED_TIMEOUT);
+		selectItemByVisibleText(driver, element, visibleText, isCaptureScreenshot, screenShotName, CommonVariables.MED_TIMEOUT);
 	}
 
 	/**
@@ -1596,7 +1594,7 @@ public class CommonFunctions {
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
-	 * @param maxTimeOut the maximum time to wait for the element
+	 * @param maxTimeOut          the maximum time to wait for the element
 	 * @throws Exception the exception
 	 */
 	public void selectItemByPartialVisibleText(WebDriver driver, WebElement element, String partialVisibleText,
@@ -1639,7 +1637,7 @@ public class CommonFunctions {
 	 */
 	public void selectItemByPartialVisibleText(WebDriver driver, WebElement element, String partialVisibleText,
 											   boolean isCaptureScreenshot, String screenShotName) throws Exception {
-		selectItemByPartialVisibleText(driver, element, partialVisibleText,isCaptureScreenshot,screenShotName,CommonVariables.MED_TIMEOUT);
+		selectItemByPartialVisibleText(driver, element, partialVisibleText, isCaptureScreenshot, screenShotName, CommonVariables.MED_TIMEOUT);
 	}
 
 	/**
@@ -1677,7 +1675,7 @@ public class CommonFunctions {
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
-	 * @param maxTimeOut the maximum time to wait for the element
+	 * @param maxTimeOut          the maximum time to wait for the element
 	 * @throws Exception the exception
 	 */
 	public void selectItemByIndex(WebDriver driver, By byLocator, int index, boolean isCaptureScreenshot,
@@ -1720,7 +1718,7 @@ public class CommonFunctions {
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
-	 * @param maxTimeOut the maximum time to wait for the element
+	 * @param maxTimeOut          the maximum time to wait for the element
 	 * @throws Exception the exception
 	 */
 	public void selectItemByValue(WebDriver driver, By byLocator, String value, boolean isCaptureScreenshot,
@@ -1764,7 +1762,7 @@ public class CommonFunctions {
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
-	 * @param maxTimeOut the maximum time to wait for the element
+	 * @param maxTimeOut          the maximum time to wait for the element
 	 * @throws Exception the exception
 	 */
 	public void selectItemByVisibleText(WebDriver driver, By byLocator, String visibleText, boolean isCaptureScreenshot,
@@ -1809,7 +1807,7 @@ public class CommonFunctions {
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
-	 * @param maxTimeOut the maximum time to wait for the element
+	 * @param maxTimeOut          the maximum time to wait for the element
 	 * @throws Exception the exception
 	 */
 	public void selectItemByPartialVisibleText(WebDriver driver, By byLocator, String partialVisibleText,
@@ -1832,7 +1830,7 @@ public class CommonFunctions {
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
-	 * @param maxTimeOut 	the maximum time to wait for the element
+	 * @param maxTimeOut          the maximum time to wait for the element
 	 * @return the visible text of this element.
 	 * @throws Exception the exception
 	 */
@@ -1869,13 +1867,12 @@ public class CommonFunctions {
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
-	 *
 	 * @return the visible text of this element.
 	 * @throws Exception the exception
 	 */
 	public String getText(WebDriver driver, WebElement element, boolean isCaptureScreenShot, String screenShotName)
 			throws Exception {
-		return getText(driver, element, isCaptureScreenShot,screenShotName, CommonVariables.MED_TIMEOUT);
+		return getText(driver, element, isCaptureScreenShot, screenShotName, CommonVariables.MED_TIMEOUT);
 	}
 
 	/**
@@ -1892,7 +1889,7 @@ public class CommonFunctions {
 	 *                            Note: Use {@link #screenShotsPath screenShotsPath}
 	 *                            setter to set the path where you want to store the
 	 *                            screenshots.
-	 * @param maxTimeOut  the maximum to wait for the element
+	 * @param maxTimeOut          the maximum to wait for the element
 	 * @return the visible text of this element.
 	 * @throws Exception the exception
 	 */
@@ -2075,16 +2072,20 @@ public class CommonFunctions {
 	 */
 	public String captureScreenShotWithHighlight(WebDriver driver, WebElement element, String screenshotName)
 			throws Exception {
-		this.logAccess.getLogger().debug("Capturing screenshot for element :- " + element);
-		// highlight
-		String originalStyle = highlightElement(driver, element);
+		String tempScreenshotName = "";
+		if (!CommonVariables.IS_RUNNING_ON_SBOX) {
+			this.logAccess.getLogger().debug("Capturing screenshot for element :- " + element);
+			// highlight
+			String originalStyle = highlightElement(driver, element);
 
-		// capture screenshot
-		String tempScreenshotName = captureScreenShot(driver, screenshotName);
-		// un-highlight
-		setOriginalStyle(driver, element, originalStyle);
+			// capture screenshot
+			tempScreenshotName = captureScreenShot(driver, screenshotName);
+			// un-highlight
+			setOriginalStyle(driver, element, originalStyle);
+		}
 		return tempScreenshotName;
 	}
+
 
 	/**
 	 * Captures screenshot after highlighting the element. Element original style
@@ -2102,14 +2103,18 @@ public class CommonFunctions {
 	 */
 	public String captureScreenShotWithHighlight(WebDriver driver, By byLocator, String screenshotName)
 			throws Exception {
-		this.logAccess.getLogger().debug("Capturing screenshot for element :- " + byLocator.toString());
-		WebElement element = waitForElement(driver, byLocator, ExpectedConditionsEnums.VISIBLE);
-		// highlight
-		String originalStyle = highlightElement(driver, element);
-		// capture screenshot
-		String tempScreenshotName = captureScreenShot(driver, screenshotName);
-		// un-highlight
-		setOriginalStyle(driver, element, originalStyle);
+
+		String tempScreenshotName = "";
+		if (!CommonVariables.IS_RUNNING_ON_SBOX) {
+			this.logAccess.getLogger().debug("Capturing screenshot for element :- " + byLocator.toString());
+			WebElement element = waitForElement(driver, byLocator, ExpectedConditionsEnums.VISIBLE);
+			// highlight
+			String originalStyle = highlightElement(driver, element);
+			// capture screenshot
+			tempScreenshotName = captureScreenShot(driver, screenshotName);
+			// un-highlight
+			setOriginalStyle(driver, element, originalStyle);
+		}
 		return tempScreenshotName;
 	}
 
@@ -2127,12 +2132,16 @@ public class CommonFunctions {
 	 */
 	// screenshots
 	public String captureScreenShot(WebDriver driver, String screenShotName) throws Exception {
-		this.logAccess.getLogger().debug("Capturing screenshot");
-		String tempScreenshotName = this.screenShotsPath + File.separatorChar + getScreenShotTime() + "_"
-				+ screenShotName.replaceAll("[^-A-Za-z0-9]", "_").replace("__","_")  + ".png";
 
-		File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-		FileUtils.copyFile(screenshot, new File(tempScreenshotName));
+		String tempScreenshotName = "";
+		if (!CommonVariables.IS_RUNNING_ON_SBOX) {
+			this.logAccess.getLogger().debug("Capturing screenshot");
+			tempScreenshotName = this.screenShotsPath + File.separatorChar + getScreenShotTime() + "_"
+					+ screenShotName.replaceAll("[^-A-Za-z0-9]", "_").replace("__", "_") + ".png";
+
+			File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+			FileUtils.copyFile(screenshot, new File(tempScreenshotName));
+		}
 		return tempScreenshotName;
 
 	}
@@ -2167,10 +2176,10 @@ public class CommonFunctions {
 					+ getScreenShotTime() + "_" + screenShotName;
 			folderFileUtil.createFolder(tempScreenShotsFolderName);
 			boolean capturedChunks = capturePageChunks(driver, tempScreenShotsFolderName);
-			if(capturedChunks) {
+			if (capturedChunks) {
 				return mergeImagesToSingleImage(tempScreenShotsFolderName,
 						screenShotName.replaceAll("[^-A-Za-z0-9]", "_").replace("__", "_") + ".png");
-			}else{
+			} else {
 				return captureScreenShot(driver, screenShotName);
 			}
 		}
@@ -2211,10 +2220,10 @@ public class CommonFunctions {
 			folderFileUtil.createFolder(tempScreenShotsFolderName);
 
 			boolean capturedPageChunks = capturePageChunks(driver, tempScreenShotsFolderName, headerElement, true);
-			if(capturedPageChunks) {
+			if (capturedPageChunks) {
 				return mergeImagesToSingleImage(tempScreenShotsFolderName,
 						screenShotName.replaceAll("[^-A-Za-z0-9]", "_").replace("__", "_") + ".png");
-			}else{
+			} else {
 				return captureScreenShot(driver, screenShotName);
 			}
 		}
@@ -2253,13 +2262,13 @@ public class CommonFunctions {
 	 * specified max time
 	 *
 	 * @param driver              the {@link org.openqa.selenium.WebDriver
-	 *                            WebDriver}
+	 *							WebDriver}
 	 * @param downloadFolderPath  the download folder path
 	 *                            {@link BrowserFunctions#getDownloadFolderPath()
-	 *                            getDownloadFolderPath}
+	 *							getDownloadFolderPath}
 	 * @param expectedFileName    the expected file name
 	 * @param maxTimeOutInSeconds the maximum time script should wait for the
-	 *                            download to complete
+	 *							download to complete
 	 * @return the file download status
 	 */
 //	public boolean waitUntilDownloadCompleted(WebDriver driver, String downloadFolderPath, String expectedFileName,
@@ -2289,15 +2298,15 @@ public class CommonFunctions {
 	 * specified max time
 	 *
 	 * @param driver              the {@link org.openqa.selenium.WebDriver
-	 *                            WebDriver}
+	 *							WebDriver}
 	 * @param downloadFolderPath  the download folder path
 	 *                            {@link BrowserFunctions#getDownloadFolderPath()
-	 *                            getDownloadFolderPath}
+	 *							getDownloadFolderPath}
 	 * @param expectedFileName    the expected file name
 	 * @param maxTimeOutInSeconds the maximum time script should wait for the
-	 *                            download to complete
-	 * @param expStatus			  the expected status
-	 * @param softAssert 		  the soft asser instance
+	 *							download to complete
+	 * @param expStatus              the expected status
+	 * @param softAssert          the soft asser instance
 	 */
 //	public void waitUntilDownloadCompleted(WebDriver driver, String downloadFolderPath, String expectedFileName,
 //											  int maxTimeOutInSeconds, boolean expStatus, SoftAssert softAssert) {
@@ -2323,13 +2332,13 @@ public class CommonFunctions {
 	 * specified max time
 	 *
 	 * @param driver              the {@link org.openqa.selenium.WebDriver
-	 *                            WebDriver}
+	 *							WebDriver}
 	 * @param downloadFolderPath  the download folder path
 	 *                            {@link BrowserFunctions#getDownloadFolderPath()
-	 *                            getDownloadFolderPath}
+	 *							getDownloadFolderPath}
 	 * @param expectedFileName    the expected file name
 	 * @param maxTimeOutInSeconds the maximum time script should wait for the
-	 *                            download to complete
+	 *							download to complete
 	 */
 //	public void waitUntilDownloadCompleted(WebDriver driver, String downloadFolderPath, String expectedFileName,
 //										   int maxTimeOutInSeconds) {
@@ -2344,10 +2353,9 @@ public class CommonFunctions {
 	 * This method will wait until the file download is completed and waits for
 	 * specified max time
 	 *
-	 * @param driver the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param driver              the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param maxTimeoutInSeconds the maximum timeout in seconds
-	 * @param sessionId the session id
-	 *
+	 * @param sessionId           the session id
 	 * @return the downloaded file path
 	 * @throws Exception the exception
 	 */
@@ -2410,7 +2418,7 @@ public class CommonFunctions {
 							"value", "100"));
 					// get the file name
 					fileName = getAttribute(driver, By.cssSelector(
-							"#contentAreaDownloadsView .downloadMainArea .downloadContainer description:nth-of-type(1)"),
+									"#contentAreaDownloadsView .downloadMainArea .downloadContainer description:nth-of-type(1)"),
 							"value", true, "");
 				}
 				// file downloaded location
@@ -2441,14 +2449,15 @@ public class CommonFunctions {
 
 	/**
 	 * downloads the file(s) all the files in the current browser session from SeleniumBox to the local machine
-	 * @param sessionId	the session id
+	 *
+	 * @param sessionId          the session id
 	 * @param downloadFolderPath the download folder path
 	 * @throws Exception the exception
 	 */
 	private void downloadSboxFile(SessionId sessionId, String downloadFolderPath) throws Exception {
 
 		// check if selenium box is running
-		if(CommonVariables.IS_RUNNING_ON_SBOX) {
+		if (CommonVariables.IS_RUNNING_ON_SBOX) {
 
 			// get all test artifacts for download using SeleniumBox API
 			Response response = apiMethods.sendRequest("get", CommonVariables.HOST_ADDRESS + "/e34/api/downloads?session=" + sessionId.toString());
@@ -2463,18 +2472,17 @@ public class CommonFunctions {
 				String downloadFilePath = downloadFolderPath + File.separatorChar + artifact.get("name");
 
 
-
 				// download the file only if it's not exists
-				if(!new File(downloadFilePath).exists()) {
+				if (!new File(downloadFilePath).exists()) {
 
-					String encodedUrl =  CommonVariables.HOST_ADDRESS +
-							"/downloads/"+artifact.get("internalSessionId") +
+					String encodedUrl = CommonVariables.HOST_ADDRESS +
+							"/downloads/" + artifact.get("internalSessionId") +
 							"/" +
 							URLEncoder.encode((String) artifact.get("name"), StandardCharsets.UTF_8)
-									.replaceAll("\\+","%20");
+									.replaceAll("\\+", "%20");
 
 
-					this.logAccess.getLogger().info("Downloading the file from sbox using encoded url: " + encodedUrl );
+					this.logAccess.getLogger().info("Downloading the file from sbox using encoded url: " + encodedUrl);
 
 					// download the file to local
 					FileUtils.copyURLToFile(new URL(encodedUrl), new File(downloadFilePath));
@@ -2796,7 +2804,7 @@ public class CommonFunctions {
 	 * @throws Exception the exception
 	 */
 	private boolean capturePageChunks(WebDriver driver, String tempImagesFolderPath, WebElement hideElement,
-								   boolean notIncludeHeader) throws Exception {
+									  boolean notIncludeHeader) throws Exception {
 
 		boolean capturedAllPageChunks = false;
 
@@ -2866,7 +2874,7 @@ public class CommonFunctions {
 
 				capturedAllPageChunks = true;
 			}
-		}catch (RasterFormatException rasterFormatException){
+		} catch (RasterFormatException rasterFormatException) {
 			this.logAccess.getLogger().warn(rasterFormatException.getMessage());
 		}
 
@@ -2950,7 +2958,7 @@ public class CommonFunctions {
 						new File(tempImagesFolderPath + File.separatorChar + "lastScreenshot.png"));
 				capturedAllChunks = true;
 			}
-		}catch (RasterFormatException rasterFormatException){
+		} catch (RasterFormatException rasterFormatException) {
 			this.logAccess.getLogger().warn(rasterFormatException.getMessage());
 		}
 

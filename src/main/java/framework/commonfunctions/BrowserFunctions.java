@@ -105,7 +105,7 @@ public class BrowserFunctions {
 	 * path as part of driver capabilities.
 	 *
 	 * @param downloadPath the path where the files should be download when download
-	 *                     from browser
+	 *					 from browser
 	 * @throws Exception the exception
 	 */
 	private void setDownloadFolderPath(String downloadPath) throws Exception {
@@ -155,15 +155,15 @@ public class BrowserFunctions {
 	 * Launches the specified browser.
 	 *
 	 * @param browserName  provide the browser name as per the below list.<br>
-	 *                     <font color="blue"><b>Note:</b> Below is the list of
-	 *                     currently supported browsers
-	 *                     <ul>
-	 *                     <li>Chrome</li>
-	 *                     <li>Firefox</li>
-	 *                     <li>Edge</li>
-	 *                     <li>IE</li>
-	 *                     </ul>
-	 *                     </font>
+	 *					 <font color="blue"><b>Note:</b> Below is the list of
+	 *					 currently supported browsers
+	 *					 <ul>
+	 *					 <li>Chrome</li>
+	 *					 <li>Firefox</li>
+	 *					 <li>Edge</li>
+	 *					 <li>IE</li>
+	 *					 </ul>
+	 *					 </font>
 	 * @param downloadPath the download path
 	 * @return the {@link org.openqa.selenium.WebDriver WebDriver} for the specified
 	 * browser
