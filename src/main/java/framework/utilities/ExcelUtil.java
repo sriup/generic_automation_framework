@@ -404,7 +404,7 @@ public class ExcelUtil {
 
 		for (int columnIndex = 0; columnIndex < columnCount; columnIndex++) {
 
-			headers[columnIndex] = row.getCell(columnIndex).toString();
+			headers[columnIndex] = (row.getCell(columnIndex) != null) ? row.getCell(columnIndex).toString() : "";
 
 		}
 

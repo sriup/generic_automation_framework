@@ -22,7 +22,22 @@ public class CommonVariables {
     public static final String EMAIL_BODY = "body";
     public static final String EMAIL_ATTACHMENT_FILE_PATH = "attachment";
 
-    /* The implicit wait time */
+    private static long MAX_TEST_TIME_OUT;
+
+    public static long getMaxTestTimeOut() {
+        return MAX_TEST_TIME_OUT;
+    }
+
+    public static void setMaxTestTimeOut(long maxTestTimeOut) {
+        CommonVariables.MAX_TEST_TIME_OUT = maxTestTimeOut;
+    }
+
+    public static final String HOST_ADDRESS = System.getenv("SBOX_URL");
+
+	public static final boolean IS_RUNNING_ON_SBOX =
+            System.getProperty("sbox") != null && !System.getProperty("sbox").isEmpty() && Boolean.parseBoolean(System.getProperty("sbox"));
+
+	/* The implicit wait time */
     //public static int IMPLICIT_WAIT = 15;
 
     /**
@@ -91,13 +106,19 @@ public class CommonVariables {
      * <td>7</td>
      * <td>MM_dd_yyyy_hh_mm_ss</td>
      * </tr>
-     * * <td>8</td>
+     * <tr>
+     * <td>8</td>
      * <td>MM_dd_yyyy_hh_mm_ss_SS</td>
+     * </tr>
+     * <tr>
+     *     <td>9</td>
+     *     <td>MM/dd/yyyy HH:mm:ss</td>
      * </tr>
      * </table>
      */
     public static final String[] TIME_FORMATS = {"yyyy:MM:dd_hh_mm_ss", "mm:dd:yy", "MM/dd/yyyy", "MM/dd/yyyy hh:mm",
-            "hh:mm", "MM/dd/yyyy h:mma", "MM/dd/yyyy mm:ss a", "MM_dd_yyyy_hh_mm_ss", "MM_dd_yyyy_hh_mm_ss_SS"};
+            "hh:mm", "MM/dd/yyyy h:mma", "MM/dd/yyyy mm:ss a", "MM_dd_yyyy_hh_mm_ss", "MM_dd_yyyy_hh_mm_ss_SS",
+            "MM/dd/yyyy HH:mm:ss"};
 
     /**
      * store navigated urls

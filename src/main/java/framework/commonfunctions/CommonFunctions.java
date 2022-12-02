@@ -3,13 +3,14 @@ package framework.commonfunctions;
 import framework.constants.CommonVariables;
 import framework.enums.BrowserEnums;
 import framework.enums.ExpectedConditionsEnums;
-import framework.helper.SoftAssert;
 import framework.logs.LogAccess;
 import framework.utilities.*;
+import io.restassured.response.Response;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -17,7 +18,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.RasterFormatException;
 import java.io.File;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.*;
 
@@ -59,11 +64,15 @@ public class CommonFunctions {
 	 * The Zip Utility.
 	 */
 	private final ZipUtil zipUtil;
+
+	private final ApiMethods apiMethods;
 	/**
 	 * Folder path where the captured screenshots should be stored.
 	 */
 	private String screenShotsPath;
 	private String highlightBgColor = "orange";
+
+	private String downloadFolderPath = null;
 
 	/**
 	 * Instantiates a new common functions.<br>
@@ -87,7 +96,7 @@ public class CommonFunctions {
 	 * @param screenShotsPath the screen shots path
 	 * @param logAccess       Log Access object
 	 */
-	public CommonFunctions(String screenShotsPath, LogAccess logAccess) {
+	public CommonFunctions(String screenShotsPath, LogAccess logAccess, String downloadFolderPath) {
 		this.logAccess = logAccess;
 		this.screenShotsPath = screenShotsPath;
 		dateTimeUtil = new DateTimeUtil(logAccess);
@@ -97,6 +106,9 @@ public class CommonFunctions {
 		securityUtil = new SecurityUtil();
 		zipUtil = new ZipUtil(logAccess);
 		genericUtil = new GenericUtil();
+		apiMethods = new ApiMethods(logAccess);
+		this.downloadFolderPath = downloadFolderPath;
+
 	}
 
 	/**
@@ -2154,9 +2166,13 @@ public class CommonFunctions {
 			String tempScreenShotsFolderName = screenShotsPath + File.separatorChar + "TempFolder" + File.separatorChar
 					+ getScreenShotTime() + "_" + screenShotName;
 			folderFileUtil.createFolder(tempScreenShotsFolderName);
-			capturePageChunks(driver, tempScreenShotsFolderName);
-			return mergeImagesToSingleImage(tempScreenShotsFolderName,
-					screenShotName.replaceAll("[^-A-Za-z0-9]", "_").replace("__","_")  + ".png");
+			boolean capturedChunks = capturePageChunks(driver, tempScreenShotsFolderName);
+			if(capturedChunks) {
+				return mergeImagesToSingleImage(tempScreenShotsFolderName,
+						screenShotName.replaceAll("[^-A-Za-z0-9]", "_").replace("__", "_") + ".png");
+			}else{
+				return captureScreenShot(driver, screenShotName);
+			}
 		}
 	}
 
@@ -2194,9 +2210,13 @@ public class CommonFunctions {
 					+ getScreenShotTime() + "_" + screenShotName;
 			folderFileUtil.createFolder(tempScreenShotsFolderName);
 
-			capturePageChunks(driver, tempScreenShotsFolderName, headerElement, true);
-			return mergeImagesToSingleImage(tempScreenShotsFolderName,
-					screenShotName.replaceAll("[^-A-Za-z0-9]", "_").replace("__","_")  + ".png");
+			boolean capturedPageChunks = capturePageChunks(driver, tempScreenShotsFolderName, headerElement, true);
+			if(capturedPageChunks) {
+				return mergeImagesToSingleImage(tempScreenShotsFolderName,
+						screenShotName.replaceAll("[^-A-Za-z0-9]", "_").replace("__", "_") + ".png");
+			}else{
+				return captureScreenShot(driver, screenShotName);
+			}
 		}
 
 	}
@@ -2242,27 +2262,27 @@ public class CommonFunctions {
 	 *                            download to complete
 	 * @return the file download status
 	 */
-	public boolean waitUntilDownloadCompleted(WebDriver driver, String downloadFolderPath, String expectedFileName,
-											  int maxTimeOutInSeconds, SoftAssert softAssert) {
-
-		boolean isFileDownloaded = false; // is file downloaded
-		this.logAccess.getLogger().info("Waiting for " + downloadFolderPath + File.separator + expectedFileName + " file.");
-		WebDriverWait wait = new WebDriverWait(driver, maxTimeOutInSeconds);
-		File fileToCheck = new File(downloadFolderPath).toPath().resolve(expectedFileName).toFile();
-		try {
-			wait.until((WebDriver wd) -> fileToCheck.exists());
-			isFileDownloaded = true;
-		} catch (Exception e) {
-			this.logAccess.getLogger().info("---<Download Failed>------");
-			this.logAccess.getLogger().info(e.getMessage());
-		}
-
-		// assert the download status
-		softAssert.assertTrue(isFileDownloaded, fileToCheck.toString() + " file download is failed..");
-
-		return isFileDownloaded;
-
-	}
+//	public boolean waitUntilDownloadCompleted(WebDriver driver, String downloadFolderPath, String expectedFileName,
+//											  int maxTimeOutInSeconds, SoftAssert softAssert) {
+//
+//		boolean isFileDownloaded = false; // is file downloaded
+//		this.logAccess.getLogger().info("Waiting for " + downloadFolderPath + File.separator + expectedFileName + " file.");
+//		WebDriverWait wait = new WebDriverWait(driver, maxTimeOutInSeconds);
+//		File fileToCheck = new File(downloadFolderPath).toPath().resolve(expectedFileName).toFile();
+//		try {
+//			wait.until((WebDriver wd) -> fileToCheck.exists());
+//			isFileDownloaded = true;
+//		} catch (Exception e) {
+//			this.logAccess.getLogger().info("---<Download Failed>------");
+//			this.logAccess.getLogger().info(e.getMessage());
+//		}
+//
+//		// assert the download status
+//		softAssert.assertTrue(isFileDownloaded, fileToCheck.toString() + " file download is failed..");
+//
+//		return isFileDownloaded;
+//
+//	}
 
 	/**
 	 * This method will wait until the file download is completed and waits for
@@ -2279,24 +2299,24 @@ public class CommonFunctions {
 	 * @param expStatus			  the expected status
 	 * @param softAssert 		  the soft asser instance
 	 */
-	public void waitUntilDownloadCompleted(WebDriver driver, String downloadFolderPath, String expectedFileName,
-											  int maxTimeOutInSeconds, boolean expStatus, SoftAssert softAssert) {
-
-		boolean isFileDownloaded = false; // is file downloaded
-		this.logAccess.getLogger().info("Waiting for " + downloadFolderPath + File.separator + expectedFileName + " file.");
-		WebDriverWait wait = new WebDriverWait(driver, maxTimeOutInSeconds);
-		File fileToCheck = new File(downloadFolderPath).toPath().resolve(expectedFileName).toFile();
-		try {
-			wait.until((WebDriver wd) -> fileToCheck.exists());
-			isFileDownloaded = true;
-		} catch (Exception e) {
-			this.logAccess.getLogger().info("---<Download Failed>------");
-			this.logAccess.getLogger().info(e.getMessage());
-		}
-
-		// assert the download status
-		softAssert.assertEquals(isFileDownloaded, expStatus, fileToCheck.toString() + " file " + (expStatus ? "download is not downloaded.":"downloaded."));
-	}
+//	public void waitUntilDownloadCompleted(WebDriver driver, String downloadFolderPath, String expectedFileName,
+//											  int maxTimeOutInSeconds, boolean expStatus, SoftAssert softAssert) {
+//
+//		boolean isFileDownloaded = false; // is file downloaded
+//		this.logAccess.getLogger().info("Waiting for " + downloadFolderPath + File.separator + expectedFileName + " file.");
+//		WebDriverWait wait = new WebDriverWait(driver, maxTimeOutInSeconds);
+//		File fileToCheck = new File(downloadFolderPath).toPath().resolve(expectedFileName).toFile();
+//		try {
+//			wait.until((WebDriver wd) -> fileToCheck.exists());
+//			isFileDownloaded = true;
+//		} catch (Exception e) {
+//			this.logAccess.getLogger().info("---<Download Failed>------");
+//			this.logAccess.getLogger().info(e.getMessage());
+//		}
+//
+//		// assert the download status
+//		softAssert.assertEquals(isFileDownloaded, expStatus, fileToCheck.toString() + " file " + (expStatus ? "download is not downloaded.":"downloaded."));
+//	}
 
 	/**
 	 * This method will wait until the file download is completed and waits for
@@ -2311,25 +2331,27 @@ public class CommonFunctions {
 	 * @param maxTimeOutInSeconds the maximum time script should wait for the
 	 *                            download to complete
 	 */
-	public void waitUntilDownloadCompleted(WebDriver driver, String downloadFolderPath, String expectedFileName,
-										   int maxTimeOutInSeconds) {
-
-		this.logAccess.getLogger().info("Waiting for " + downloadFolderPath + File.separator + expectedFileName + " file.");
-		WebDriverWait wait = new WebDriverWait(driver, maxTimeOutInSeconds);
-		File fileToCheck = new File(downloadFolderPath).toPath().resolve(expectedFileName).toFile();
-		wait.until((WebDriver wd) -> fileToCheck.exists());
-
-	}
+//	public void waitUntilDownloadCompleted(WebDriver driver, String downloadFolderPath, String expectedFileName,
+//										   int maxTimeOutInSeconds) {
+//		this.logAccess.getLogger().info("Waiting for " + downloadFolderPath + File.separator + expectedFileName + " file.");
+//		WebDriverWait wait = new WebDriverWait(driver, maxTimeOutInSeconds);
+//		File fileToCheck = new File(downloadFolderPath).toPath().resolve(expectedFileName).toFile();
+//		wait.until((WebDriver wd) -> fileToCheck.exists());
+//
+//	}
 
 	/**
 	 * This method will wait until the file download is completed and waits for
 	 * specified max time
 	 *
 	 * @param driver the {@link org.openqa.selenium.WebDriver WebDriver}
-	 * @return the down loaded file path
+	 * @param maxTimeoutInSeconds the maximum timeout in seconds
+	 * @param sessionId the session id
+	 *
+	 * @return the downloaded file path
 	 * @throws Exception the exception
 	 */
-	public String waitUntilDownloadCompleted(WebDriver driver, int maxTimeoutInSeconds) throws Exception {
+	public String waitUntilDownloadCompleted(WebDriver driver, int maxTimeoutInSeconds, SessionId sessionId) throws Exception {
 		// Store the current window handle
 		String mainWindow = driver.getWindowHandle();
 		String fileName = null;
@@ -2345,7 +2367,7 @@ public class CommonFunctions {
 			JavascriptExecutor js = (JavascriptExecutor) driver;
 
 			if (CommonVariables.BROWSER_SELECT.equalsIgnoreCase("chrome")) {
-				// navigate to chrome downloads
+				// navigate to Chrome downloads
 				driver.get("chrome://downloads");
 				long startTime = (new Date()).getTime();
 
@@ -2368,6 +2390,7 @@ public class CommonFunctions {
 					fileName = (String) ((JavascriptExecutor) driver).executeScript(
 							"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('div#content #file-link').text");
 					captureScreenShot(driver, "download_file");
+					Thread.sleep(1000);
 					js.executeScript(
 							"document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('#remove').click()");
 				}
@@ -2376,7 +2399,7 @@ public class CommonFunctions {
 				// download history in FireFox
 			} else if (CommonVariables.BROWSER_SELECT.equalsIgnoreCase("firefox")) {
 
-				// navigate to chrome downloads
+				// navigate to Chrome downloads
 				driver.get("about:downloads");
 
 				new WebDriverWait(driver, maxTimeoutInSeconds)
@@ -2396,10 +2419,15 @@ public class CommonFunctions {
 				// .downloadTypeIcon').src");
 			}
 
+			// download the file from seleniumbox
+			downloadSboxFile(sessionId, downloadFolderPath);
+
 			// close the downloads tab2
 			driver.close();
+
 			// switch back to main window
 			driver.switchTo().window(mainWindow);
+
 
 		} catch (Exception e) {
 			// switch back to main window
@@ -2409,6 +2437,51 @@ public class CommonFunctions {
 		}
 		return fileName;
 
+	}
+
+	/**
+	 * downloads the file(s) all the files in the current browser session from SeleniumBox to the local machine
+	 * @param sessionId	the session id
+	 * @param downloadFolderPath the download folder path
+	 * @throws Exception the exception
+	 */
+	private void downloadSboxFile(SessionId sessionId, String downloadFolderPath) throws Exception {
+
+		// check if selenium box is running
+		if(CommonVariables.IS_RUNNING_ON_SBOX) {
+
+			// get all test artifacts for download using SeleniumBox API
+			Response response = apiMethods.sendRequest("get", CommonVariables.HOST_ADDRESS + "/e34/api/downloads?session=" + sessionId.toString());
+
+			// get list of artifacts from SeleniumBox
+			List<Map> artifacts = response.jsonPath().getList("");
+
+			// iterate through all the artifacts
+			for (Map artifact : artifacts) {
+
+				// create the download location path
+				String downloadFilePath = downloadFolderPath + File.separatorChar + artifact.get("name");
+
+
+
+				// download the file only if it's not exists
+				if(!new File(downloadFilePath).exists()) {
+
+					String encodedUrl =  CommonVariables.HOST_ADDRESS +
+							"/downloads/"+artifact.get("internalSessionId") +
+							"/" +
+							URLEncoder.encode((String) artifact.get("name"), StandardCharsets.UTF_8)
+									.replaceAll("\\+","%20");
+
+
+					this.logAccess.getLogger().info("Downloading the file from sbox using encoded url: " + encodedUrl );
+
+					// download the file to local
+					FileUtils.copyURLToFile(new URL(encodedUrl), new File(downloadFilePath));
+				}
+
+			}
+		}
 	}
 
 	/**
@@ -2722,8 +2795,11 @@ public class CommonFunctions {
 	 *                             and opposite holds good too</font>
 	 * @throws Exception the exception
 	 */
-	private void capturePageChunks(WebDriver driver, String tempImagesFolderPath, WebElement hideElement,
+	private boolean capturePageChunks(WebDriver driver, String tempImagesFolderPath, WebElement hideElement,
 								   boolean notIncludeHeader) throws Exception {
+
+		boolean capturedAllPageChunks = false;
+
 		JavascriptExecutor js = ((JavascriptExecutor) driver);
 		// get the current scroll position
 		int currentXPosition = ((Number) js.executeScript("return window.pageXOffset")).intValue();
@@ -2768,23 +2844,32 @@ public class CommonFunctions {
 				js.executeScript(javaScript, hideElement);
 			}
 		}
-		// get last page chunk
-		int lastChunkHeight = pageHeight - coveredHeight;
-		// get the last part of the page if there is any chunk left over
-		if (lastChunkHeight > 0) {
-			File tmpFile = screenCapture.getScreenshotAs(OutputType.FILE);
-			BufferedImage lastPageBufferImage = ImageIO.read(tmpFile);
-			// get the image vs window px ratio
-			double pxRatio = Math.round(((double) lastPageBufferImage.getHeight() / (double) windowHeight) * 100.0)
-					/ 100.0;
-			// capture the small chunk
-			BufferedImage lastChunk = lastPageBufferImage.getSubimage(0, (int) (lastPageBufferImage.getHeight() - (lastChunkHeight * pxRatio)),
-					lastPageBufferImage.getWidth(), (int) (lastChunkHeight * pxRatio));
 
-			ImageIO.write(lastChunk, "png", tmpFile);
-			folderFileUtil.copyFile(tmpFile,
-					new File(tempImagesFolderPath + File.separatorChar + "lastScreenshot.png"));
+		//TODO need to handle "java.awt.image.RasterFormatException: y lies outside the raster"
+		try {
+			// get last page chunk
+			int lastChunkHeight = pageHeight - coveredHeight;
+			// get the last part of the page if there is any chunk left over
+			if (lastChunkHeight > 0) {
+				File tmpFile = screenCapture.getScreenshotAs(OutputType.FILE);
+				BufferedImage lastPageBufferImage = ImageIO.read(tmpFile);
+				// get the image vs window px ratio
+				double pxRatio = Math.round(((double) lastPageBufferImage.getHeight() / (double) windowHeight) * 100.0)
+						/ 100.0;
+				// capture the small chunk
+				BufferedImage lastChunk = lastPageBufferImage.getSubimage(0, (int) (lastPageBufferImage.getHeight() - (lastChunkHeight * pxRatio)),
+						lastPageBufferImage.getWidth(), (int) (lastChunkHeight * pxRatio));
+
+				ImageIO.write(lastChunk, "png", tmpFile);
+				folderFileUtil.copyFile(tmpFile,
+						new File(tempImagesFolderPath + File.separatorChar + "lastScreenshot.png"));
+
+				capturedAllPageChunks = true;
+			}
+		}catch (RasterFormatException rasterFormatException){
+			this.logAccess.getLogger().warn(rasterFormatException.getMessage());
 		}
+
 		if (notIncludeHeader) {
 			String javaScript = "arguments[0].setAttribute('style', '" + originalStyle + "');";
 			js.executeScript(javaScript, hideElement);
@@ -2793,6 +2878,7 @@ public class CommonFunctions {
 		js.executeScript(
 				"window.scrollTo(" + currentXPosition + "," + currentYPosition + ");");
 
+		return capturedAllPageChunks;
 	}
 
 	/**
@@ -2805,7 +2891,8 @@ public class CommonFunctions {
 	 * @throws Exception the exception
 	 */
 
-	private void capturePageChunks(WebDriver driver, String tempImagesFolderPath) throws Exception {
+	private boolean capturePageChunks(WebDriver driver, String tempImagesFolderPath) throws Exception {
+		boolean capturedAllChunks = false;
 		JavascriptExecutor js = ((JavascriptExecutor) driver);
 		// get the current scroll position
 		int currentXPosition = ((Number) js.executeScript("return window.pageXOffset")).intValue();
@@ -2839,29 +2926,38 @@ public class CommonFunctions {
 			js.executeScript(script);
 			Thread.sleep(500);
 		}
-		// get last page chunk
-		int lastChunkHeight = pageHeight - coveredHeight;
-		// get the last part of the page if there is any chunk left over
-		if (lastChunkHeight > 0) {
-			File tmpFile = screenCapture.getScreenshotAs(OutputType.FILE);
-			BufferedImage lastPageBufferImage = ImageIO.read(tmpFile);
-			// get the image vs window px ratio
-			double pxRatio = Math.round(((double) lastPageBufferImage.getHeight() / (double) windowHeight) * 100.0)
-					/ 100.0;
-			// capture the small chunk
-			BufferedImage lastChunk = lastPageBufferImage.getSubimage(0,
-					(int) (lastPageBufferImage.getHeight()
-							- (lastChunkHeight * pxRatio)),
-					lastPageBufferImage.getWidth(), (int) (lastChunkHeight * pxRatio));
 
-			ImageIO.write(lastChunk, "png", tmpFile);
-			folderFileUtil.copyFile(tmpFile,
-					new File(tempImagesFolderPath + File.separatorChar + "lastScreenshot.png"));
+		//TODO need to handle "java.awt.image.RasterFormatException: y lies outside the raster"
+		try {
+			// get last page chunk
+			int lastChunkHeight = pageHeight - coveredHeight;
+			// get the last part of the page if there is any chunk left over
+			if (lastChunkHeight > 0) {
+				File tmpFile = screenCapture.getScreenshotAs(OutputType.FILE);
+				BufferedImage lastPageBufferImage = ImageIO.read(tmpFile);
+				// get the image vs window px ratio
+				double pxRatio = Math.round(((double) lastPageBufferImage.getHeight() / (double) windowHeight) * 100.0)
+						/ 100.0;
+
+				// capture the small chunk
+				BufferedImage lastChunk = lastPageBufferImage.getSubimage(0,
+						(int) (lastPageBufferImage.getHeight()
+								- (lastChunkHeight * pxRatio)),
+						lastPageBufferImage.getWidth(), (int) (lastChunkHeight * pxRatio));
+
+				ImageIO.write(lastChunk, "png", tmpFile);
+				folderFileUtil.copyFile(tmpFile,
+						new File(tempImagesFolderPath + File.separatorChar + "lastScreenshot.png"));
+				capturedAllChunks = true;
+			}
+		}catch (RasterFormatException rasterFormatException){
+			this.logAccess.getLogger().warn(rasterFormatException.getMessage());
 		}
 
 		// set back to the original position
 		js.executeScript(
 				"window.scrollTo(" + currentXPosition + "," + currentYPosition + ");");
+		return capturedAllChunks;
 	}
 
 	/**
