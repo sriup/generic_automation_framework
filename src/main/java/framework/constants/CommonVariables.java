@@ -22,16 +22,6 @@ public class CommonVariables {
     public static final String EMAIL_BODY = "body";
     public static final String EMAIL_ATTACHMENT_FILE_PATH = "attachment";
 
-    private static long MAX_TEST_TIME_OUT;
-
-    public static long getMaxTestTimeOut() {
-        return MAX_TEST_TIME_OUT;
-    }
-
-    public static void setMaxTestTimeOut(long maxTestTimeOut) {
-        CommonVariables.MAX_TEST_TIME_OUT = maxTestTimeOut;
-    }
-
     public static final String HOST_ADDRESS = System.getenv("SBOX_URL");
 
 	public static final boolean IS_RUNNING_ON_SBOX =
