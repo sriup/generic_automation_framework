@@ -74,6 +74,8 @@ public class CommonFunctions {
 
 	private String downloadFolderPath = null;
 
+	private CsvUtil csvUtil;
+
 	/**
 	 * Instantiates a new common functions.<br>
 	 * All the utilities available in the framework will be instantiate as part of
@@ -108,6 +110,7 @@ public class CommonFunctions {
 		genericUtil = new GenericUtil();
 		apiMethods = new ApiMethods(logAccess);
 		this.downloadFolderPath = downloadFolderPath;
+		this.csvUtil = new CsvUtil(logAccess);
 
 	}
 
@@ -137,6 +140,13 @@ public class CommonFunctions {
 	public ExcelUtil getExcelUtil() {
 		return excelUtil;
 	}
+
+	/**
+	 * Gets the csvUtil
+	 *
+	 * @return the csvUtil
+	 */
+	public CsvUtil getCsvUtil() { return csvUtil; }
 
 	/**
 	 * Gets the FakeDataUtil.

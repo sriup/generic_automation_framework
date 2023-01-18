@@ -37,16 +37,15 @@ public class JiraConnector {
      * The instance will be created dynamically if it doesn't exist, otherwise uses
      * the existing instance
      *
-     * @param xlUtil             the {@link ExcelUtil}
+     * @param csvUtil             the {@link CsvUtil}
      * @param filePath           the full file path where the defects information is present
-     * @param sheetName          the sheet name where the defects information is present
      * @param columnName         the column name where the defects information is present
      * @param jiraUrl            the Jira URL
      * @param jiraBasicAuthToken the Jira Basic Authentication Token
      * @return instance of this JiraConnector class
      * @throws Exception the exception
      */
-    public static JiraConnector getInstance(ExcelUtil xlUtil, String filePath, String sheetName, String columnName, String jiraUrl, String jiraBasicAuthToken) throws Exception {
+    public static JiraConnector getInstance(CsvUtil csvUtil, String filePath, String columnName, String jiraUrl, String jiraBasicAuthToken) throws Exception {
         if (jiraConnectorInstance == null) {
             // create JiraConnector class instance
             jiraConnectorInstance = new JiraConnector();
@@ -59,7 +58,7 @@ public class JiraConnector {
 
 
             // Fetching all the values after initializing the singleton class
-            fetchDefectsInfo(xlUtil, filePath, sheetName, columnName);
+            fetchDefectsInfo(csvUtil, filePath, columnName);
         }
         return jiraConnectorInstance;
     }
@@ -104,23 +103,19 @@ public class JiraConnector {
 
     /**
      * fetches the defects information based on the defects in the specified column
-     * @param xlUtil the {@link ExcelUtil} instance
+     * @param csvUtil the {@link CsvUtil} instance
      * @param filePath  the file path
-     * @param sheetName the sheet name
      * @param columnName the column name
      * @throws IOException the IO Exception
      */
-    private static void fetchDefectsInfo(ExcelUtil xlUtil, String filePath, String sheetName, String columnName) throws IOException {
+    private static void fetchDefectsInfo(CsvUtil csvUtil, String filePath, String columnName) throws Exception {
 
         Set<String> defectIdsSet = new LinkedHashSet<>();
 
-        xlUtil.openWorkBook(filePath);
+        csvUtil.openCsvReader(filePath, ',');
 
-        Sheet sheet = xlUtil.getSheet(sheetName);
-
-
-        for (Row currentRow : sheet) {
-            String currentCellValue = xlUtil.getCellData(sheetName, currentRow, columnName).trim();
+        for (String[] currentRow : csvUtil.getAllRows()) {
+            String currentCellValue = csvUtil.getCellData(currentRow, columnName).trim();
             if (currentCellValue.equalsIgnoreCase(columnName) || currentCellValue.isEmpty()) {
                 continue;
             }
@@ -139,9 +134,6 @@ public class JiraConnector {
 
         // get defects status
         getIssuesStatus(defectIds);
-
-        // close the work book
-        xlUtil.closeWorkBook();
 
     }
 
