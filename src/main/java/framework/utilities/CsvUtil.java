@@ -9,6 +9,7 @@ import org.apache.commons.lang.ArrayUtils;
 
 import java.io.File;
 import java.io.FileReader;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -57,7 +58,7 @@ public class CsvUtil {
 	 */
 	public void openCsvReader(String filePath, char separator) throws Exception {
 
-		FileReader filereader = new FileReader(filePath);
+		FileReader filereader = new FileReader(filePath, StandardCharsets.UTF_8);
 
 		CSVParser parser = new CSVParserBuilder().withSeparator(separator).build();
 
@@ -120,7 +121,20 @@ public class CsvUtil {
 	public String[] getColumnHeaders(int headersRowIndex) throws Exception {
 
 		// get the header row
-		return getRow(headersRowIndex);
+		String[] tempHeaders = new String[getRow(headersRowIndex).length];
+
+		int counter = 0;
+		for (String currenHeader: getRow(headersRowIndex)) {
+
+			currenHeader = currenHeader.replaceAll("\\uFEFF", "")
+					.replaceAll("ZWNBSP", "").replaceAll("ï»¿", "");
+
+			tempHeaders[counter] = currenHeader;
+
+			counter++;
+		}
+
+		return tempHeaders;
 
 	}
 
