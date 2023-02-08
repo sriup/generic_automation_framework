@@ -258,7 +258,8 @@ public class CsvUtil {
 		String[] headers = getColumnHeaders();
 		String columnName, value;
 		for (int columnIndex = 0; columnIndex < headers.length; columnIndex++) {
-			columnName = headers[columnIndex];
+			columnName = headers[columnIndex].replaceAll("\\uFEFF", "")
+					.replaceAll("ZWNBSP", "").replaceAll("ï»¿", "");
 			value = getCellData(rowNumber, columnIndex);
 			map.put(columnName, value);
 		}
