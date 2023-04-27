@@ -10,13 +10,12 @@ import framework.utilities.FolderFileUtil;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
 public class AllureInitClass {
 
-    public BahaviorsWidget behaviorsWidget;
+    public BehaviorsWidget behaviorsWidget;
     public FolderFileUtil folderFileUtil;
     public CategoriesWidget categoriesWidget;
     public TestCasesData testCasesData;
@@ -150,7 +149,7 @@ public class AllureInitClass {
      */
     private void initWidgets(){
 
-        behaviorsWidget = new BahaviorsWidget(this);
+        behaviorsWidget = new BehaviorsWidget(this);
         categoriesWidget = new CategoriesWidget(this);
         durationWidget = new DurationWidget(this);
         environmentWidget = new EnvironmentWidget(this);

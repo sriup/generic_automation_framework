@@ -14,11 +14,11 @@ import org.json.simple.parser.JSONParser;
 import java.io.File;
 import java.io.FileWriter;
 
-public class BahaviorsWidget extends CommonFunctions {
+public class BehaviorsWidget extends CommonFunctions {
 
     private AllureInitClass allureInitClass;
 
-    public BahaviorsWidget(AllureInitClass allureInitClass) {
+    public BehaviorsWidget(AllureInitClass allureInitClass) {
         super(null, allureInitClass.logAccess, null);
 
         this.allureInitClass = allureInitClass;

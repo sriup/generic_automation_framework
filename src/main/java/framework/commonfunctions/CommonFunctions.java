@@ -2435,6 +2435,20 @@ public class CommonFunctions {
 				// downloadedAt = (String) ((JavascriptExecutor) driver).executeScript(
 				// "return document.querySelector('#contentAreaDownloadsView .downloadMainArea
 				// .downloadTypeIcon').src");
+			}else if (CommonVariables.BROWSER_SELECT.equalsIgnoreCase("edge")) {
+
+				driver.get("edge://downloads/all");
+
+				new WebDriverWait(driver, maxTimeoutInSeconds)
+						.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".downloads-list  [role='listitem']")));
+
+				if (driver.findElements(By.cssSelector(".downloads-list  [role='listitem']")).size() > 0) {
+					waitForInvisibilityOfElement(driver, By.cssSelector(".downloads-list  [role='listitem'] [role='progressbar']"),maxTimeoutInSeconds);
+					// get the file name
+					fileName = getAttribute(driver, By.cssSelector(
+									".downloads-list  [role='listitem'] button[id^='open_file']"),
+							"aria-label", true, "");
+				}
 			}
 
 			// download the file from seleniumbox

@@ -1,3 +1,7 @@
+beta - 0.11.0
+============
+• Adding capability to get the Edge downloaded file name and added allure report consolidation.
+
 beta - 0.10.6
 ============
 • Adding method to get the sheet names in the Excel workbook.
@@ -5,7 +9,7 @@ beta - 0.10.6
 
 beta - 0.10.5
 ============
-• updated Jira utility methods to handle the exceptoins and unauth scenarios rather stopping the script execution.
+• updated Jira utility methods to handle the exceptions and un-auth scenarios rather stopping the script execution.
 
 beta - 0.10.3 & 0.10.4
 ======================
