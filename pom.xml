@@ -25,6 +25,17 @@
                     <include>**/*.java</include>
                 </includes>
             </resource>
+
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.js</include>
+                    <include>**/*.ico</include>
+                    <include>**/*.html</include>
+                    <include>**/*.css</include>
+                </includes>
+            </resource>
+
         </resources>
         <plugins>
 
