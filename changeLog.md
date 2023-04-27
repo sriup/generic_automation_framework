@@ -1,6 +1,7 @@
 beta - 0.11.0
 ============
 • Adding capability to get the Edge downloaded file name and added allure report consolidation.
+• Adding back the option to capture the screenshots irrespective of execution on SBox or local.
 
 beta - 0.10.6
 ============

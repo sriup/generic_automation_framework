@@ -2083,7 +2083,7 @@ public class CommonFunctions {
 	public String captureScreenShotWithHighlight(WebDriver driver, WebElement element, String screenshotName)
 			throws Exception {
 		String tempScreenshotName = "";
-		if (!CommonVariables.IS_RUNNING_ON_SBOX) {
+		//if (!CommonVariables.IS_RUNNING_ON_SBOX) {
 			this.logAccess.getLogger().debug("Capturing screenshot for element :- " + element);
 			// highlight
 			String originalStyle = highlightElement(driver, element);
@@ -2092,7 +2092,7 @@ public class CommonFunctions {
 			tempScreenshotName = captureScreenShot(driver, screenshotName);
 			// un-highlight
 			setOriginalStyle(driver, element, originalStyle);
-		}
+		//}
 		return tempScreenshotName;
 	}
 
@@ -2115,7 +2115,7 @@ public class CommonFunctions {
 			throws Exception {
 
 		String tempScreenshotName = "";
-		if (!CommonVariables.IS_RUNNING_ON_SBOX) {
+		//if (!CommonVariables.IS_RUNNING_ON_SBOX) {
 			this.logAccess.getLogger().debug("Capturing screenshot for element :- " + byLocator.toString());
 			WebElement element = waitForElement(driver, byLocator, ExpectedConditionsEnums.VISIBLE);
 			// highlight
@@ -2124,7 +2124,7 @@ public class CommonFunctions {
 			tempScreenshotName = captureScreenShot(driver, screenshotName);
 			// un-highlight
 			setOriginalStyle(driver, element, originalStyle);
-		}
+		//}
 		return tempScreenshotName;
 	}
 
@@ -2144,14 +2144,14 @@ public class CommonFunctions {
 	public String captureScreenShot(WebDriver driver, String screenShotName) throws Exception {
 
 		String tempScreenshotName = "";
-		if (!CommonVariables.IS_RUNNING_ON_SBOX) {
+		//if (!CommonVariables.IS_RUNNING_ON_SBOX) {
 			this.logAccess.getLogger().debug("Capturing screenshot");
 			tempScreenshotName = this.screenShotsPath + File.separatorChar + getScreenShotTime() + "_"
 					+ screenShotName.replaceAll("[^-A-Za-z0-9]", "_").replace("__", "_") + ".png";
 
 			File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 			FileUtils.copyFile(screenshot, new File(tempScreenshotName));
-		}
+		//}
 		return tempScreenshotName;
 
 	}
