@@ -2421,7 +2421,7 @@ public class CommonFunctions {
 
 				// navigate to Firefox downloads
 				driver.get("about:downloads");
-				Thread.sleep(10000);
+				Thread.sleep(CommonVariables.MIN_TIMEOUT);
 				new WebDriverWait(driver, maxTimeoutInSeconds)
 						.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".download.download-state")));
 				if (driver.findElements(By.cssSelector(".download.download-state")).size() > 0) {
