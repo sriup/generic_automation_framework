@@ -2442,9 +2442,8 @@ public class CommonFunctions {
 				//
 				if(driver.findElements(By.cssSelector(".downloadRemoveFromHistoryMenuItem")).size()>0){
 					Actions downloadActions = new Actions(driver);
-					
-					downloadActions.contextClick();
-					clickOnElement(driver,  By.cssSelector("[value='Clear Downloads']"), false, false, fileName + " - Clear Download History");
+					downloadActions.contextClick(driver.findElement(By.cssSelector("richlistbox#downloadsListBox"))).perform();
+					clickOnElement(driver,  By.cssSelector("menuitem[label='Clear Downloads']"), false, false, fileName + " - Clear Download History");
 				}
 			}else if (CommonVariables.BROWSER_SELECT.equalsIgnoreCase("edge")) {
 
