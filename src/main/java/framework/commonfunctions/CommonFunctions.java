@@ -9,6 +9,8 @@ import io.restassured.response.Response;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -2417,9 +2419,9 @@ public class CommonFunctions {
 				// download history in FireFox
 			} else if (CommonVariables.BROWSER_SELECT.equalsIgnoreCase("firefox")) {
 
-				// navigate to Chrome downloads
+				// navigate to Firefox downloads
 				driver.get("about:downloads");
-
+				Thread.sleep(10000);
 				new WebDriverWait(driver, maxTimeoutInSeconds)
 						.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".download.download-state")));
 				if (driver.findElements(By.cssSelector(".download.download-state")).size() > 0) {
@@ -2431,10 +2433,18 @@ public class CommonFunctions {
 									"#contentAreaDownloadsView .downloadMainArea .downloadContainer description:nth-of-type(1)"),
 							"value", true, "");
 				}
+				
 				// file downloaded location
 				// downloadedAt = (String) ((JavascriptExecutor) driver).executeScript(
 				// "return document.querySelector('#contentAreaDownloadsView .downloadMainArea
 				// .downloadTypeIcon').src");
+				
+				//
+				if(driver.findElements(By.cssSelector(".downloadRemoveFromHistoryMenuItem")).size()>0){
+					Actions downloadActions = new Actions(driver);
+					downloadActions.contextClick(driver.findElement(By.cssSelector("richlistbox#downloadsListBox"))).perform();
+					clickOnElement(driver,  By.cssSelector("menuitem[label='Clear Downloads']"), false, false, fileName + " - Clear Download History");
+				}
 			}else if (CommonVariables.BROWSER_SELECT.equalsIgnoreCase("edge")) {
 
 				driver.get("edge://downloads/all");
