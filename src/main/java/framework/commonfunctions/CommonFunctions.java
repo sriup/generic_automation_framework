@@ -2421,13 +2421,12 @@ public class CommonFunctions {
 
 				// navigate to Firefox downloads
 				driver.get("about:downloads");
-				Thread.sleep(CommonVariables.MIN_TIMEOUT);
+				//Thread.sleep(CommonVariables.MIN_TIMEOUT);
 				new WebDriverWait(driver, maxTimeoutInSeconds)
 						.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".download.download-state")));
 				if (driver.findElements(By.cssSelector(".download.download-state")).size() > 0) {
-					new WebDriverWait(driver, maxTimeoutInSeconds).until(ExpectedConditions.attributeContains(
-							By.cssSelector("#contentAreaDownloadsView .downloadMainArea .downloadContainer progress"),
-							"value", "100"));
+					new WebDriverWait(driver, maxTimeoutInSeconds).until(ExpectedConditions.visibilityOf(
+							driver.findElement(By.cssSelector("button[tooltiptext='Show in Folder']"))));
 					// get the file name
 					fileName = getAttribute(driver, By.cssSelector(
 									"#contentAreaDownloadsView .downloadMainArea .downloadContainer description:nth-of-type(1)"),
