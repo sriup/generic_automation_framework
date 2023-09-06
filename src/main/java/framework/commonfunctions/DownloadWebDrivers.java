@@ -43,8 +43,10 @@ public class DownloadWebDrivers {
 			switch (browserName.toString().toLowerCase()) {
 			case "chrome":
 				String latestChromeVersion = getChromeDriverVersion();
-				downloadUrl = "https://chromedriver.storage.googleapis.com/" + latestChromeVersion
-						+ "/chromedriver_win32.zip";
+//				downloadUrl = "https://chromedriver.storage.googleapis.com/" + latestChromeVersion
+//						+ "/chromedriver_win32.zip";
+//
+				downloadUrl = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/" + latestChromeVersion + "/win32/chromedriver-win32.zip";
 				downloadWebDriver(browserName.toString(), latestChromeVersion, downloadUrl, "drivers"
 						+ File.separatorChar + "Chrome" + File.separatorChar + latestChromeVersion.replace(".", "_"));
 				break;
@@ -86,7 +88,8 @@ public class DownloadWebDrivers {
 	 * @return the Chrome driver latest version
 	 */
 	private static String getChromeDriverVersion() {
-		String uri = "https://chromedriver.storage.googleapis.com/LATEST_RELEASE";
+//		String uri = "https://chromedriver.storage.googleapis.com/LATEST_RELEASE";
+		String uri = "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_STABLE";
 		Response response = apiMethods.sendRequest("get", uri);
 		// response code
 		DownloadWebDrivers.logAccess.getLogger().debug("RESPONSE CODE: " + response.getStatusCode());

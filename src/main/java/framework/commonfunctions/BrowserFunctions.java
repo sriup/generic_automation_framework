@@ -304,6 +304,7 @@ public class BrowserFunctions {
 				System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
 						+ BrowserEnums.Chrome.toString() + File.separatorChar
 						+ getWebDriverLocation(BrowserEnums.Chrome).replace(".", "_") + File.separatorChar
+						+ "chromedriver-win32" + File.separatorChar
 						+ "chromedriver.exe");
 		// !! Chrome Options !!
 		HashMap<String, Object> chromePrefs = new HashMap<>();

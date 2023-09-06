@@ -1,3 +1,8 @@
+beta - 0.12.0
+============
+• Updated the source, logic to download chromedriver and launch the chrome.
+
+
 beta - 0.11.0
 ============
 • Adding capability to get the Edge downloaded file name and added allure report consolidation.
