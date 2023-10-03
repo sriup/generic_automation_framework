@@ -28,7 +28,6 @@ public class BehaviorsWidget extends CommonFunctions {
     /**
      * Extracts the passed behaviors
      *
-     * @throws Exception the exception
      */
     public void extractPassedBehaviors() {
 

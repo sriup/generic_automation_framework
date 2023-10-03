@@ -43,10 +43,7 @@ public class DownloadWebDrivers {
 			switch (browserName.toString().toLowerCase()) {
 			case "chrome":
 				String latestChromeVersion = getChromeDriverVersion();
-//				downloadUrl = "https://chromedriver.storage.googleapis.com/" + latestChromeVersion
-//						+ "/chromedriver_win32.zip";
-//
-				downloadUrl = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/" + latestChromeVersion + "/win32/chromedriver-win32.zip";
+				downloadUrl = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/" + latestChromeVersion + "/win64/chromedriver-win64.zip";
 				downloadWebDriver(browserName.toString(), latestChromeVersion, downloadUrl, "drivers"
 						+ File.separatorChar + "Chrome" + File.separatorChar + latestChromeVersion.replace(".", "_"));
 				break;
@@ -136,7 +133,7 @@ public class DownloadWebDrivers {
 		} catch (Exception e) {
 			DownloadWebDrivers.logAccess.getLogger()
 					.debug("DriverInfo.json file doesn't, hence creating the json file with default template.");
-			String templateJson = "{\""+ BrowserEnums.Chrome.toString() + "\":{\"version\":\"0.00\"},\"" + BrowserEnums.Firefox.toString() +  "\":{\"version\":\"0.00\"},\"" + BrowserEnums.Edge.toString() +  "\":{\"version\":\"0.00\"},\"" + BrowserEnums.IE.toString() +  "\":{\"version\":\"0.00\"}}";
+			String templateJson = "{\""+ BrowserEnums.Chrome + "\":{\"version\":\"0.00\"},\"" + BrowserEnums.Firefox +  "\":{\"version\":\"0.00\"},\"" + BrowserEnums.Edge +  "\":{\"version\":\"0.00\"},\"" + BrowserEnums.IE +  "\":{\"version\":\"0.00\"}}";
 			folderFileUtil.writeToTextFile(driversFolderPath, "DriversInfo.json", templateJson);
 
 			jPathDocCon = com.jayway.jsonpath.JsonPath

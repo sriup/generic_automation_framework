@@ -43,50 +43,6 @@ public class LogAccess {
 
 	}
 
-//	/**
-//	 * Creating the Console Appender and File Appender.
-//	 */
-//	private void initializeLogger() {
-//
-//		String filePath = System.getProperty("user.dir") + File.separator + "target" + File.separator + "logs";
-//
-//		try {
-//
-//			File folderFile = new File(filePath);
-//			if (!folderFile.exists()) {
-//				if (folderFile.mkdirs()) {
-//					System.out.println("Folder is created");
-//				}
-//			}
-//
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//
-//		String logFilePath = filePath + File.separator + loggerFileName + ".log";
-//		String pattern = "%d{YYYY-MM-dd HH:mm:ss} - [%M] %m%n";
-//
-//		ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
-//
-//		builder.setStatusLevel(Level.ALL);
-//		builder.setConfigurationName("FrameworkLogger");
-//
-//		LayoutComponentBuilder layoutBuilder = builder.newLayout("PatternLayout")
-//				.addAttribute("pattern", pattern);
-//
-//		AppenderComponentBuilder fileAppenderBuilder = builder.newAppender("LogToFile", "File")
-//				.addAttribute("fileName", logFilePath)
-//				.add(layoutBuilder);
-//
-//		builder.add(fileAppenderBuilder);
-//
-//		RootLoggerComponentBuilder rootLogger = builder.newRootLogger(Level.ALL);
-//		rootLogger.add(builder.newAppenderRef("LogToFile"));
-//		builder.add(rootLogger);
-//
-//		Configurator.reconfigure(builder.build());
-//	}
-
 	/**
 	 * Initializing the logger if the initializationFlag is false.
 	 * 

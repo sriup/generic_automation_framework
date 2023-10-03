@@ -29,7 +29,6 @@ public class TimelineData extends CommonFunctions {
     /**
      * Extracts the passed Timeline data
      *
-     * @throws Exception the exception
      */
     public void extractPassedTimelineData() {
 

@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>automation.generic</groupId>
     <artifactId>framework</artifactId>
-    <version>beta-0.12_ChromeDriver_Downloading</version>
+    <version>beta-0.12.1_ChromeDriver_64_bit</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -235,7 +235,7 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>[2.17.0,)</version>
+            <version>[2.20.0,)</version>
         </dependency>
 
         <dependency>

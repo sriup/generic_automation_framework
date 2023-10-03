@@ -87,7 +87,7 @@ public class ApiMethods {
 		for (Map.Entry<String, String> header : headers.entrySet()) {
 			// print the header if it's not authorization related.
 			if(!header.getKey().equalsIgnoreCase("authorization")){
-				this.logAccess.getLogger().debug("headers \n " + headers.toString());
+				this.logAccess.getLogger().debug("headers \n " + headers);
 			}
 		}
 
@@ -128,7 +128,7 @@ public class ApiMethods {
 
 		// add all headers to the request
 		headers.forEach((k, v) -> httpRequest.header(k, v));
-		this.logAccess.getLogger().debug("headers \n " + headers.toString());
+		this.logAccess.getLogger().debug("headers \n " + headers);
 		// add data to the request
 		httpRequest.body(data);
 		this.logAccess.getLogger().debug("data \n " + data.toString());
@@ -169,7 +169,7 @@ public class ApiMethods {
 
 		// add all headers to the request
 		headers.forEach((k, v) -> httpRequest.header(k, v));
-		this.logAccess.getLogger().debug("headers \n " + headers.toString());
+		this.logAccess.getLogger().debug("headers \n " + headers);
 		httpRequest.body(bodyPayload);
 
 		this.logAccess.getLogger().debug("data \n " + bodyPayload.toString());
@@ -213,7 +213,7 @@ public class ApiMethods {
 
 		// add all headers to the request
 		headers.forEach((k, v) -> httpRequest.header(k, v));
-		this.logAccess.getLogger().debug("headers \n " + headers.toString());
+		this.logAccess.getLogger().debug("headers \n " + headers);
 		if(contentType.toString().equalsIgnoreCase("MULTIPART_FORMDATA")){
 			httpRequest.header("content-type","multipart/form-data");
 			data.forEach((k, v) -> httpRequest.multiPart(k, v));
@@ -249,7 +249,7 @@ public class ApiMethods {
 	/**
 	 * get the value based on the jsonpath<br>
 	 * <b>Note:</b><br> Please refer to
-	 * 		<a href='https://www.javadoc.io/doc/io.rest-assured/json-path/3.0.0/io/restassured/path/json/JsonPath.html'>JSonPath Reference</a>
+	 * 		'<a href="https://www.javadoc.io/doc/io.rest-assured/json-path/3.0.0/io/restassured/path/json/JsonPath.html">JSonPath Reference</a>'
 	 * 	   for more details on JsonPath
 	 * @param response the rest-assured response
 	 * @param jsonPath the json-path

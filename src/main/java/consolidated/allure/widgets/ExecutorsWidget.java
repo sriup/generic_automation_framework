@@ -26,8 +26,6 @@ public class ExecutorsWidget extends CommonFunctions {
 
     /**
      * Fetches the executor details
-     *
-     * @throws Exception the exception
      */
     public void fetchExecutorDetails() {
 

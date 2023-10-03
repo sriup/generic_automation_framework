@@ -28,7 +28,6 @@ public class PackagesData extends CommonFunctions {
     /**
      * Extracts the passed packages data
      *
-     * @throws Exception the exception
      */
     public void extractPassedPackagesData() {
 

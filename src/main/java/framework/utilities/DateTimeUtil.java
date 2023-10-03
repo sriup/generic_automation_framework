@@ -407,9 +407,8 @@ public class DateTimeUtil {
      * @param timestamp timestamp
      * @param dateFormat Custom Date format
      * @return parsedDateTime DateTime in the String format
-     * @throws ParseException The ParseException
      */
-    public String parseTimestampToDateTime(long timestamp, String dateFormat) throws ParseException {
+    public String parseTimestampToDateTime(long timestamp, String dateFormat) {
 
         Date dateTime = new Date(timestamp);
 
