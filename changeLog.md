@@ -1,3 +1,8 @@
+beta - 0.12.1
+============
+• Updated the logic to download 64 bit chromedriver.
+
+
 beta - 0.12.0
 ============
 • Updated the source, logic to download chromedriver and launch the chrome.

@@ -558,7 +558,7 @@ public class ExcelUtil {
 	 * @param sheetName  Name of the work sheet
 	 * @param row        Excel row
 	 * @param columnName the column name
-	 * @pram  addLogMsg  flag to decide whether the details should be logged to logger or not.
+	 * @param  addLogMsg  flag to decide whether the details should be logged to logger or not.
 	 * @return the cell data
 	 */
 	public String getCellData(String sheetName, Row row, String columnName, boolean addLogMsg) {

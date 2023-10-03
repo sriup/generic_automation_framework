@@ -30,7 +30,6 @@ public class StatusChartWidget extends CommonFunctions {
     /**
      * Extracts the passed test case status chart
      *
-     * @throws Exception the exception
      */
     public void extractPassedTestCaseStatusChart() {
 

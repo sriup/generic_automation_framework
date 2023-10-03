@@ -40,9 +40,8 @@ public class FolderFileUtil {
 	 * @param folderPath Provide the Absolute Folder path
 	 * @param folderName the folder name
 	 * @return The File object
-	 * @throws Exception the exception
 	 */
-	public File createFolder(String folderPath, String folderName) throws Exception {
+	public File createFolder(String folderPath, String folderName) {
 
 		this.logAccess.getLogger().debug("FolderPath :- " + folderPath);
 		this.logAccess.getLogger().debug("folderName :- " + folderName);
@@ -97,9 +96,8 @@ public class FolderFileUtil {
 	 * It deletes the file if it exists.
 	 *
 	 * @param filePath Provide the Absolute File path
-	 * @throws Exception the exception
 	 */
-	public boolean deleteFile(String filePath) throws Exception {
+	public boolean deleteFile(String filePath) {
 		this.logAccess.getLogger().debug("file Path :- " + filePath);
 		return deleteFile(new File(filePath));
 	}
@@ -110,9 +108,8 @@ public class FolderFileUtil {
 	 * @param folderPath Provide the Absolute folder path
 	 * @param fileName   Provide the file name
 	 * @return the delete file status
-	 * @throws Exception the exception
 	 */
-	public boolean deleteFile(String folderPath, String fileName) throws Exception {
+	public boolean deleteFile(String folderPath, String fileName) {
 
 		this.logAccess.getLogger().debug("folder Path :- " + folderPath);
 		this.logAccess.getLogger().debug("file Name :- " + fileName);

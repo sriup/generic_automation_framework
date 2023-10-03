@@ -1,6 +1,5 @@
 package consolidated.allure.data;
 
-import consolidated.allure.common.AllureCommonVariables;
 import consolidated.allure.initclass.AllureInitClass;
 import framework.commonfunctions.CommonFunctions;
 import org.json.simple.JSONArray;

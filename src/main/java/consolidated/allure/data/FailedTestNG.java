@@ -33,7 +33,6 @@ public class FailedTestNG extends CommonFunctions {
     /**
      * Extracts the failed Test Cases
      *
-     * @throws Exception the exception
      */
     public void extractFailedTestCases() {
 

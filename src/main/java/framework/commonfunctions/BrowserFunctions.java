@@ -26,6 +26,7 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.remote.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -106,9 +107,8 @@ public class BrowserFunctions {
 	 *
 	 * @param downloadPath the path where the files should be download when download
 	 *					 from browser
-	 * @throws Exception the exception
 	 */
-	private void setDownloadFolderPath(String downloadPath) throws Exception {
+	private void setDownloadFolderPath(String downloadPath){
 		if (downloadPath.isEmpty()) {
 			this.downloadFolderpath = System.getProperty("user.dir") + File.separatorChar + "Download_File";
 
@@ -167,10 +167,10 @@ public class BrowserFunctions {
 	 * @param downloadPath the download path
 	 * @return the {@link org.openqa.selenium.WebDriver WebDriver} for the specified
 	 * browser
-	 * @throws Exception the exception
+	 * @throws IOException the IO exception
 	 */
 	@Step("Launching \"{browserName}\" browser")
-	public WebDriver launch(String browserName, String downloadPath) throws Exception {
+	public WebDriver launch(String browserName, String downloadPath) throws IOException {
 		setDownloadFolderPath(downloadPath);
 		this.logAccess.getLogger().info("Launching browser :-  " + browserName);
 		this.logAccess.getLogger().info("Downloads folder :- " + getDownloadFolderPath());
@@ -190,9 +190,6 @@ public class BrowserFunctions {
 				DownloadWebDrivers.downloadDriver(BrowserEnums.Edge);
 				driver = launchEdge();
 				break;
-//			case "phantomjs":
-//				driver = launchPhantomJS();
-//				break;
 			default:
 				this.logAccess.getLogger().info(
 						"Unexpected value : " + browserName + "\n only supported browsers are: chrome, firefox, edge, ie");
@@ -209,17 +206,17 @@ public class BrowserFunctions {
 	}
 
 	/**
-	 * Navigates to the URL and maximizes the browser.
+	 * Navigates to the url and maximizes the browser.
 	 *
-	 * @param URL to load
+	 * @param url to load
 	 * @see org.openqa.selenium.remote.RemoteWebDriver#get(String) get
 	 */
-	@Step("Navigating to \"{URL}\"")
-	public void navigate(String URL) {
-		this.logAccess.getLogger().info("Navigating to URL :- " + URL);
+	@Step("Navigating to \"{url}\"")
+	public void navigate(String url) {
+		this.logAccess.getLogger().info("Navigating to url :- " + url);
 		this.threadDriver.get().manage().window().maximize();
-		this.threadDriver.get().get(URL);
-		CommonVariables.navigatedURLs.put(URL, URL);
+		this.threadDriver.get().get(url);
+		CommonVariables.navigatedURLs.put(url, url);
 	}
 
 	/**
@@ -231,7 +228,7 @@ public class BrowserFunctions {
 	@Step("Getting current URL")
 	public String getCurrentURL() {
 		String currentURL = this.threadDriver.get().getCurrentUrl();
-		this.logAccess.getLogger().info("Current URL :- " + currentURL);
+		this.logAccess.getLogger().info("Current URL :- "+ currentURL);
 		return currentURL;
 	}
 
@@ -256,6 +253,7 @@ public class BrowserFunctions {
 	public void quit() {
 		this.logAccess.getLogger().info("Quiting the browser");
 		this.threadDriver.get().quit();
+		this.threadDriver.remove();
 	}
 
 	/**
@@ -296,23 +294,18 @@ public class BrowserFunctions {
 	 * Launch Chrome.
 	 *
 	 * @return the web driver
-	 * @throws Exception the exception
+	 * @throws IOException the IO exception
 	 */
 
-	private WebDriver launchChrome() throws Exception {
+	private WebDriver launchChrome() throws IOException {
 		System.setProperty("webdriver.chrome.driver",
 				System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
-						+ BrowserEnums.Chrome.toString() + File.separatorChar
+						+ BrowserEnums.Chrome + File.separatorChar
 						+ getWebDriverLocation(BrowserEnums.Chrome).replace(".", "_") + File.separatorChar
-						+ "chromedriver-win32" + File.separatorChar
+						+ "chromedriver-win64" + File.separatorChar
 						+ "chromedriver.exe");
 		// !! Chrome Options !!
 		HashMap<String, Object> chromePrefs = new HashMap<>();
-//		
-//		Map<String, String> mobileEmulation = new HashMap<>();
-//
-//		mobileEmulation.put("deviceName", "iPhone X");
-
 		chromePrefs.put("profile.default_content_settings.popups", 0);
 		chromePrefs.put("download.default_directory", this.getDownloadFolderPath());
 		chromePrefs.put("profile.default_content_setting_values.automatic_downloads", 1);
@@ -321,15 +314,6 @@ public class BrowserFunctions {
 		options.setExperimentalOption("prefs", chromePrefs);
 		options.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 		options.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, "none");
-
-//		HashMap<String, Object> chromeLocalStatePrefs = new HashMap<>();
-//		List<String> experimentalFlags = new ArrayList<>();
-//		experimentalFlags.add("calculate-native-win-occlusion@2");
-//		chromeLocalStatePrefs.put("browser.enabled_labs_experiments", experimentalFlags);
-//		options.setExperimentalOption("localState", chromeLocalStatePrefs);
-		//options.setExperimentalOption("mobileEmulation", mobileEmulation);
-
-
 		threadDriver = new ThreadLocal<>();
 		setWebDriver(new ChromeDriver(options));
 		return getWebDriver();
@@ -339,21 +323,19 @@ public class BrowserFunctions {
 	 * Launch firefox.<br>
 	 * <br>
 	 * <p>
-	 * Refer to <a href =
-	 * 'http://kb.mozillazine.org/Firefox_:_FAQs_:_About:config_Entries'>Firefox
-	 * Configuration Details</a> for detailed information about each configuration
+	 * Refer to <a href ='http://kb.mozillazine.org/Firefox_:_FAQs_:_About:config_Entries'>Firefox Configuration Details</a> for detailed information about each configuration
 	 * setting.<br>
 	 * ! If you want to see the preferences you can click the menu button menu ,
 	 * click Help and select Troubleshooting Information. The Troubleshooting
 	 * Information tab will open. And then click on `Profile Folder`
 	 *
 	 * @return the web driver
-	 * @throws Exception the exception
+	 * @throws IOException the IO exception
 	 */
-	private WebDriver launchFirefox() throws Exception {
+	private WebDriver launchFirefox() throws IOException {
 		System.setProperty("webdriver.gecko.driver",
 				System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
-						+ BrowserEnums.Firefox.toString() + File.separatorChar
+						+ BrowserEnums.Firefox + File.separatorChar
 						+ getWebDriverLocation(BrowserEnums.Firefox).replace(".", "_") + File.separatorChar
 						+ "geckodriver.exe");
 		threadDriver = new ThreadLocal<>();
@@ -369,8 +351,7 @@ public class BrowserFunctions {
 		// hide Download Manager window when a download begins
 		profile.setPreference("browser.download.manager.showWhenStarting", false);
 
-		/**
-		 This is the most important setting that will make sure the pdf is downloaded
+		/*This is the most important setting that will make sure the pdf is downloaded
 		 without any prompt
 		 */
 		profile.setPreference("pdfjs.disabled", true);
@@ -404,9 +385,6 @@ public class BrowserFunctions {
 
 		FirefoxOptions options = new FirefoxOptions();
 		options.setProfile(profile);
-		// options.setLogLevel(FirefoxDriverLogLevel.TRACE);
-		// options.addPreference("dom.ipc.processCount", 1);
-
 		setWebDriver(new FirefoxDriver(options));
 		return getWebDriver();
 
@@ -416,19 +394,19 @@ public class BrowserFunctions {
 	 * Launch edge.
 	 *
 	 * @return the web driver
-	 * @throws Exception the exception
+	 * @throws IOException the IO exception
 	 */
-	private WebDriver launchEdge() throws Exception {
+	private WebDriver launchEdge() throws IOException {
 		System.setProperty("webdriver.edge.driver",
 				System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
-						+ BrowserEnums.Edge.toString() + File.separatorChar
+						+ BrowserEnums.Edge + File.separatorChar
 						+ getWebDriverLocation(BrowserEnums.Edge).replace(".", "_") + File.separatorChar
 						+ "msedgedriver.exe");
 		//TODO: Need to work on the edge options to change the download path location
 
 		EdgeDriverService edgeDriverService = EdgeDriverService.createDefaultService();
 
-		threadDriver = new ThreadLocal<RemoteWebDriver>();
+		threadDriver = new ThreadLocal<>();
 
 		EdgeOptions edgeOptions = new EdgeOptions();
 
@@ -472,20 +450,7 @@ public class BrowserFunctions {
 
 	}
 
-//
-//	private WebDriver launchPhantomJS() {
-//		WebDriverManager.phantomjs().setup();
-//		DesiredCapabilities caps = new DesiredCapabilities();
-//		caps.setJavascriptEnabled(true);
-//		caps.setCapability("takesScreenshot", true);
-//		String[] service_args = {"--web-security=no", "--ssl-protocol=any", "--ignore-ssl-errors=yes"};
-//		caps.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX, service_args);
-//		threadDriver = new ThreadLocal<>();
-//		threadDriver.set(new PhantomJSDriver(caps));
-//		return threadDriver.get();
-//	}
-
-	private String getWebDriverLocation(BrowserEnums browserName) throws Exception {
+	private String getWebDriverLocation(BrowserEnums browserName) throws IOException {
 
 		JsonUtil jsonUtil = new JsonUtil(logAccess);
 
@@ -544,10 +509,10 @@ public class BrowserFunctions {
 
 	/**
 	 * get's the browser capabilities based on the browser name
-	 * @return
-	 * @throws Exception
+	 * @return the browser capabilities
+	 * @throws IOException the IO Exception
 	 */
-	private MutableCapabilities getCapabilities() throws Exception {
+	private MutableCapabilities getCapabilities() throws IOException {
 
 		MutableCapabilities capabilities;
 
@@ -583,9 +548,9 @@ public class BrowserFunctions {
 	/**
 	 * set firefox options
 	 * @return the firefox options
-	 * @throws Exception the exception
+	 * @throws IOException the IO exception
 	 */
-	private FirefoxOptions setFirefoxOptions() throws Exception {
+	private FirefoxOptions setFirefoxOptions() throws IOException {
 
 		FirefoxProfile profile = new FirefoxProfile();
 
@@ -600,7 +565,7 @@ public class BrowserFunctions {
 		// hide Download Manager window when a download begins
 		profile.setPreference("browser.download.manager.showWhenStarting", false);
 
-		/**
+		/*
 		 This is the most important setting that will make sure the pdf is downloaded
 		 without any prompt
 		 */
@@ -644,7 +609,7 @@ public class BrowserFunctions {
 			DownloadWebDrivers.downloadDriver(BrowserEnums.Firefox);
 			System.setProperty("webdriver.gecko.driver",
 					System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
-							+ BrowserEnums.Firefox.toString() + File.separatorChar
+							+ BrowserEnums.Firefox + File.separatorChar
 							+ getWebDriverLocation(BrowserEnums.Firefox).replace(".", "_") + File.separatorChar
 							+ "geckodriver.exe");
 		}
@@ -656,17 +621,12 @@ public class BrowserFunctions {
 	/**
 	 * sets Chrome browser capabilities
 	 * @return	the ChromeOptions
-	 * @throws Exception the exception
+	 * @throws IOException the IO exception
 	 */
-	private ChromeOptions setChromeOptions() throws Exception {
+	private ChromeOptions setChromeOptions() throws IOException {
 		// !! Chrome Options !!
 		HashMap<String, Object> chromePrefs = new HashMap<>();
-//
-//		Map<String, String> mobileEmulation = new HashMap<>();
-//
-//		mobileEmulation.put("deviceName", "iPhone X");
-
-
+		
 		chromePrefs.put("profile.default_content_settings.popups", 0);
 
 		if(!CommonVariables.IS_RUNNING_ON_SBOX){
@@ -684,16 +644,13 @@ public class BrowserFunctions {
 		experimentalFlags.add("calculate-native-win-occlusion@2");
 		chromeLocalStatePrefs.put("browser.enabled_labs_experiments", experimentalFlags);
 		options.setExperimentalOption("localState", chromeLocalStatePrefs);
-//		options.setCapability("platformName", "Windows 10");
-//		options.setCapability("screenResolution", "1920X1080");
-
 
 		if (CommonVariables.IS_RUNNING_ON_SBOX) {
 			options.merge(setSboxOptions());
 		} else {
 			DownloadWebDrivers.downloadDriver(BrowserEnums.Chrome);
 			String chromeDriverPath = System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
-					+ BrowserEnums.Chrome.toString() + File.separatorChar
+					+ BrowserEnums.Chrome + File.separatorChar
 					+ getWebDriverLocation(BrowserEnums.Chrome).replace(".", "_") + File.separatorChar
 					+ "chromedriver.exe";
 			System.setProperty("webdriver.chrome.driver", chromeDriverPath);
@@ -705,9 +662,9 @@ public class BrowserFunctions {
 	/**
 	 * set's Edge browser capabiities
 	 * @return the Edge browser capabilities
-	 * @throws Exception the exception
+	 * @throws IOException the IO Exception
 	 */
-	private EdgeOptions setEdgeOptions() throws Exception {
+	private EdgeOptions setEdgeOptions() throws IOException {
 		EdgeOptions options = new EdgeOptions();
 		if(!CommonVariables.IS_RUNNING_ON_SBOX){
 			options.setCapability("download.default_directory", this.getDownloadFolderPath());
@@ -718,7 +675,7 @@ public class BrowserFunctions {
 		} else {
 			System.setProperty("webdriver.edge.driver",
 					System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
-							+ BrowserEnums.Edge.toString() + File.separatorChar
+							+ BrowserEnums.Edge + File.separatorChar
 							+ getWebDriverLocation(BrowserEnums.Edge).replace(".", "_") + File.separatorChar
 							+ "msedgedriver.exe");
 		}

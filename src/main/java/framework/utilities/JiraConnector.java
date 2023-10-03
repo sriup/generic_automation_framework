@@ -75,7 +75,6 @@ public class JiraConnector {
      * @param jiraUrl            the Jira URL
      * @param jiraBasicAuthToken the Jira Basic Authentication Token
      * @return instance of this JiraConnector class
-     * @throws Exception the exception
      */
     public static JiraConnector getInstance(String jiraUrl, String jiraBasicAuthToken) {
         if (jiraConnectorInstance == null) {
@@ -91,7 +90,6 @@ public class JiraConnector {
     /**
      * Empty constructor
      * @return the instance of {@link JiraConnector}
-     * @throws InstantiationException
      */
     public static JiraConnector getInstance() throws InstantiationException {
         if (jiraConnectorInstance != null) {

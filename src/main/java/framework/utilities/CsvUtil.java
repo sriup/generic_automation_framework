@@ -77,9 +77,8 @@ public class CsvUtil {
 	 * Gets all the rows
 	 *
 	 * @return	the rows list
-	 * @throws Exception	the exception
 	 */
-	public List<String[]> getAllRows() throws Exception {
+	public List<String[]> getAllRows() {
 
 		return this.allRows;
 	}
