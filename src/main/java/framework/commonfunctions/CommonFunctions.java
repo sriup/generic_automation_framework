@@ -2319,7 +2319,7 @@ public class CommonFunctions {
 					captureScreenShot(driver, "download_file");
 					Thread.sleep(1000);
 					js.executeScript(
-							"document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('#remove').click()");
+							"document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('div#content #remove-old').click()");
 				}
 
 				// TODO Need to implement the logic to clear the downloaded file entry from

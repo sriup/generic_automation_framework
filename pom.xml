@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>automation.generic</groupId>
     <artifactId>framework</artifactId>
-    <version>beta-0.12.1_ChromeDriver_64_bit</version>
+    <version>beta-0.12.2_Remove_downloaded_item</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -167,24 +167,12 @@
             <artifactId>selenium-java</artifactId>
             <version>${selenium.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.codeborne/phantomjsdriver -->
-        <!--		<dependency>-->
-        <!--			<groupId>com.codeborne</groupId>-->
-        <!--			<artifactId>phantomjsdriver</artifactId>-->
-        <!--			<version>1.4.1</version>-->
-        <!--		</dependency>-->
-        <!-- https://mvnrepository.com/artifact/com.codeborne/phantomjsdriver -->
+
         <dependency>
             <groupId>com.paulhammant</groupId>
             <artifactId>ngwebdriver</artifactId>
             <version>1.1.6</version>
         </dependency>
-
-        <!--		<dependency>-->
-        <!--			<groupId>io.github.bonigarcia</groupId>-->
-        <!--			<artifactId>webdrivermanager</artifactId>-->
-        <!--			<version>${wdmanager.version}</version>-->
-        <!--		</dependency>-->
 
         <dependency>
             <groupId>org.testng</groupId>
