@@ -242,11 +242,33 @@ public class CommonFunctions {
 	 */
 	public WebElement waitForElement(WebDriver driver, WebElement element, ExpectedConditionsEnums expectedCondition)
 			throws Exception {
+		return waitForElement(driver, element, expectedCondition, CommonVariables.MED_TIMEOUT, true);
+	}
+	
+	/**
+	 * Wait for element.
+	 *
+	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param element           the {@link org.openqa.selenium.WebElement element}
+	 * @param expectedCondition the expected condition <br>
+	 *                          <font color='blue'>Note : Below is the list of
+	 *                          options supported for this method
+	 *                          <ul>
+	 *                          <li>CLICKABLE</li>
+	 *                          <li>VISIBLE</li>
+	 *                          </ul>
+	 *                          </font>
+	 * @param isScrollElementToCenter is element need to be scrolled to center or not
+	 * @return the {@link org.openqa.selenium.WebElement element}
+	 * @throws Exception the exception
+	 */
+	public WebElement waitForElement(WebDriver driver, WebElement element, ExpectedConditionsEnums expectedCondition, boolean isScrollElementToCenter)
+			throws Exception {
 		this.logAccess.getLogger()
 				.debug("waiting for element to be " + expectedCondition.toString() + " :- " + element);
-		return waitUntilElement(driver, element, expectedCondition, CommonVariables.MED_TIMEOUT);
+		return waitUntilElement(driver, element, expectedCondition, CommonVariables.MED_TIMEOUT,isScrollElementToCenter);
 	}
-
+	
 	/**
 	 * Wait for element.
 	 *
@@ -266,9 +288,32 @@ public class CommonFunctions {
 	 */
 	public WebElement waitForElement(WebDriver driver, WebElement element, ExpectedConditionsEnums expectedCondition,
 									 int maxTimeout) throws Exception {
+		return waitForElement(driver, element, expectedCondition, maxTimeout, true);
+	}
+	
+	/**
+	 * Wait for element.
+	 *
+	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param element           the {@link org.openqa.selenium.WebElement element}
+	 * @param expectedCondition the expected condition<br>
+	 *                          * * <font color='blue'>Note : Below is the list of
+	 *                          options supported for this method
+	 *                          <ul>
+	 *                          <li>CLICKABLE</li>
+	 *                          <li>VISIBLE</li>
+	 *                          </ul>
+	 *                          </font>
+	 * @param maxTimeout        the max timeout in seconds
+	 * @param isScrollElementToCenter is element need to be scrolled to center or not
+	 * @return the {@link org.openqa.selenium.WebElement element}
+	 * @throws Exception the exception
+	 */
+	public WebElement waitForElement(WebDriver driver, WebElement element, ExpectedConditionsEnums expectedCondition,
+									 int maxTimeout, boolean isScrollElementToCenter) throws Exception {
 		this.logAccess.getLogger()
 				.debug("waiting for element to be " + expectedCondition.toString() + " :- " + element);
-		return waitUntilElement(driver, element, expectedCondition, maxTimeout);
+		return waitUntilElement(driver, element, expectedCondition, maxTimeout, isScrollElementToCenter);
 	}
 
 	/**
@@ -308,7 +353,32 @@ public class CommonFunctions {
 				.debug("waiting for element to be " + expectedCondition.toString() + " :- " + byLocator);
 		return waitUntilElement(driver, byLocator, expectedCondition, CommonVariables.MED_TIMEOUT);
 	}
-
+	
+	/**
+	 * Wait for element by locator.
+	 *
+	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator         the by locator
+	 * @param expectedCondition the expected condition<br>
+	 *                          <font color='blue'>Note : Below is the list of
+	 *                          options supported for this method
+	 *                          <ul>
+	 *                          <li>CLICKABLE</li>
+	 *                          <li>PRESENCE</li>
+	 *                          <li>VISIBLE</li>
+	 *                          </ul>
+	 *                          </font>
+	 * @param isScrollElementToCenter is element need to be scrolled to center or not
+	 * @return the web element
+	 * @throws Exception the exception
+	 */
+	public WebElement waitForElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition, boolean isScrollElementToCenter)
+			throws Exception {
+		this.logAccess.getLogger()
+				.debug("waiting for element to be " + expectedCondition.toString() + " :- " + byLocator);
+		return waitUntilElement(driver, byLocator, expectedCondition, CommonVariables.MED_TIMEOUT, isScrollElementToCenter);
+	}
+	
 	/**
 	 * Wait for element by locator.
 	 *
@@ -331,9 +401,35 @@ public class CommonFunctions {
 									 int maxTimeout) throws Exception {
 		this.logAccess.getLogger()
 				.debug("waiting for element to be " + expectedCondition.toString() + " :- " + byLocator);
-		return waitUntilElement(driver, byLocator, expectedCondition, maxTimeout);
+		return waitForElement(driver, byLocator, expectedCondition, maxTimeout, true);
 	}
-
+	
+	/**
+	 * Wait for element by locator.
+	 *
+	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator         the by locator
+	 * @param expectedCondition the expected condition<br>
+	 *                          <font color='blue'>Note : Below is the list of
+	 *                          options supported for this method
+	 *                          <ul>
+	 *                          <li>CLICKABLE</li>
+	 *                          <li>PRESENCE</li>
+	 *                          <li>VISIBLE</li>
+	 *                          </ul>
+	 *                          </font>
+	 * @param isScrollElementToCenter is element need to be scrolled to center or not
+	 * @param maxTimeout        the max timeout in seconds
+	 * @return the web element
+	 * @throws Exception the exception
+	 */
+	public WebElement waitForElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition,
+									 int maxTimeout, boolean isScrollElementToCenter) throws Exception {
+		this.logAccess.getLogger()
+				.debug("waiting for element to be " + expectedCondition.toString() + " :- " + byLocator);
+		return waitUntilElement(driver, byLocator, expectedCondition, maxTimeout, isScrollElementToCenter);
+	}
+	
 	/**
 	 * Wait for element(s) visible.
 	 *
@@ -608,6 +704,32 @@ public class CommonFunctions {
 			return false;
 		}
 	}
+	
+	/**
+	 * Checks if is element displayed by locator.
+	 *
+	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator  the by locator
+	 * @param maxTimeout the max timeout in seconds
+	 * @param isScrollElementToCenter is element need to be scrolled to center or not
+	 * @return true, if is element displayed by locator
+	 */
+	public boolean isElementDisplayed(WebDriver driver, By byLocator, int maxTimeout, boolean isScrollElementToCenter) {
+		this.logAccess.getLogger().info("checking if element is displayed  :- " + byLocator);
+		// wait for the {@link org.openqa.selenium.WebElement element} to present for
+		// specified time
+		try {
+			WebElement targetEle = waitForElement(driver, byLocator, ExpectedConditionsEnums.VISIBLE, maxTimeout, isScrollElementToCenter);
+			
+			// return true if the element is visible
+			return targetEle != null;
+			
+		} catch (Exception e) {
+			// return false if the element is not
+			// visible
+			return false;
+		}
+	}
 
 	/**
 	 * Checks if is element displayed.
@@ -617,19 +739,19 @@ public class CommonFunctions {
 	 * @return true, if is element displayed
 	 */
 	public boolean isElementDisplayed(WebDriver driver, By byLocator) {
-		this.logAccess.getLogger().info("checking if element is displayed  :- " + byLocator);
-		// wait for the element to present for specified time
-		try {
-			WebElement targetEle = waitForElement(driver, byLocator, ExpectedConditionsEnums.VISIBLE, CommonVariables.MED_TIMEOUT);
-
-			// return true if the element is visible
-			return targetEle != null;
-
-		} catch (Exception e) {
-			// return false if the element is not
-			// visible
-			return false;
-		}
+		return isElementDisplayed(driver, byLocator, CommonVariables.MED_TIMEOUT, true);
+	}
+	
+	/**
+	 * Checks if is element displayed.
+	 *
+	 * @param driver    the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator the by locator
+	 * @param isScrollElementToCenter is element need to be scrolled to center or not
+	 * @return true, if is element displayed
+	 */
+	public boolean isElementDisplayed(WebDriver driver, By byLocator, boolean isScrollElementToCenter) {
+		return isElementDisplayed(driver, byLocator, CommonVariables.MED_TIMEOUT, isScrollElementToCenter);
 	}
 
 	/**
@@ -641,9 +763,22 @@ public class CommonFunctions {
 	 * @return true, if is element displayed
 	 */
 	public boolean isElementDisplayed(WebDriver driver, WebElement element, int maxTimeout) {
+		return isElementDisplayed(driver, element, maxTimeout, true);
+	}
+	
+	/**
+	 * Checks if is element displayed.
+	 *
+	 * @param driver     the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param element    the {@link org.openqa.selenium.WebElement element}
+	 * @param maxTimeout the max timeout in seconds
+	 * @param isScrollElementToCenter is element need to be scrolled to center or not
+	 * @return true, if is element displayed
+	 */
+	public boolean isElementDisplayed(WebDriver driver, WebElement element, int maxTimeout, boolean isScrollElementToCenter) {
 		this.logAccess.getLogger().info("checking if element is displayed  :- " + element);
 		try {
-			WebElement targetEle = waitForElement(driver, element, ExpectedConditionsEnums.VISIBLE, maxTimeout);
+			WebElement targetEle = waitForElement(driver, element, ExpectedConditionsEnums.VISIBLE, maxTimeout, isScrollElementToCenter);
 			// return true if the element is visible
 			return targetEle != null;
 		} catch (Exception e) {
@@ -661,17 +796,19 @@ public class CommonFunctions {
 	 * @return true, if is element displayed
 	 */
 	public boolean isElementDisplayed(WebDriver driver, WebElement element) {
-		this.logAccess.getLogger().info("checking if element is displayed  :- " + element);
-		try {
-			WebElement targetEle = waitForElement(driver, element, ExpectedConditionsEnums.VISIBLE, CommonVariables.MED_TIMEOUT);
-			// return true if the element is visible
-			return targetEle != null;
-
-		} catch (Exception e) {
-			// return false if the element is not
-			// visible
-			return false;
-		}
+		return isElementDisplayed(driver, element, CommonVariables.MED_TIMEOUT, true);
+	}
+	
+	/**
+	 * Checks if is element displayed.
+	 *
+	 * @param driver  the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param element the {@link org.openqa.selenium.WebElement element}
+	 * @param isScrollElementToCenter is element need to be scrolled to center or not
+	 * @return true, if is element displayed
+	 */
+	public boolean isElementDisplayed(WebDriver driver, WebElement element, boolean isScrollElementToCenter) {
+		return isElementDisplayed(driver, element, CommonVariables.MED_TIMEOUT, isScrollElementToCenter);
 	}
 
 	/**
@@ -756,15 +893,47 @@ public class CommonFunctions {
 	 * @throws Exception the exception
 	 */
 	public String highlightElement(WebDriver driver, WebElement element) throws Exception {
+		return highlightElement(driver, element, false, true);
+	}
+	
+	/**
+	 * Highlights the element.
+	 *
+	 * @param driver      the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param element     the {@link org.openqa.selenium.WebElement element} <br>
+	 *                    This method will highlight the element and does not set back
+	 *                    the original style. <br>
+	 * @param isScrollElementToCenter is element need to be scrolled to center or not
+	 * @param bordersOnly the border highlight status<br>
+	 *                    			 <ul>
+	 *                    			 	<li>true - will highlight the elements borders only.</li>
+	 *                      		   	<li>false - will highlight the element using normal highlighting
+	 *                    				 	i.e. the entire element background.
+	 *                    			 	</li>
+	 *                    			 </ul>
+	 *                    <font color="blue"><b>Note:</b> Use {@link #unHighlightElement
+	 *                    			 unHighlightElement} method to set back the original style of
+	 *                    			 the element.</font>
+	 * @
+	 * @return the String with original style of the element
+	 * @throws Exception the exception
+	 */
+	public String highlightElement(WebDriver driver, WebElement element, boolean bordersOnly, boolean isScrollElementToCenter) throws Exception {
 		String originalStyle = "";
 		try {
-			this.logAccess.getLogger().debug("Highlighting element :- " + element);
+			this.logAccess.getLogger().debug("Highlighting element" + (bordersOnly ? " border" : "") + ":- " + element);
 			// get the original
 			originalStyle = getOriginalStyle(element);
 			// scroll element to the center
-			scrollElement(driver, element, "center");
-			// highlight the web element
-			String highlightJavaScript = "arguments[0].style.background=\"" + this.highlightBgColor + "\";";
+			if(isScrollElementToCenter) scrollElement(driver, element, "center");
+			String highlightJavaScript;
+			if (bordersOnly) {
+				// highlight the web element
+				highlightJavaScript = "arguments[0].style.border=\"3px solid \"" + this.highlightBgColor + "\";";
+			} else {
+				// highlight the web element
+				highlightJavaScript = "arguments[0].style.background=\"" + this.highlightBgColor + "\";";
+			}
 			executeJs(driver, element, highlightJavaScript);
 		} catch (Exception e) {
 			//ignore exception as sometimes the element might either not exist
@@ -772,7 +941,7 @@ public class CommonFunctions {
 		}
 		return originalStyle;
 	}
-
+	
 	/**
 	 * Highlights the element.
 	 *
@@ -794,27 +963,8 @@ public class CommonFunctions {
 	 * @throws Exception the exception
 	 */
 	public String highlightElement(WebDriver driver, WebElement element, boolean bordersOnly) throws Exception {
-		String originalStyle = "";
-		try {
-			this.logAccess.getLogger().debug("Highlighting element" + (bordersOnly ? " border" : "") + ":- " + element);
-			// get the original
-			originalStyle = getOriginalStyle(element);
-			// scroll element to the center
-			scrollElement(driver, element, "center");
-			String highlightJavaScript;
-			if (bordersOnly) {
-				// highlight the web element
-				highlightJavaScript = "arguments[0].style.border=\"3px solid \"" + this.highlightBgColor + "\";";
-			} else {
-				// highlight the web element
-				highlightJavaScript = "arguments[0].style.background=\"" + this.highlightBgColor + "\";";
-			}
-			executeJs(driver, element, highlightJavaScript);
-		} catch (Exception e) {
-			//ignore exception as sometimes the element might either not exist
-			// or might get refreshed
-		}
-		return originalStyle;
+		
+		return highlightElement(driver, element, bordersOnly, true);
 	}
 
 	/**
@@ -842,7 +992,36 @@ public class CommonFunctions {
 		// highlight the element and return the original style
 		return highlightElement(driver, getElement(driver, byLocator), bordersOnly);
 	}
-
+	
+	
+	/**
+	 * Highlights the element.
+	 *
+	 * @param driver      the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator   the by locator <br>
+	 *                    This method will highlight the element and does not set back
+	 *                    the original style. <br>
+	 * @param bordersOnly the border highlight status<br>
+	 *                    <ul>
+	 *                    	<li>true - will highlight the elements borders only.</li>
+	 *                    	<li>false - will highlight the element using normal highlighting
+	 *                     	i.e. the entire element background.
+	 *                    	</li>
+	 *                    </ul>
+	 *                     <font color="blue"><b>Note:</b> Use
+	 *                     {@link #unHighlightElement unHighlightElement} method to set
+	 *                     back the original style of the element.</font>
+	 * @param isScrollElementToCenter is element need to be scrolled to center or not
+	 * @return the String with original style of the element
+	 * @throws Exception the exception
+	 */
+	public String highlightElement(WebDriver driver, By byLocator, boolean bordersOnly, boolean isScrollElementToCenter) throws Exception {
+		this.logAccess.getLogger().debug("Highlighting element :- " + byLocator);
+		// highlight the element and return the original style
+		return highlightElement(driver, getElement(driver, byLocator), bordersOnly, isScrollElementToCenter);
+	}
+	
+	
 	/**
 	 * Highlights the element.
 	 *
@@ -2319,7 +2498,7 @@ public class CommonFunctions {
 					captureScreenShot(driver, "download_file");
 					Thread.sleep(1000);
 					js.executeScript(
-							"document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('#remove').click()");
+							"document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('div#content #remove-old').click()");
 				}
 
 				// TODO Need to implement the logic to clear the downloaded file entry from
@@ -2443,7 +2622,21 @@ public class CommonFunctions {
 	public WebElement getElement(WebDriver driver, By byLocator) throws Exception {
 		return waitForElement(driver, byLocator, ExpectedConditionsEnums.PRESENCE);
 	}
-
+	
+	/**
+	 * gets the element based on the by locator
+	 *
+	 * @param driver    the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator the by locator
+	 * @param isScrollElementToCenter is element need to be scrolled to center or not
+	 * @return WebElement
+	 * @throws Exception the exception
+	 */
+	public WebElement getElement(WebDriver driver, By byLocator, boolean isScrollElementToCenter) throws Exception {
+		return waitForElement(driver, byLocator, ExpectedConditionsEnums.PRESENCE, isScrollElementToCenter);
+	}
+	
+	
 	/**
 	 * gets the element based on the by locator and max timeout
 	 *
@@ -2468,6 +2661,19 @@ public class CommonFunctions {
 	public WebElement getElement(WebDriver driver, WebElement element) throws Exception {
 		return waitForElement(driver, element, ExpectedConditionsEnums.VISIBLE);
 	}
+	
+	/**
+	 * gets the element based on the element
+	 *
+	 * @param driver  the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param element the WebElement
+	 * @param isScrollElementToCenter is element need to be scrolled to center or not
+	 * @return WebElement
+	 * @throws Exception the exception
+	 */
+	public WebElement getElement(WebDriver driver, WebElement element, boolean isScrollElementToCenter) throws Exception {
+		return waitForElement(driver, element, ExpectedConditionsEnums.VISIBLE, isScrollElementToCenter);
+	}
 
 	/**
 	 * gets the element based on the locator
@@ -2481,6 +2687,21 @@ public class CommonFunctions {
 	public WebElement getElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition)
 			throws Exception {
 		return waitForElement(driver, byLocator, expectedCondition);
+	}
+	
+	/**
+	 * gets the element based on the locator
+	 *
+	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator         the by locator
+	 * @param expectedCondition the expected condition
+	 * @param isScrollElementToCenter is element need to be scrolled to center or not
+	 * @return WebElement
+	 * @throws Exception the exception
+	 */
+	public WebElement getElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition, boolean isScrollElementToCenter)
+			throws Exception {
+		return waitForElement(driver, byLocator, expectedCondition, isScrollElementToCenter);
 	}
 
 	/**
@@ -2496,6 +2717,21 @@ public class CommonFunctions {
 			throws Exception {
 		return waitForElement(driver, element, expectedCondition);
 	}
+	
+	/**
+	 * gets the element based on the element
+	 *
+	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param element           the WebElement
+	 * @param expectedCondition the expected condition
+	 * @param isScrollElementToCenter is element need to be scrolled to center or not
+	 * @return WebElement
+	 * @throws Exception the exception
+	 */
+	public WebElement getElement(WebDriver driver, WebElement element, ExpectedConditionsEnums expectedCondition, boolean isScrollElementToCenter)
+			throws Exception {
+		return waitForElement(driver, element, expectedCondition, isScrollElementToCenter);
+	}
 
 	/**
 	 * gets the element based on the locator
@@ -2508,6 +2744,21 @@ public class CommonFunctions {
 	 */
 	public WebElement getElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition,
 								 int maxTimeOut) throws Exception {
+		return waitForElement(driver, byLocator, expectedCondition, maxTimeOut);
+	}
+	
+	/**
+	 * gets the element based on the locator
+	 *
+	 * @param driver            the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param byLocator         the by locator
+	 * @param expectedCondition the expected condition
+	 * @param isScrollElementToCenter is element need to be scrolled to center or not
+	 * @return WebElement
+	 * @throws Exception the exception
+	 */
+	public WebElement getElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition,
+								 int maxTimeOut, boolean isScrollElementToCenter) throws Exception {
 		return waitForElement(driver, byLocator, expectedCondition, maxTimeOut);
 	}
 
@@ -2651,9 +2902,33 @@ public class CommonFunctions {
 	 */
 	private WebElement waitUntilElement(WebDriver driver, WebElement element, ExpectedConditionsEnums expectedCondition,
 										int maxTimeout) throws Exception {
+		return waitUntilElement(driver, element, expectedCondition, maxTimeout, true);
+	}
+	
+	
+	/**
+	 * Wait until element.
+	 *
+	 * @param driver            the driver
+	 * @param element           the element
+	 * @param expectedCondition the expected condition<br>
+	 *                          * <font color='blue'>Note : Below is the list of
+	 *                          options supported for this method
+	 *                          <ul>
+	 *                          <li>CLICKABLE</li>
+	 *                          <li>VISIBLE</li>
+	 *                          </ul>
+	 *                          </font>
+	 * @param isScrollElementToCenter is element need to be scrolled to center or not
+	 * @param maxTimeout        the max timeout in seconds
+	 * @return the web element
+	 * @throws Exception the exception
+	 */
+	private WebElement waitUntilElement(WebDriver driver, WebElement element, ExpectedConditionsEnums expectedCondition,
+										int maxTimeout, boolean isScrollElementToCenter) throws Exception {
 		// driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
 		WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
-
+		
 		WebElement returnElement;
 		switch (expectedCondition) {
 			case CLICKABLE:
@@ -2669,7 +2944,7 @@ public class CommonFunctions {
 //			returnElement = (WebElement) wait.until((ExpectedCondition<Object>) wd -> ((JavascriptExecutor) wd)
 //					.executeScript("return if(arguments[0].tagName !==''){arguments[0]}else{null}",element));
 			// break;
-
+			
 			// TODO - For now we are giving back the element when expected condition is
 			// presence so that we can use same method
 			// at other places
@@ -2680,7 +2955,9 @@ public class CommonFunctions {
 				throw new IllegalArgumentException("??? Unexpected value: " + expectedCondition
 						+ ". This method supports clickable, Visible and Presence options.");
 		}
-		scrollElement(driver, returnElement, "center");
+		
+		if(isScrollElementToCenter) scrollElement(driver, returnElement, "center");
+		
 		return returnElement;
 	}
 
@@ -2704,9 +2981,34 @@ public class CommonFunctions {
 	 */
 	private WebElement waitUntilElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition,
 										int maxTimeout) throws Exception {
+		return waitUntilElement(driver, byLocator,expectedCondition, maxTimeout, true);
+	}
+	
+	
+	/**
+	 * Wait until element by locator.
+	 *
+	 * @param driver            the driver
+	 * @param byLocator         the by locator
+	 * @param expectedCondition the expected condition<br>
+	 *                          <font color='blue'>Note : Below is the list of
+	 *                          options supported for this method
+	 *                          <ul>
+	 *                          <li>CLICKABLE</li>
+	 *                          <li>PRESENCE</li>
+	 *                          <li>VISIBLE</li>
+	 *                          </ul>
+	 *                          </font>
+	 * @param isScrollElementToCenter is element need to be scrolled to center or not
+	 * @param maxTimeout        the max timeout in seconds
+	 * @return the web element
+	 * @throws Exception the exception
+	 */
+	private WebElement waitUntilElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition,
+										int maxTimeout, boolean isScrollElementToCenter) throws Exception {
 		// driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
 		WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
-
+		
 		WebElement returnElement;
 		switch (expectedCondition) {
 			case CLICKABLE:
@@ -2722,10 +3024,9 @@ public class CommonFunctions {
 				throw new IllegalArgumentException("????Unexpected value: " + expectedCondition
 						+ ". This method supports clickable and Presence options. Please use waitUntilElement by locator method for VISIBLE.");
 		}
-		scrollElement(driver, returnElement, "center");
+		if(isScrollElementToCenter) scrollElement(driver, returnElement, "center");
 		return returnElement;
 	}
-
 	/**
 	 * Capture multiple images in chunks one per each window height and then capture
 	 * last screenshot if any part is left over. This will also handle the element
