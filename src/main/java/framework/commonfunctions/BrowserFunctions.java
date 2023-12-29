@@ -199,7 +199,8 @@ public class BrowserFunctions {
 
 		if (driver != null) {
 			Capabilities caps = ((RemoteWebDriver) getWebDriver()).getCapabilities();
-			CommonVariables.launchedBrowsers.put(caps.getBrowserName(), caps.getVersion());
+			
+			CommonVariables.launchedBrowsers.put(caps.getBrowserName(), caps.getBrowserVersion());
 		}
 		return driver;
 
@@ -312,7 +313,10 @@ public class BrowserFunctions {
 
 		ChromeOptions options = new ChromeOptions();
 		options.setExperimentalOption("prefs", chromePrefs);
-		options.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+		
+		options.setAcceptInsecureCerts(true);
+		/*options.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);*/
+		
 		options.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, "none");
 		threadDriver = new ThreadLocal<>();
 		setWebDriver(new ChromeDriver(options));
@@ -603,7 +607,9 @@ public class BrowserFunctions {
 		options.setProfile(profile);
 
 		if (CommonVariables.IS_RUNNING_ON_SBOX) {
-			options.merge(setSboxOptions());
+			
+			setSboxOptions().asMap().forEach(options::setCapability);
+			
 		} else {
 
 			DownloadWebDrivers.downloadDriver(BrowserEnums.Firefox);
@@ -636,7 +642,10 @@ public class BrowserFunctions {
 
 		ChromeOptions options = new ChromeOptions();
 		options.setExperimentalOption("prefs", chromePrefs);
-		options.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
+		
+		options.setAcceptInsecureCerts(true);
+		/*options.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);*/
+		
 		options.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, "none");
 
 		HashMap<String, Object> chromeLocalStatePrefs = new HashMap<>();
@@ -646,7 +655,9 @@ public class BrowserFunctions {
 		options.setExperimentalOption("localState", chromeLocalStatePrefs);
 
 		if (CommonVariables.IS_RUNNING_ON_SBOX) {
-			options.merge(setSboxOptions());
+			
+			setSboxOptions().asMap().forEach(options::setCapability);
+			
 		} else {
 			DownloadWebDrivers.downloadDriver(BrowserEnums.Chrome);
 			String chromeDriverPath = System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
@@ -671,7 +682,9 @@ public class BrowserFunctions {
 		}
 
 		if (CommonVariables.IS_RUNNING_ON_SBOX) {
-			options.merge(setSboxOptions());
+			
+			setSboxOptions().asMap().forEach(options::setCapability);
+			
 		} else {
 			System.setProperty("webdriver.edge.driver",
 					System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
@@ -682,4 +695,5 @@ public class BrowserFunctions {
 
 		return options;
 	}
+	
 }

@@ -24,6 +24,7 @@ import java.io.File;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.List;
 import java.util.*;
 
@@ -315,7 +316,21 @@ public class CommonFunctions {
 				.debug("waiting for element to be " + expectedCondition.toString() + " :- " + element);
 		return waitUntilElement(driver, element, expectedCondition, maxTimeout, isScrollElementToCenter);
 	}
-
+	
+	/**
+	 * Web driver wait
+	 *
+	 * @param driver	the {@link org.openqa.selenium.WebDriver WebDriver}
+	 * @param maxTimeout	the max timeout in seconds
+	 * @return	the webDriverWait
+	 */
+	public WebDriverWait webDriverWait(WebDriver driver, int maxTimeout){
+		
+		Duration duration = Duration.ofSeconds(maxTimeout);
+		
+		return new WebDriverWait(driver, duration);
+	}
+	
 	/**
 	 * Wait for alert.
 	 *
@@ -324,9 +339,9 @@ public class CommonFunctions {
 	 */
 	public Alert waitForAlert(WebDriver driver, int maxTimeout) {
 		this.logAccess.getLogger().debug("waiting for alert");
-
-		WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
-
+		
+		WebDriverWait wait = webDriverWait(driver, maxTimeout);
+		
 		return wait.ignoring(NoAlertPresentException.class).until(ExpectedConditions.alertIsPresent());
 	}
 
@@ -440,7 +455,7 @@ public class CommonFunctions {
 	 */
 	public List<WebElement> waitForElementsToVisible(WebDriver driver, List<WebElement> elements, int maxTimeOut) {
 		this.logAccess.getLogger().debug("waiting for all specified elements in the list to be visible" + elements);
-		return (new WebDriverWait(driver, maxTimeOut)).until(ExpectedConditions.visibilityOfAllElements(elements));
+		return (webDriverWait(driver, maxTimeOut)).until(ExpectedConditions.visibilityOfAllElements(elements));
 	}
 
 	/**
@@ -453,7 +468,7 @@ public class CommonFunctions {
 	 */
 	public List<WebElement> waitForElementsToVisible(WebDriver driver, By byLocator, int maxTimeOut) {
 		this.logAccess.getLogger().debug("waiting for all specified elements in the list to be visible " + byLocator);
-		return (new WebDriverWait(driver, maxTimeOut))
+		return (webDriverWait(driver, maxTimeOut))
 				.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(byLocator));
 	}
 
@@ -2488,8 +2503,8 @@ public class CommonFunctions {
 					}
 				}
 				if (downloadStarted) {
-
-					new WebDriverWait(driver, maxTimeoutInSeconds).until(ExpectedConditions
+					
+					webDriverWait(driver, maxTimeoutInSeconds).until(ExpectedConditions
 							.elementToBeClickable((WebElement) ((JavascriptExecutor) driver).executeScript(
 									"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('a#show')")));
 					// get the file name
@@ -2508,10 +2523,10 @@ public class CommonFunctions {
 				// navigate to Firefox downloads
 				driver.get("about:downloads");
 				//Thread.sleep(CommonVariables.MIN_TIMEOUT);
-				new WebDriverWait(driver, maxTimeoutInSeconds)
+				webDriverWait(driver, maxTimeoutInSeconds)
 						.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".download.download-state")));
 				if (driver.findElements(By.cssSelector(".download.download-state")).size() > 0) {
-					new WebDriverWait(driver, maxTimeoutInSeconds).until(ExpectedConditions.visibilityOf(
+					webDriverWait(driver, maxTimeoutInSeconds).until(ExpectedConditions.visibilityOf(
 							driver.findElement(By.cssSelector("button[tooltiptext='Show in Folder']"))));
 					// get the file name
 					fileName = getAttribute(driver, By.cssSelector(
@@ -2533,8 +2548,8 @@ public class CommonFunctions {
 			}else if (CommonVariables.BROWSER_SELECT.equalsIgnoreCase("edge")) {
 
 				driver.get("edge://downloads/all");
-
-				new WebDriverWait(driver, maxTimeoutInSeconds)
+				
+				webDriverWait(driver, maxTimeoutInSeconds)
 						.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".downloads-list  [role='listitem']")));
 
 				if (driver.findElements(By.cssSelector(".downloads-list  [role='listitem']")).size() > 0) {
@@ -2927,7 +2942,7 @@ public class CommonFunctions {
 	private WebElement waitUntilElement(WebDriver driver, WebElement element, ExpectedConditionsEnums expectedCondition,
 										int maxTimeout, boolean isScrollElementToCenter) throws Exception {
 		// driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
-		WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
+		WebDriverWait wait = webDriverWait(driver, maxTimeout);
 		
 		WebElement returnElement;
 		switch (expectedCondition) {
@@ -3007,7 +3022,7 @@ public class CommonFunctions {
 	private WebElement waitUntilElement(WebDriver driver, By byLocator, ExpectedConditionsEnums expectedCondition,
 										int maxTimeout, boolean isScrollElementToCenter) throws Exception {
 		// driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
-		WebDriverWait wait = new WebDriverWait(driver, maxTimeout);
+		WebDriverWait wait = webDriverWait(driver, maxTimeout);
 		
 		WebElement returnElement;
 		switch (expectedCondition) {
