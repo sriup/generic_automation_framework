@@ -43,7 +43,8 @@ public class DownloadWebDrivers {
 			switch (browserName.toString().toLowerCase()) {
 			case "chrome":
 				String latestChromeVersion = getChromeDriverVersion();
-				downloadUrl = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/" + latestChromeVersion + "/win64/chromedriver-win64.zip";
+//				downloadUrl = "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/" + latestChromeVersion + "/win64/chromedriver-win64.zip";
+				downloadUrl = "https://storage.googleapis.com/chrome-for-testing-public/" +  latestChromeVersion + "/win64/chromedriver-win64.zip";
 				downloadWebDriver(browserName.toString(), latestChromeVersion, downloadUrl, "drivers"
 						+ File.separatorChar + "Chrome" + File.separatorChar + latestChromeVersion.replace(".", "_"));
 				break;

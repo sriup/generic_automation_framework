@@ -2483,6 +2483,10 @@ public class CommonFunctions {
 			// Switch to new window opened
 			for (String winHandle : driver.getWindowHandles()) {
 				driver.switchTo().window(winHandle);
+				System.out.println(driver.getCurrentUrl());
+				if(driver.getCurrentUrl().equals("about:blank")){
+					break;
+				}
 			}
 			boolean downloadStarted = false;
 			JavascriptExecutor js = (JavascriptExecutor) driver;
