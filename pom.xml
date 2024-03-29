@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>automation.generic</groupId>
     <artifactId>framework</artifactId>
-    <version>beta-0.12.6_updated_chromedriver_link</version>
+    <version>beta-0.12.7_ParseToGMT_BearerJiraToken_cache</version>
     <packaging>jar</packaging>
 
     <properties>

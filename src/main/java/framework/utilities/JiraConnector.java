@@ -4,8 +4,6 @@ import framework.commonfunctions.ApiMethods;
 import framework.enums.LogVerboseEnums;
 import framework.logs.LogAccess;
 import io.restassured.response.Response;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -24,7 +22,7 @@ public class JiraConnector {
      */
     private static JiraConnector jiraConnectorInstance = null;
     private static String jiraAppUrl;
-    private static String jiraAppBasicAuthToken;
+    private static String jiraAppBearerAuthToken;
 
     private static boolean isSuccessfullyLogged;
 
@@ -38,14 +36,14 @@ public class JiraConnector {
      * the existing instance
      *
      * @param csvUtil             the {@link CsvUtil}
-     * @param filePath           the full file path where the defects information is present
-     * @param columnName         the column name where the defects information is present
+     * @param filePath           the full file path where the defects' information is present
+     * @param columnName         the column name where the defects' information is present
      * @param jiraUrl            the Jira URL
-     * @param jiraBasicAuthToken the Jira Basic Authentication Token
+     * @param jiraBearerAuthToken the Jira Bearer Authentication Token
      * @return instance of this JiraConnector class
      * @throws Exception the exception
      */
-    public static JiraConnector getInstance(CsvUtil csvUtil, String filePath, String columnName, String jiraUrl, String jiraBasicAuthToken) throws Exception {
+    public static JiraConnector getInstance(CsvUtil csvUtil, String filePath, String columnName, String jiraUrl, String jiraBearerAuthToken) throws Exception {
         if (jiraConnectorInstance == null) {
             // create JiraConnector class instance
             jiraConnectorInstance = new JiraConnector();
@@ -53,8 +51,14 @@ public class JiraConnector {
             // set jira url
             jiraAppUrl = jiraUrl;
 
+            try{
+                SecurityUtil securityUtil = new SecurityUtil();
+                jiraBearerAuthToken = securityUtil.decrypt(jiraBearerAuthToken);
+            }catch (Exception exception){
+                System.out.println("Suggestion: The JIRA_TOKEN is not encrypted, it's recommended to use Encrypted tokens.");
+            }
             // set jira application basic authentication token
-            jiraAppBasicAuthToken = jiraBasicAuthToken.replace("Basic ", "");
+            jiraAppBearerAuthToken = jiraBearerAuthToken.replace("Bearer ", "");
 
 
             // Fetching all the values after initializing the singleton class
@@ -73,16 +77,16 @@ public class JiraConnector {
      * the existing instance
      *
      * @param jiraUrl            the Jira URL
-     * @param jiraBasicAuthToken the Jira Basic Authentication Token
+     * @param jiraBearerAuthToken the Jira Bearer Authentication Token
      * @return instance of this JiraConnector class
      */
-    public static JiraConnector getInstance(String jiraUrl, String jiraBasicAuthToken) {
+    public static JiraConnector getInstance(String jiraUrl, String jiraBearerAuthToken) {
         if (jiraConnectorInstance == null) {
             // create JiraConnector class instance
             jiraConnectorInstance = new JiraConnector();
 
             jiraAppUrl = jiraUrl;
-            jiraAppBasicAuthToken = jiraBasicAuthToken.replace("Basic ", "");
+            jiraAppBearerAuthToken = jiraBearerAuthToken.replace("Basic ", "");
         }
         return jiraConnectorInstance;
     }
@@ -160,7 +164,7 @@ public class JiraConnector {
             // headers information
             HashMap<String, String> headers = new HashMap<>();
 
-            headers.put("Authorization", "Basic " + jiraAppBasicAuthToken);
+            headers.put("Authorization", "Bearer " + jiraAppBearerAuthToken);
 
             try {
                 // capture response
