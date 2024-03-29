@@ -11,6 +11,7 @@ import java.time.temporal.IsoFields;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
+import java.util.TimeZone;
 
 /**
  * The Class DateTimeUtils.
@@ -461,5 +462,24 @@ public class DateTimeUtil {
         logAccess.getLogger().info("parsedDateTime :- " + parsedDateTime);
 
         return parsedDateTime;
+    }
+    
+    /**
+     * Parsing the dateTime to get the GMT date.
+     *
+     * @param dateTimeToParse      date time to be parsed
+     * @param actualDateTimeFormat the date time format of the actual dateTime
+     * @return parsedDateTime DateTime in the String format
+     * @throws ParseException The ParseException
+     */
+    public static String parseDateTimeToGMT(String dateTimeToParse, String actualDateTimeFormat)
+            throws ParseException {
+        
+        Date dateTime = DateUtils.parseDate(dateTimeToParse, new String[]{actualDateTimeFormat});
+        DateFormat gmtFormat = new SimpleDateFormat(actualDateTimeFormat);
+        TimeZone gmtTime = TimeZone.getTimeZone("GMT");
+        gmtFormat.setTimeZone(gmtTime);
+        
+        return gmtFormat.format(dateTime);
     }
 }

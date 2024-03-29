@@ -3322,5 +3322,38 @@ public class CommonFunctions {
 
 		executeJs(driver, element, jScript);
 	}
+	
+	/**
+	 * Clears the cache in Chrome browser
+	 * @param driver the driver
+	 * @throws Exception the exception
+	 */
+	public void clearChromeCache(WebDriver driver) throws Exception {
+		if (CommonVariables.BROWSER_SELECT.equalsIgnoreCase("chrome")) {
+			String mainWindow = driver.getWindowHandle();
+			JavascriptExecutor js = (JavascriptExecutor)driver;
+			js.executeScript("window.open()");
+			
+			for (String winHandle : driver.getWindowHandles()) {
+				driver.switchTo().window(winHandle);
+				System.out.println(driver.getCurrentUrl());
+				if(driver.getCurrentUrl().equals("about:blank")){
+					break;
+				}
+			}
+			
+			driver.get("chrome://settings/clearBrowserData");
+			Thread.sleep(2000);
+			
+			WebElement clearDataBtn =  (WebElement) js.executeScript("return document.querySelector(\"body > settings-ui\").shadowRoot.querySelector(\"div#container > #main\").shadowRoot.querySelector(\".cr-centered-card-container\").shadowRoot.querySelector(\"[page-title='Privacy and security'] settings-privacy-page\").shadowRoot.querySelector(\"settings-clear-browsing-data-dialog\").shadowRoot.querySelector(\"#clearBrowsingDataDialog #clearBrowsingDataConfirm\")");
+			
+			js.executeScript("arguments[0].click();", clearDataBtn);
+			
+			driver.close();
+			driver.switchTo().window(mainWindow);
+		}else{
+			System.out.println("As of now Cache clearing is supported for Chrome browser only.");
+		}
+	}
 
 }
