@@ -22,7 +22,7 @@ public class CommonVariables {
     public static final String EMAIL_BODY = "body";
     public static final String EMAIL_ATTACHMENT_FILE_PATH = "attachment";
 
-    public static final String HOST_ADDRESS = System.getenv("SBOX_URL");
+    public static final String HOST_ADDRESS = (System.getenv("SBOX_URL") != null) ? System.getenv("SBOX_URL") : System.getProperty("SBOX_URL");
 
 	public static final boolean IS_RUNNING_ON_SBOX =
             System.getProperty("sbox") != null && !System.getProperty("sbox").isEmpty() && Boolean.parseBoolean(System.getProperty("sbox"));

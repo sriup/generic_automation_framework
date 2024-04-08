@@ -540,8 +540,9 @@ public class BrowserFunctions {
 	 * @return the SeleniumBox capabilities
 	 */
 	private DesiredCapabilities setSboxOptions() {
+		String sBoxToken = (System.getenv("SBOX_TOKEN") != null) ? System.getenv("SBOX_TOKEN") : System.getProperty("SBOX_TOKEN");
 		DesiredCapabilities sboxCaps = new DesiredCapabilities();
-		sboxCaps.setCapability("e34:token", System.getenv("SBOX_TOKEN"));
+		sboxCaps.setCapability("e34:token", sBoxToken);
 		sboxCaps.setCapability("e34:video", true);
 		sboxCaps.setCapability("e34:timezone", "US/Eastern");
 		sboxCaps.setCapability("e34:per_test_timeout_ms", 300000);
