@@ -27,6 +27,9 @@ public class CommonVariables {
 	public static final boolean IS_RUNNING_ON_SBOX =
             System.getProperty("sbox") != null && !System.getProperty("sbox").isEmpty() && Boolean.parseBoolean(System.getProperty("sbox"));
 
+    // Max SeleniumBox browser instance timeout
+    public static int maxSBoxBrowserTimeOut = 30000;
+
 	/* The implicit wait time */
     //public static int IMPLICIT_WAIT = 15;
 

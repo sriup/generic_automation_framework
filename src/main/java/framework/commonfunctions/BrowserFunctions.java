@@ -545,7 +545,7 @@ public class BrowserFunctions {
 		sboxCaps.setCapability("e34:token", sBoxToken);
 		sboxCaps.setCapability("e34:video", true);
 		sboxCaps.setCapability("e34:timezone", "US/Eastern");
-		sboxCaps.setCapability("e34:per_test_timeout_ms", 300000);
+		sboxCaps.setCapability("e34:per_test_timeout_ms", CommonVariables.maxSBoxBrowserTimeOut);
 		sboxCaps.setCapability("e34:l_testName", this.getTestCaseName());
 		return sboxCaps;
 	}
