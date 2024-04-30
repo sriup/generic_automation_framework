@@ -22,13 +22,13 @@ public class CommonVariables {
     public static final String EMAIL_BODY = "body";
     public static final String EMAIL_ATTACHMENT_FILE_PATH = "attachment";
 
-    public static final String HOST_ADDRESS = (System.getenv("SBOX_URL") != null) ? System.getenv("SBOX_URL") : System.getProperty("SBOX_URL");
-
-	public static final boolean IS_RUNNING_ON_SBOX =
-            System.getProperty("sbox") != null && !System.getProperty("sbox").isEmpty() && Boolean.parseBoolean(System.getProperty("sbox"));
-
     // Max SeleniumBox browser instance timeout
-    public static int maxSBoxBrowserTimeOut = 30000;
+    public static int MAX_SBOX_BROWSER_TIMEOUT = 40000;
+    public static final String SBOX_HUB_URL = (System.getenv("SBOX_URL") != null && !System.getenv("SBOX_URL").isEmpty() ) ? System.getenv("SBOX_URL") : System.getProperty("SBOX_URL");
+    public static final String EXEC_PLATFORM = (System.getProperty("exec_platform") != null && !System.getProperty("exec_platform").isEmpty())? System.getProperty("exec_platform"):"Local";
+    public static final String HOST_ADDRESS = CommonVariables.EXEC_PLATFORM.equals("docker")? "http://localhost:4444": SBOX_HUB_URL;
+
+    public static final boolean IS_RUNNING_ON_SBOX = CommonVariables.EXEC_PLATFORM.equals("sbox");
 
 	/* The implicit wait time */
     //public static int IMPLICIT_WAIT = 15;

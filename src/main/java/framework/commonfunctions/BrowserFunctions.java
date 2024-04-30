@@ -1,16 +1,11 @@
 package framework.commonfunctions;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import framework.constants.CommonVariables;
 import framework.enums.BrowserEnums;
 import framework.logs.LogAccess;
 import framework.utilities.FolderFileUtil;
 import framework.utilities.JsonUtil;
 import io.qameta.allure.Step;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.MutableCapabilities;
@@ -18,7 +13,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.edge.EdgeDriverService;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -31,7 +25,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * All the methods related to the browser operations will be handled in this
@@ -130,15 +123,15 @@ public class BrowserFunctions {
 	/**
 	 * The thread driver.
 	 */
-	private ThreadLocal<RemoteWebDriver> threadDriver = null;
+	private WebDriver driver = null;
 
 	/**
 	 * Sets for WebDriver.
 	 *
-	 * @param remoteDriver the new remote WebDriver in the current thread
+	 * @param driver the new WebDriver
 	 */
-	public void setWebDriver(RemoteWebDriver remoteDriver) {
-		this.threadDriver.set(remoteDriver);
+	public void setWebDriver(WebDriver driver) {
+		this.driver = driver;
 	}
 
 	/**
@@ -148,8 +141,91 @@ public class BrowserFunctions {
 	 * thread
 	 */
 	public WebDriver getWebDriver() {
-		return this.threadDriver.get();
+		return this.driver;
 	}
+
+
+
+	/**
+	 * Navigates to the url and maximizes the browser.
+	 *
+	 * @param url to load
+	 * @see org.openqa.selenium.remote.RemoteWebDriver#get(String) get
+	 */
+	@Step("Navigating to \"{url}\"")
+	public void navigate(String url) {
+		this.logAccess.getLogger().info("Navigating to url :- " + url);
+		this.driver.manage().window().maximize();
+		this.driver.get(url);
+		CommonVariables.navigatedURLs.put(url, url);
+	}
+
+	/**
+	 * Get a string representing the current URL that the browser is looking at.
+	 *
+	 * @return The URL of the page currently loaded in the browser
+	 * @see org.openqa.selenium.remote.RemoteWebDriver#getCurrentUrl() getCurrentURL
+	 */
+	@Step("Getting current URL")
+	public String getCurrentURL() {
+		String currentURL = this.driver.getCurrentUrl();
+		this.logAccess.getLogger().info("Current URL :- "+ currentURL);
+		return currentURL;
+	}
+
+	/**
+	 * Close the current window, quitting the browser if it's the last window
+	 * currently open.
+	 *
+	 * @see org.openqa.selenium.remote.RemoteWebDriver#close() close
+	 */
+	@Step("Closing browser")
+	public void close() {
+		this.logAccess.getLogger().info("Closing browser");
+		this.driver.close();
+	}
+
+	/**
+	 * Quits this driver, closing every associated window.
+	 *
+	 * @see org.openqa.selenium.remote.RemoteWebDriver#quit() quit
+	 */
+	@Step("Quiting the browser")
+	public void quit() {
+		this.logAccess.getLogger().info("Quiting the browser");
+		this.driver.quit();
+	}
+
+	/**
+	 * Refresh the current page.
+	 *
+	 * @see org.openqa.selenium.remote.RemoteWebDriver#navigate() refresh
+	 */
+	@Step("Refreshing the browser")
+	public void refresh() {
+		this.logAccess.getLogger().info("Refreshing the browser");
+		this.driver.navigate().refresh();
+	}
+
+	/**
+	 * Navigate back.
+	 */
+	// back
+	@Step("Navigating back in browser")
+	public void navigateBack() {
+		this.logAccess.getLogger().info("Navigating back in browser");
+		this.driver.navigate().back();
+	}
+
+	/**
+	 * Navigate forward.
+	 */
+	@Step("Navigating forward in browser")
+	public void navigateForward() {
+		this.logAccess.getLogger().info("Navigating forward in browser");
+		this.driver.navigate().forward();
+	}
+
 
 	/**
 	 * Launches the specified browser.
@@ -170,358 +246,78 @@ public class BrowserFunctions {
 	 * @throws IOException the IO exception
 	 */
 	@Step("Launching \"{browserName}\" browser")
-	public WebDriver launch(String browserName, String downloadPath) throws IOException {
-		setDownloadFolderPath(downloadPath);
-		this.logAccess.getLogger().info("Launching browser :-  " + browserName);
-		this.logAccess.getLogger().info("Downloads folder :- " + getDownloadFolderPath());
-		this.browserName = browserName;
-		WebDriver driver = null;
+	public WebDriver launch(String browserName, String downloadPath, String testCaseName) throws Exception {
 
-		switch (browserName.trim().toLowerCase()) {
-			case "chrome":
-				DownloadWebDrivers.downloadDriver(BrowserEnums.Chrome);
-				driver = launchChrome();
-				break;
-			case "firefox":
-				DownloadWebDrivers.downloadDriver(BrowserEnums.Firefox);
-				driver = launchFirefox();
-				break;
-			case "edge":
-				DownloadWebDrivers.downloadDriver(BrowserEnums.Edge);
-				driver = launchEdge();
+		this.setBrowserName(browserName);
+
+		this.setDownloadFolderpath(downloadPath);
+
+		this.setTestCaseName(testCaseName);
+
+		MutableCapabilities driverCaps = getCapabilities(browserName);
+
+		switch (CommonVariables.EXEC_PLATFORM.toLowerCase()) {
+			case "sbox":
+			case "docker":
+				launchRemoteDriver(browserName.toLowerCase(), driverCaps);
 				break;
 			default:
-				this.logAccess.getLogger().info(
-						"Unexpected value : " + browserName + "\n only supported browsers are: chrome, firefox, edge, ie");
-				throw new IllegalArgumentException(
-						"Unexpected value : " + browserName + "\n only supported browsers are: chrome, firefox, edge, ie");
+				launchLocalDriver(browserName.toLowerCase(), driverCaps);
+				break;
 		}
 
-		if (driver != null) {
+		if (getWebDriver() != null) {
 			Capabilities caps = ((RemoteWebDriver) getWebDriver()).getCapabilities();
-			
+
 			CommonVariables.launchedBrowsers.put(caps.getBrowserName(), caps.getBrowserVersion());
 		}
-		return driver;
+		return getWebDriver();
 
-	}
-
-	/**
-	 * Navigates to the url and maximizes the browser.
-	 *
-	 * @param url to load
-	 * @see org.openqa.selenium.remote.RemoteWebDriver#get(String) get
-	 */
-	@Step("Navigating to \"{url}\"")
-	public void navigate(String url) {
-		this.logAccess.getLogger().info("Navigating to url :- " + url);
-		this.threadDriver.get().manage().window().maximize();
-		this.threadDriver.get().get(url);
-		CommonVariables.navigatedURLs.put(url, url);
-	}
-
-	/**
-	 * Get a string representing the current URL that the browser is looking at.
-	 *
-	 * @return The URL of the page currently loaded in the browser
-	 * @see org.openqa.selenium.remote.RemoteWebDriver#getCurrentUrl() getCurrentURL
-	 */
-	@Step("Getting current URL")
-	public String getCurrentURL() {
-		String currentURL = this.threadDriver.get().getCurrentUrl();
-		this.logAccess.getLogger().info("Current URL :- "+ currentURL);
-		return currentURL;
-	}
-
-	/**
-	 * Close the current window, quitting the browser if it's the last window
-	 * currently open.
-	 *
-	 * @see org.openqa.selenium.remote.RemoteWebDriver#close() close
-	 */
-	@Step("Closing browser")
-	public void close() {
-		this.logAccess.getLogger().info("Closing browser");
-		this.threadDriver.get().close();
-	}
-
-	/**
-	 * Quits this driver, closing every associated window.
-	 *
-	 * @see org.openqa.selenium.remote.RemoteWebDriver#quit() quit
-	 */
-	@Step("Quiting the browser")
-	public void quit() {
-		this.logAccess.getLogger().info("Quiting the browser");
-		this.threadDriver.get().quit();
-		this.threadDriver.remove();
-	}
-
-	/**
-	 * Refresh the current page.
-	 *
-	 * @see org.openqa.selenium.remote.RemoteWebDriver#navigate() refresh
-	 */
-	@Step("Refreshing the browser")
-	public void refresh() {
-		this.logAccess.getLogger().info("Refreshing the browser");
-		this.threadDriver.get().navigate().refresh();
-	}
-
-	/**
-	 * Navigate back.
-	 */
-	// back
-	@Step("Navigating back in browser")
-	public void navigateBack() {
-		this.logAccess.getLogger().info("Navigating back in browser");
-		this.threadDriver.get().navigate().back();
-	}
-
-	/**
-	 * Navigate forward.
-	 */
-	@Step("Navigating forward in browser")
-	public void navigateForward() {
-		this.logAccess.getLogger().info("Navigating forward in browser");
-		this.threadDriver.get().navigate().forward();
 	}
 
 	/*
 	 * !!!!!!!!!!!!!!!!!!!!!!!!!!!! Private Methods !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	 */
 
-	/**
-	 * Launch Chrome.
-	 *
-	 * @return the web driver
-	 * @throws IOException the IO exception
-	 */
 
-	private WebDriver launchChrome() throws IOException {
-		System.setProperty("webdriver.chrome.driver",
-				System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
-						+ BrowserEnums.Chrome + File.separatorChar
-						+ getWebDriverLocation(BrowserEnums.Chrome).replace(".", "_") + File.separatorChar
-						+ "chromedriver-win64" + File.separatorChar
-						+ "chromedriver.exe");
-		// !! Chrome Options !!
-		HashMap<String, Object> chromePrefs = new HashMap<>();
-		chromePrefs.put("profile.default_content_settings.popups", 0);
-		chromePrefs.put("download.default_directory", this.getDownloadFolderPath());
-		chromePrefs.put("profile.default_content_setting_values.automatic_downloads", 1);
+	private WebDriver launchLocalDriver(String browserName, MutableCapabilities driverCaps) {
 
-		ChromeOptions options = new ChromeOptions();
-		options.setExperimentalOption("prefs", chromePrefs);
-		
-		options.setAcceptInsecureCerts(true);
-		/*options.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);*/
-		
-		options.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, "none");
-		threadDriver = new ThreadLocal<>();
-		setWebDriver(new ChromeDriver(options));
-		return getWebDriver();
-	}
-
-	/**
-	 * Launch firefox.<br>
-	 * <br>
-	 * <p>
-	 * Refer to <a href ='http://kb.mozillazine.org/Firefox_:_FAQs_:_About:config_Entries'>Firefox Configuration Details</a> for detailed information about each configuration
-	 * setting.<br>
-	 * ! If you want to see the preferences you can click the menu button menu ,
-	 * click Help and select Troubleshooting Information. The Troubleshooting
-	 * Information tab will open. And then click on `Profile Folder`
-	 *
-	 * @return the web driver
-	 * @throws IOException the IO exception
-	 */
-	private WebDriver launchFirefox() throws IOException {
-		System.setProperty("webdriver.gecko.driver",
-				System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
-						+ BrowserEnums.Firefox + File.separatorChar
-						+ getWebDriverLocation(BrowserEnums.Firefox).replace(".", "_") + File.separatorChar
-						+ "geckodriver.exe");
-		threadDriver = new ThreadLocal<>();
-
-		FirefoxProfile profile = new FirefoxProfile();
-
-		// set the download folder directory
-		profile.setPreference("browser.download.dir", this.getDownloadFolderPath());
-
-		// the last folder specified for a download
-		profile.setPreference("browser.download.folderList", 2);
-
-		// hide Download Manager window when a download begins
-		profile.setPreference("browser.download.manager.showWhenStarting", false);
-
-		/*This is the most important setting that will make sure the pdf is downloaded
-		 without any prompt
-		 */
-		profile.setPreference("pdfjs.disabled", true);
-
-		profile.setPreference("pref.downloads.disable_button.edit_actions", false);
-		profile.setPreference("media.navigator.permission.disabled", true);
-
-		// A comma-separated list of MIME types to save to disk without asking what to
-		// use to open the file.
-		profile.setPreference("browser.helperApps.neverAsk.saveToDisk",
-				"application/pdf,application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/zip,text/csv,text/plain,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;octet/stream");
-
-		// A comma-separated list of MIME types to open directly without asking for
-		// confirmation.
-		profile.setPreference("browser.helperApps.neverAsk.openFile",
-				"application/pdf,application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/zip,text/csv,text/plain,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;octet/stream");
-
-		// Do not ask what to do with an unknown MIME type
-		profile.setPreference("browser.helperApps.alwaysAsk.force", false);
-
-		// Leave the window in the background when starting a download (Default Setting
-		// is false)
-		profile.setPreference("browser.download.manager.focusWhenStarting", false);
-
-		// popup window at bottom right corner of the screen will not appear once all
-		// downloads are finished.
-		profile.setPreference("browser.download.manager.showAlertOnComplete", true);
-
-		// Close the Download Manager when all downloads are complete
-		profile.setPreference("browser.download.manager.closeWhenDone", true);
-
-		FirefoxOptions options = new FirefoxOptions();
-		options.setProfile(profile);
-		setWebDriver(new FirefoxDriver(options));
-		return getWebDriver();
-
-	}
-
-	/**
-	 * Launch edge.
-	 *
-	 * @return the web driver
-	 * @throws IOException the IO exception
-	 */
-	private WebDriver launchEdge() throws IOException {
-		System.setProperty("webdriver.edge.driver",
-				System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
-						+ BrowserEnums.Edge + File.separatorChar
-						+ getWebDriverLocation(BrowserEnums.Edge).replace(".", "_") + File.separatorChar
-						+ "msedgedriver.exe");
-		//TODO: Need to work on the edge options to change the download path location
-
-		EdgeDriverService edgeDriverService = EdgeDriverService.createDefaultService();
-
-		threadDriver = new ThreadLocal<>();
-
-		EdgeOptions edgeOptions = new EdgeOptions();
-
-
-		setWebDriver(new EdgeDriver(edgeDriverService, edgeOptions));
-
-		// set the download path and the download behavior
-		Map<String, Object> commandParameters = new HashMap<>();
-
-		commandParameters.put("cmd", "Page.setDownloadBehavior");
-
-		Map<String, String> parameters = new HashMap<>();
-
-		parameters.put("behavior", "allow");
-
-		parameters.put("downloadPath", getDownloadFolderPath());
-
-
-		commandParameters.put("params", parameters);
-
-		ObjectMapper objectMapper = new ObjectMapper();
-
-		HttpClient httpClient = HttpClientBuilder.create().build();
-
-		String command = objectMapper.writeValueAsString(commandParameters);
-
-		// get the remote driver session id
-		SessionId session = ((RemoteWebDriver) this.getWebDriver()).getSessionId();
-
-		String postRequestUri = edgeDriverService.getUrl().toString() + "/session/" + session + "/chromium/send_command";
-
-		HttpPost postRequest = new HttpPost(postRequestUri);
-
-		postRequest.addHeader("content-type", "application/json");
-
-		postRequest.setEntity(new StringEntity(command));
-
-		httpClient.execute(postRequest);
-
-		return getWebDriver();
-
-	}
-
-	private String getWebDriverLocation(BrowserEnums browserName) throws IOException {
-
-		JsonUtil jsonUtil = new JsonUtil(logAccess);
-
-		return jsonUtil.getValue(System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
-				+ "DriversInfo.json", browserName.toString() + ".version");
-	}
-
-	/**
-	 * launches browser either on local or on selenium box
-	 * @param browserName	the browser name
-	 * @param downloadPath	the download path
-	 * @param testCaseName  the test case name
-	 * @return	the remote WebDriver instance
-	 * @throws Exception the Exception
-	 */
-	public WebDriver launch(String browserName, String downloadPath, String testCaseName) throws Exception {
-
-		//TODO need to remove this below condition once the local grid implementation is done.
-		if (!CommonVariables.IS_RUNNING_ON_SBOX) {
-			launch(browserName, downloadPath);
-		} else {
-
-			this.setBrowserName(browserName);
-
-			this.setDownloadFolderpath(downloadPath);
-
-			this.setTestCaseName(testCaseName);
-
-			RemoteWebDriver remoteDriver;
-
-			MutableCapabilities caps = getCapabilities();
-			try {
-				if (CommonVariables.IS_RUNNING_ON_SBOX) { // adding this check as we will be removing the initial if condition later
-					remoteDriver = new RemoteWebDriver(new URL(CommonVariables.HOST_ADDRESS + "/wd/hub"), caps);
-					setSessionId(remoteDriver.getSessionId());
-				} else {
-					remoteDriver = new RemoteWebDriver(caps);
-				}
-			} catch (Exception e) {
-				this.logAccess.getLogger().info(e.getMessage());
-				throw e;
-			}
-			threadDriver = new ThreadLocal<>();
-
-			setWebDriver(remoteDriver);
-
-			// to handle the file upload when running on remote box
-			remoteDriver.setFileDetector(new LocalFileDetector());
-
-			remoteDriver.manage().window().setSize(new Dimension(1920, 1080));
+		switch (browserName.toLowerCase()){
+			case "firefox":
+				setWebDriver(new FirefoxDriver((FirefoxOptions) driverCaps));
+				break;
+			case "edge":
+				setWebDriver(new EdgeDriver((EdgeOptions) driverCaps));
+				break;
+			default:
+				setWebDriver(new ChromeDriver((ChromeOptions) driverCaps));
+				break;
 		}
-
 		return getWebDriver();
-
 	}
+
+	private WebDriver launchRemoteDriver(String browserName, MutableCapabilities driverCaps) throws Exception {
+		RemoteWebDriver remoteDriver = new RemoteWebDriver(new URL(CommonVariables.HOST_ADDRESS + "/wd/hub"), driverCaps);
+		// set the file detector to handle the file upload to the remote driver
+		remoteDriver.setFileDetector(new LocalFileDetector());
+		// making sure the browser
+		remoteDriver.manage().window().setSize(new Dimension(1920, 1080));
+		setWebDriver(remoteDriver);
+		setSessionId(remoteDriver.getSessionId());
+		return remoteDriver;
+	}
+
 
 	/**
 	 * get's the browser capabilities based on the browser name
 	 * @return the browser capabilities
 	 * @throws IOException the IO Exception
 	 */
-	private MutableCapabilities getCapabilities() throws IOException {
+	private MutableCapabilities getCapabilities(String browserName) throws IOException {
 
 		MutableCapabilities capabilities;
 
-		switch (getBrowserName().toLowerCase()) {
-
+		switch (browserName.toLowerCase()) {
 			case "firefox":
 				capabilities = setFirefoxOptions();
 				break;
@@ -530,6 +326,14 @@ public class BrowserFunctions {
 				break;
 			default:
 				capabilities = setChromeOptions();
+				break;
+		}
+		switch (CommonVariables.EXEC_PLATFORM.toLowerCase()) {
+			case "sbox":
+				setSboxOptions().asMap().forEach(capabilities::setCapability);
+				break;
+			case "docker":
+				setDockerBrowserOptions().asMap().forEach(capabilities::setCapability);
 				break;
 		}
 		return capabilities;
@@ -545,9 +349,19 @@ public class BrowserFunctions {
 		sboxCaps.setCapability("e34:token", sBoxToken);
 		sboxCaps.setCapability("e34:video", true);
 		sboxCaps.setCapability("e34:timezone", "US/Eastern");
-		sboxCaps.setCapability("e34:per_test_timeout_ms", CommonVariables.maxSBoxBrowserTimeOut);
+		sboxCaps.setCapability("e34:per_test_timeout_ms", CommonVariables.MAX_SBOX_BROWSER_TIMEOUT);
 		sboxCaps.setCapability("e34:l_testName", this.getTestCaseName());
 		return sboxCaps;
+	}
+
+	/**
+	 * sets Docker browser capabilities
+	 * @return the Docker Browser capabilities
+	 */
+	private DesiredCapabilities setDockerBrowserOptions() {
+		DesiredCapabilities dockerBrowserCaps = new DesiredCapabilities();
+		dockerBrowserCaps.setCapability("se:recordVideo", true);
+		return dockerBrowserCaps;
 	}
 
 	/**
@@ -560,7 +374,7 @@ public class BrowserFunctions {
 		FirefoxProfile profile = new FirefoxProfile();
 
 		// set the download folder directory
-		if(!CommonVariables.IS_RUNNING_ON_SBOX){
+		if(CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("local")){
 			profile.setPreference("browser.download.dir", this.getDownloadFolderPath());
 		}
 
@@ -607,23 +421,19 @@ public class BrowserFunctions {
 		FirefoxOptions options = new FirefoxOptions();
 		options.setProfile(profile);
 
-		if (CommonVariables.IS_RUNNING_ON_SBOX) {
-			
-			setSboxOptions().asMap().forEach(options::setCapability);
-			
-		} else {
 
-			DownloadWebDrivers.downloadDriver(BrowserEnums.Firefox);
-			System.setProperty("webdriver.gecko.driver",
-					System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
-							+ BrowserEnums.Firefox + File.separatorChar
-							+ getWebDriverLocation(BrowserEnums.Firefox).replace(".", "_") + File.separatorChar
-							+ "geckodriver.exe");
+		if (CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("local")){
+
+				DownloadWebDrivers.downloadDriver(BrowserEnums.Firefox);
+				System.setProperty("webdriver.gecko.driver",
+						System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
+								+ BrowserEnums.Firefox + File.separatorChar
+								+ getWebDriverLocation(BrowserEnums.Firefox).replace(".", "_") + File.separatorChar
+								+ "geckodriver.exe");
 		}
 
 		return options;
 	}
-
 
 	/**
 	 * sets Chrome browser capabilities
@@ -633,20 +443,20 @@ public class BrowserFunctions {
 	private ChromeOptions setChromeOptions() throws IOException {
 		// !! Chrome Options !!
 		HashMap<String, Object> chromePrefs = new HashMap<>();
-		
+
 		chromePrefs.put("profile.default_content_settings.popups", 0);
 
-		if(!CommonVariables.IS_RUNNING_ON_SBOX){
+		if(CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("local")){
 			chromePrefs.put("download.default_directory", this.getDownloadFolderPath());
 		}
 		chromePrefs.put("profile.default_content_setting_values.automatic_downloads", 1);
 
 		ChromeOptions options = new ChromeOptions();
 		options.setExperimentalOption("prefs", chromePrefs);
-		
+
 		options.setAcceptInsecureCerts(true);
 		/*options.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);*/
-		
+
 		options.setCapability(CapabilityType.PAGE_LOAD_STRATEGY, "none");
 
 		HashMap<String, Object> chromeLocalStatePrefs = new HashMap<>();
@@ -655,17 +465,14 @@ public class BrowserFunctions {
 		chromeLocalStatePrefs.put("browser.enabled_labs_experiments", experimentalFlags);
 		options.setExperimentalOption("localState", chromeLocalStatePrefs);
 
-		if (CommonVariables.IS_RUNNING_ON_SBOX) {
-			
-			setSboxOptions().asMap().forEach(options::setCapability);
-			
-		} else {
+		if (CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("local")) {
 			DownloadWebDrivers.downloadDriver(BrowserEnums.Chrome);
-			String chromeDriverPath = System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
-					+ BrowserEnums.Chrome + File.separatorChar
-					+ getWebDriverLocation(BrowserEnums.Chrome).replace(".", "_") + File.separatorChar
-					+ "chromedriver.exe";
-			System.setProperty("webdriver.chrome.driver", chromeDriverPath);
+			System.setProperty("webdriver.chrome.driver",
+					System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
+							+ BrowserEnums.Chrome + File.separatorChar
+							+ getWebDriverLocation(BrowserEnums.Chrome).replace(".", "_") + File.separatorChar
+							+ "chromedriver-win64" + File.separatorChar
+							+ "chromedriver.exe");
 		}
 
 		return options;
@@ -678,15 +485,8 @@ public class BrowserFunctions {
 	 */
 	private EdgeOptions setEdgeOptions() throws IOException {
 		EdgeOptions options = new EdgeOptions();
-		if(!CommonVariables.IS_RUNNING_ON_SBOX){
+		if (CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("local")) {
 			options.setCapability("download.default_directory", this.getDownloadFolderPath());
-		}
-
-		if (CommonVariables.IS_RUNNING_ON_SBOX) {
-			
-			setSboxOptions().asMap().forEach(options::setCapability);
-			
-		} else {
 			System.setProperty("webdriver.edge.driver",
 					System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
 							+ BrowserEnums.Edge + File.separatorChar
@@ -696,5 +496,13 @@ public class BrowserFunctions {
 
 		return options;
 	}
-	
+
+	private String getWebDriverLocation(BrowserEnums browserName) throws IOException {
+
+		JsonUtil jsonUtil = new JsonUtil(logAccess);
+
+		return jsonUtil.getValue(System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
+				+ "DriversInfo.json", browserName.toString() + ".version");
+	}
+
 }

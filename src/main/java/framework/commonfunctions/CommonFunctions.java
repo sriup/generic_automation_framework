@@ -7,6 +7,7 @@ import framework.logs.LogAccess;
 import framework.utilities.*;
 import io.restassured.response.Response;
 import org.apache.commons.io.FileUtils;
+import org.aspectj.util.FileUtil;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
@@ -21,6 +22,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.RasterFormatException;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -2565,8 +2567,13 @@ public class CommonFunctions {
 				}
 			}
 
-			// download the file from seleniumbox
-			downloadSboxFile(sessionId, downloadFolderPath);
+			if(CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("sbox")){
+				// download the file from SeleniumBox(SBox)
+				downloadSboxFile(sessionId, downloadFolderPath);
+			} else if (CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("docker")) {
+				// download the file from docker
+				downloadDockerFile(fileName,downloadFolderPath);
+			}
 
 			// close the downloads tab2
 			driver.close();
@@ -2586,6 +2593,19 @@ public class CommonFunctions {
 	}
 
 	/**
+	 * Moves the docker downloaded file the test case folder
+	 * @param fileName the downloaded file name
+	 * @param downloadFolderPath target directory (Test case folder)
+	 * @throws IOException the exception
+	 */
+	private void downloadDockerFile(String fileName, String downloadFolderPath) throws IOException {
+		String downloadFilePath = downloadFolderPath + File.separatorChar + fileName;
+		String sourceFile = System.getProperty("user.dir") + File.separatorChar + "downloads" + File.separatorChar + fileName;
+		FileUtil.copyFile(new File(sourceFile), new File(downloadFilePath));
+		FileUtils.delete(new File(sourceFile));
+	}
+
+	/**
 	 * downloads the file(s) all the files in the current browser session from SeleniumBox to the local machine
 	 *
 	 * @param sessionId          the session id
@@ -2595,7 +2615,7 @@ public class CommonFunctions {
 	private void downloadSboxFile(SessionId sessionId, String downloadFolderPath) throws Exception {
 
 		// check if selenium box is running
-		if (CommonVariables.IS_RUNNING_ON_SBOX) {
+		if (CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("sbox")) {
 
 			// get all test artifacts for download using SeleniumBox API
 			Response response = apiMethods.sendRequest("get", CommonVariables.HOST_ADDRESS + "/e34/api/downloads?session=" + sessionId.toString());
