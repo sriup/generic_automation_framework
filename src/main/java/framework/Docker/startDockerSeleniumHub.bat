@@ -1,0 +1,1 @@
+docker compose -f docker-compose-v3-dynamic-grid.yml up >> ./docker_logs.txt
