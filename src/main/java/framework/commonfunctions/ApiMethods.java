@@ -46,7 +46,7 @@ public class ApiMethods {
 	 */
 	public Response sendRequest(String requestType, String uri) {
 		this.logAccess.getLogger().debug("Sending " + requestType + " request to " + uri);
-		RequestSpecification httpRequest = RestAssured.given();
+		RequestSpecification httpRequest = RestAssured.given().relaxedHTTPSValidation();
 		// request header
 		defaultHeadersMap.forEach((k, v) -> httpRequest.header(k, v));
 		Response response;
@@ -80,7 +80,7 @@ public class ApiMethods {
 	 */
 	public Response sendRequest(String requestType, String uri, Map<String, String> headers) {
 		this.logAccess.getLogger().debug("Sending " + requestType + " request to " + uri);
-		RequestSpecification httpRequest = RestAssured.given();
+		RequestSpecification httpRequest = RestAssured.given().relaxedHTTPSValidation();
 		// add all headers to the request
 		headers.forEach((k, v) -> httpRequest.header(k, v));
 
@@ -124,7 +124,7 @@ public class ApiMethods {
 	public Response sendRequest(String requestType, String uri, HashMap<String, String> headers,
 								HashMap<String, Object> data) {
 		this.logAccess.getLogger().debug("Sending " + requestType + " request to " + uri);
-		RequestSpecification httpRequest = RestAssured.given();
+		RequestSpecification httpRequest = RestAssured.given().relaxedHTTPSValidation();
 
 		// add all headers to the request
 		headers.forEach((k, v) -> httpRequest.header(k, v));
@@ -164,7 +164,7 @@ public class ApiMethods {
 	 */
 	public Response sendRequest(String requestType, String uri, HashMap<String, String> headers, ObjectNode bodyPayload) {
 		this.logAccess.getLogger().debug("Sending " + requestType + " request to " + uri);
-		RequestSpecification httpRequest = RestAssured.given();
+		RequestSpecification httpRequest = RestAssured.given().relaxedHTTPSValidation();
 
 
 		// add all headers to the request
@@ -208,7 +208,8 @@ public class ApiMethods {
 	public Response sendRequest(String requestType, String uri, HashMap<String, String> headers, ContentTypesEnums contentType,
 								HashMap<String, Object> data) {
 		this.logAccess.getLogger().debug("Sending " + requestType + " request to " + uri);
-		RequestSpecification httpRequest = RestAssured.given();
+		
+		RequestSpecification httpRequest = RestAssured.given().relaxedHTTPSValidation();
 
 
 		// add all headers to the request
