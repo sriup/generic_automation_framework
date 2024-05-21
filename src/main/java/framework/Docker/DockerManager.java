@@ -10,6 +10,10 @@ import java.time.LocalTime;
 public class DockerManager {
 	private static final String PROJECT_DIR = System.getProperty("user.dir");
 	private static final String DOCKER_LOG_FILE = "docker_logs.txt";
+	private static final String DOCKER_START_FILE_NAME = "startDockerSeleniumHub.bat";
+	private static final String DOCKER_STOP_FILE_NAME = "stopDockerSeleniumHub.bat";
+	private static final String START_DOCKER_PATH = PROJECT_DIR + File.separatorChar + "Docker" + File.separatorChar + DOCKER_START_FILE_NAME;
+	private static final String STOP_DOCKER_PATH = PROJECT_DIR + File.separatorChar + "Docker" + File.separatorChar + DOCKER_STOP_FILE_NAME;
 	private static final Path DOCKER_LOG_PATH = Path.of(PROJECT_DIR + File.separatorChar + DOCKER_LOG_FILE);
 
 	private static final String NODE_STARTED_MESSAGE = " Node has been added";
@@ -36,18 +40,26 @@ public class DockerManager {
 	 * @param operation
 	 */
 	public void dockerOperation(String operation) throws IOException {
-		Runtime runtime = Runtime.getRuntime();
+		ProcessBuilder pb;
+		File dir;
+		Process p;
 
 		// TODO Need to implement logic to leverage the compose and config file from the framework folder rather project level
 		// to have centralized control
 		switch (operation) {
 			case "START":
-				runtime.exec("cmd /c docker compose -f docker-compose-v3-dynamic-grid.yml up >> ./docker_logs.txt");
+				pb = new ProcessBuilder("cmd", "/c", DOCKER_START_FILE_NAME);
+				dir = new File(START_DOCKER_PATH);
+				pb.directory(dir);
+				p = pb.start();
 				waitForDockerMessage(NODE_STARTED_MESSAGE);
 				System.out.println("Selenium Grid is up");
 				break;
 			case "STOP":
-				runtime.exec("cmd /c docker compose -f docker-compose-v3-dynamic-grid.yml down");
+				pb = new ProcessBuilder("cmd", "/c", DOCKER_STOP_FILE_NAME);
+				dir = new File(STOP_DOCKER_PATH);
+				pb.directory(dir);
+				p = pb.start();
 				waitForDockerMessage(HUB_STOPPED_MESSAGE);
 				System.out.println("Selenium Grid is stopped.");
 				break;
