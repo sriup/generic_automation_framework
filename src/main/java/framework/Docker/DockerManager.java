@@ -1,5 +1,7 @@
 package framework.Docker;
 
+import framework.constants.CommonVariables;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,12 +10,10 @@ import java.time.Duration;
 import java.time.LocalTime;
 
 public class DockerManager {
-	private static final String PROJECT_DIR = System.getProperty("user.dir");
 	private static final String DOCKER_LOG_FILE = "docker_logs.txt";
 	private static final String DOCKER_START_FILE_NAME = "startDockerSeleniumHub.bat";
 	private static final String DOCKER_STOP_FILE_NAME = "stopDockerSeleniumHub.bat";
-	private static final String DOCKER_FOLDER_PATH = PROJECT_DIR + File.separatorChar + "Docker";
-	private static final Path DOCKER_LOG_PATH = Path.of(DOCKER_FOLDER_PATH + File.separatorChar + DOCKER_LOG_FILE);
+	private static final Path DOCKER_LOG_PATH = Path.of(CommonVariables.DOCKER_FOLDER_PATH + File.separatorChar + DOCKER_LOG_FILE);
 
 	private static final String NODE_STARTED_MESSAGE = "Node has been added";
 	private static final String HUB_STOPPED_MESSAGE = "selenium-hub exited with code 0";
@@ -48,7 +48,7 @@ public class DockerManager {
 		switch (operation) {
 			case "START":
 				pb = new ProcessBuilder("C:\\Windows\\System32\\cmd.exe", "/c", "start", "/min", DOCKER_START_FILE_NAME);
-				dir = new File(DOCKER_FOLDER_PATH);
+				dir = new File(CommonVariables.DOCKER_FOLDER_PATH);
 				pb.directory(dir);
 				p = pb.start();
 				waitForDockerMessage(NODE_STARTED_MESSAGE);
@@ -56,7 +56,7 @@ public class DockerManager {
 				break;
 			case "STOP":
 				pb = new ProcessBuilder("C:\\Windows\\System32\\cmd.exe", "/c", "start", "/min", DOCKER_STOP_FILE_NAME);
-				dir = new File(DOCKER_FOLDER_PATH);
+				dir = new File(CommonVariables.DOCKER_FOLDER_PATH);
 				pb.directory(dir);
 				p = pb.start();
 				waitForDockerMessage(HUB_STOPPED_MESSAGE);

@@ -1,5 +1,6 @@
 package framework.constants;
 
+import java.io.File;
 import java.util.HashMap;
 
 /**
@@ -21,6 +22,8 @@ public class CommonVariables {
     public static final String EMAIL_SUBJECT = "subject";
     public static final String EMAIL_BODY = "body";
     public static final String EMAIL_ATTACHMENT_FILE_PATH = "attachment";
+    public static final String PROJECT_FOLDER_PATH = System.getProperty("user.dir");
+    public static final String DOCKER_FOLDER_PATH = PROJECT_FOLDER_PATH + File.separatorChar + "Docker";
 
     // Max SeleniumBox browser instance timeout
     public static int MAX_SBOX_BROWSER_TIMEOUT = 40000;

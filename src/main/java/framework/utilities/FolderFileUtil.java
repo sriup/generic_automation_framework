@@ -329,6 +329,32 @@ public class FolderFileUtil {
 
 	}
 
+
+	/**
+	 * Moving the File from one location to the other location.
+	 *
+	 * @param sourceFilePath the Old Absolute source File path
+	 * @param sourceFileName the source file name
+	 * @param newFilePath the New Absolute target File path
+	 * @param newFileName    the newFileName
+	 * @return It will return the New File object
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public File moveFile(String sourceFilePath, String sourceFileName, String newFilePath, String newFileName) throws IOException {
+
+		File oldFile = new File(sourceFilePath + File.separatorChar + sourceFileName);
+
+		File newFile = new File(newFilePath + File.separatorChar + newFileName);
+
+		Files.move(oldFile.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+		this.logAccess.getLogger().debug("The file '" + newFileName + "' got moved from '" + sourceFilePath
+				+ "' to target location '" + newFilePath + "'");
+
+		return newFile;
+
+	}
+
 	/**
 	 * Copying the File from one location to the other location.
 	 *
