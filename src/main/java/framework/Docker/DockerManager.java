@@ -12,11 +12,10 @@ public class DockerManager {
 	private static final String DOCKER_LOG_FILE = "docker_logs.txt";
 	private static final String DOCKER_START_FILE_NAME = "startDockerSeleniumHub.bat";
 	private static final String DOCKER_STOP_FILE_NAME = "stopDockerSeleniumHub.bat";
-	private static final String START_DOCKER_PATH = PROJECT_DIR + File.separatorChar + "Docker" + File.separatorChar + DOCKER_START_FILE_NAME;
-	private static final String STOP_DOCKER_PATH = PROJECT_DIR + File.separatorChar + "Docker" + File.separatorChar + DOCKER_STOP_FILE_NAME;
-	private static final Path DOCKER_LOG_PATH = Path.of(PROJECT_DIR + File.separatorChar + DOCKER_LOG_FILE);
+	private static final String DOCKER_FOLDER_PATH = PROJECT_DIR + File.separatorChar + "Docker";
+	private static final Path DOCKER_LOG_PATH = Path.of(DOCKER_FOLDER_PATH + File.separatorChar + DOCKER_LOG_FILE);
 
-	private static final String NODE_STARTED_MESSAGE = " Node has been added";
+	private static final String NODE_STARTED_MESSAGE = "Node has been added";
 	private static final String HUB_STOPPED_MESSAGE = "selenium-hub exited with code 0";
 
 	public DockerManager() throws IOException {
@@ -48,16 +47,16 @@ public class DockerManager {
 		// to have centralized control
 		switch (operation) {
 			case "START":
-				pb = new ProcessBuilder("cmd", "/c", DOCKER_START_FILE_NAME);
-				dir = new File(START_DOCKER_PATH);
+				pb = new ProcessBuilder("C:\\Windows\\System32\\cmd.exe", "/c", "start", "/min", DOCKER_START_FILE_NAME);
+				dir = new File(DOCKER_FOLDER_PATH);
 				pb.directory(dir);
 				p = pb.start();
 				waitForDockerMessage(NODE_STARTED_MESSAGE);
 				System.out.println("Selenium Grid is up");
 				break;
 			case "STOP":
-				pb = new ProcessBuilder("cmd", "/c", DOCKER_STOP_FILE_NAME);
-				dir = new File(STOP_DOCKER_PATH);
+				pb = new ProcessBuilder("C:\\Windows\\System32\\cmd.exe", "/c", "start", "/min", DOCKER_STOP_FILE_NAME);
+				dir = new File(DOCKER_FOLDER_PATH);
 				pb.directory(dir);
 				p = pb.start();
 				waitForDockerMessage(HUB_STOPPED_MESSAGE);
@@ -68,9 +67,15 @@ public class DockerManager {
 		}
 	}
 	private void waitForDockerMessage(String message) throws IOException {
-		LocalTime endTime = LocalTime.now().plus(Duration.ofSeconds(120));
+		LocalTime endTime = LocalTime.now().plus(Duration.ofSeconds(300));
 		String logContent = "";
 		boolean isMessageFound = false;
+		boolean waitForFile = true;
+
+		while(LocalTime.now().compareTo(endTime) < 0 && waitForFile){
+			File f = new File(String.valueOf(DOCKER_LOG_PATH));
+			if(f.exists() && !f.isDirectory()) { waitForFile=false; break;}
+		}
 
 		while (LocalTime.now().compareTo(endTime) < 0) {
 			logContent = Files.readString(DOCKER_LOG_PATH);

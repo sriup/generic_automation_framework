@@ -361,6 +361,7 @@ public class BrowserFunctions {
 	private DesiredCapabilities setDockerBrowserOptions() {
 		DesiredCapabilities dockerBrowserCaps = new DesiredCapabilities();
 		dockerBrowserCaps.setCapability("se:recordVideo", true);
+		dockerBrowserCaps.setCapability("se:name", getTestCaseName());
 		return dockerBrowserCaps;
 	}
 
