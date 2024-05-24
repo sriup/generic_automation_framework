@@ -344,9 +344,9 @@ public class BrowserFunctions {
 	 * @return the SeleniumBox capabilities
 	 */
 	private DesiredCapabilities setSboxOptions() {
-		String sBoxToken = (System.getenv("SBOX_TOKEN") != null) ? System.getenv("SBOX_TOKEN") : System.getProperty("SBOX_TOKEN");
+
 		DesiredCapabilities sboxCaps = new DesiredCapabilities();
-		sboxCaps.setCapability("e34:token", sBoxToken);
+		sboxCaps.setCapability("e34:token", CommonVariables.SBOX_TOKEN);
 		sboxCaps.setCapability("e34:video", true);
 		sboxCaps.setCapability("e34:timezone", "US/Eastern");
 		sboxCaps.setCapability("e34:per_test_timeout_ms", CommonVariables.MAX_SBOX_BROWSER_TIMEOUT);
@@ -360,6 +360,7 @@ public class BrowserFunctions {
 	 */
 	private DesiredCapabilities setDockerBrowserOptions() {
 		DesiredCapabilities dockerBrowserCaps = new DesiredCapabilities();
+		dockerBrowserCaps.setCapability("se:downloadsEnabled", true);
 		dockerBrowserCaps.setCapability("se:recordVideo", true);
 		dockerBrowserCaps.setCapability("se:name", getTestCaseName());
 		return dockerBrowserCaps;
@@ -421,7 +422,7 @@ public class BrowserFunctions {
 
 		FirefoxOptions options = new FirefoxOptions();
 		options.setProfile(profile);
-
+		options.setEnableDownloads(true);
 
 		if (CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("local")){
 
@@ -465,6 +466,7 @@ public class BrowserFunctions {
 		experimentalFlags.add("calculate-native-win-occlusion@2");
 		chromeLocalStatePrefs.put("browser.enabled_labs_experiments", experimentalFlags);
 		options.setExperimentalOption("localState", chromeLocalStatePrefs);
+		options.setEnableDownloads(true);
 
 		if (CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("local")) {
 			DownloadWebDrivers.downloadDriver(BrowserEnums.Chrome);
@@ -486,6 +488,7 @@ public class BrowserFunctions {
 	 */
 	private EdgeOptions setEdgeOptions() throws IOException {
 		EdgeOptions options = new EdgeOptions();
+		options.setEnableDownloads(true);
 		if (CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("local")) {
 			options.setCapability("download.default_directory", this.getDownloadFolderPath());
 			System.setProperty("webdriver.edge.driver",

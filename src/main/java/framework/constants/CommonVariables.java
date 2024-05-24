@@ -27,7 +27,9 @@ public class CommonVariables {
 
     // Max SeleniumBox browser instance timeout
     public static int MAX_SBOX_BROWSER_TIMEOUT = 40000;
-    public static final String SBOX_HUB_URL = (System.getenv("SBOX_URL") != null && !System.getenv("SBOX_URL").isEmpty() ) ? System.getenv("SBOX_URL") : System.getProperty("SBOX_URL");
+    public static final String SBOX_HUB_URL = (System.getenv("SBOX_URL") != null && !System.getenv("SBOX_URL").isEmpty()) ? System.getenv("SBOX_URL") : System.getProperty("SBOX_URL");
+
+    public static final String  SBOX_TOKEN = (System.getenv("SBOX_TOKEN") != null) ? System.getenv("SBOX_TOKEN") : System.getProperty("SBOX_TOKEN");
     public static final String EXEC_PLATFORM = (System.getProperty("exec_platform") != null && !System.getProperty("exec_platform").isEmpty())? System.getProperty("exec_platform"):"Local";
     public static final String HOST_ADDRESS = CommonVariables.EXEC_PLATFORM.equals("docker")? "http://localhost:4444": SBOX_HUB_URL;
 

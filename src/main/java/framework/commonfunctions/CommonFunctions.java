@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 import java.util.*;
@@ -2566,21 +2567,22 @@ public class CommonFunctions {
 							"aria-label", true, "");
 				}
 			}
-
+			
+			
+			// close the downloads tab2
+			driver.close();
+			
+			// switch back to main window
+			driver.switchTo().window(mainWindow);
+			
 			if(CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("sbox")){
 				// download the file from SeleniumBox(SBox)
 				downloadSboxFile(sessionId, downloadFolderPath);
 			} else if (CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("docker")) {
-				// download the file from docker
-				downloadDockerFile(fileName,downloadFolderPath);
+				((RemoteWebDriver) driver).downloadFile(fileName, Path.of(downloadFolderPath));
+				((RemoteWebDriver) driver).deleteDownloadableFiles();
+				
 			}
-
-			// close the downloads tab2
-			driver.close();
-
-			// switch back to main window
-			driver.switchTo().window(mainWindow);
-
 
 		} catch (Exception e) {
 			// switch back to main window
@@ -2590,19 +2592,6 @@ public class CommonFunctions {
 		}
 		return fileName;
 
-	}
-
-	/**
-	 * Moves the docker downloaded file the test case folder
-	 * @param fileName the downloaded file name
-	 * @param downloadFolderPath target directory (Test case folder)
-	 * @throws IOException the exception
-	 */
-	private void downloadDockerFile(String fileName, String downloadFolderPath) throws IOException {
-		String downloadFilePath = downloadFolderPath + File.separatorChar + fileName;
-		String sourceFile = System.getProperty("user.dir") + File.separatorChar + "downloads" + File.separatorChar + fileName;
-		FileUtil.copyFile(new File(sourceFile), new File(downloadFilePath));
-		FileUtils.delete(new File(sourceFile));
 	}
 
 	/**
