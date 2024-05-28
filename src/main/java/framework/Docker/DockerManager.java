@@ -12,11 +12,12 @@ import java.time.LocalTime;
 public class DockerManager {
 	private static final String DOCKER_LOG_FILE = "docker_logs.txt";
 	private static final String DOCKER_START_FILE_NAME = "startDockerSeleniumHub.bat";
-	private static final String DOCKER_STOP_FILE_NAME = "stopDockerSeleniumHub.bat";
+//	private static final String DOCKER_STOP_FILE_NAME = "stopDockerSeleniumHub.bat";
+	private static final String DOCKER_STOP_FILE_NAME = "cleanup.bat";
 	private static final Path DOCKER_LOG_PATH = Path.of(CommonVariables.DOCKER_FOLDER_PATH + File.separatorChar + DOCKER_LOG_FILE);
 
 	private static final String NODE_STARTED_MESSAGE = "Node has been added";
-	private static final String HUB_STOPPED_MESSAGE = "selenium-hub exited with code 0";
+	private static final String HUB_STOPPED_MESSAGE = "stopped: selenium-grid-hub";
 
 	public DockerManager() throws IOException {
 		clearOldLogFile();
@@ -47,7 +48,7 @@ public class DockerManager {
 		// to have centralized control
 		switch (operation) {
 			case "START":
-				pb = new ProcessBuilder("C:\\Windows\\System32\\cmd.exe", "/c", "start", "/min", DOCKER_START_FILE_NAME);
+				pb = new ProcessBuilder("C:\\Windows\\System32\\cmd.exe", "/c", "start", "/b", DOCKER_START_FILE_NAME);
 				dir = new File(CommonVariables.DOCKER_FOLDER_PATH);
 				pb.directory(dir);
 				p = pb.start();
@@ -55,7 +56,7 @@ public class DockerManager {
 				System.out.println("Selenium Grid is up");
 				break;
 			case "STOP":
-				pb = new ProcessBuilder("C:\\Windows\\System32\\cmd.exe", "/c", "start", "/min", DOCKER_STOP_FILE_NAME);
+				pb = new ProcessBuilder("C:\\Windows\\System32\\cmd.exe", "/c", "start", "/b", DOCKER_STOP_FILE_NAME);
 				dir = new File(CommonVariables.DOCKER_FOLDER_PATH);
 				pb.directory(dir);
 				p = pb.start();
