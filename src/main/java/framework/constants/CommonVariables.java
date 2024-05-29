@@ -17,6 +17,7 @@ public class CommonVariables {
      * eg : <b>-Dbrowser="chrome"</b>
      */
 
+    public static final String osName = System.getProperty("os.name");
     public static final String BROWSER_SELECT = System.getProperty("browser");
     public static final String EMAIL_RECIPIENTS="recipients";
     public static final String EMAIL_SUBJECT = "subject";

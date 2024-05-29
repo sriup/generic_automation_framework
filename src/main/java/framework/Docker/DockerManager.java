@@ -11,9 +11,9 @@ import java.time.LocalTime;
 
 public class DockerManager {
 	private static final String DOCKER_LOG_FILE = "docker_logs.txt";
-	private static final String DOCKER_START_FILE_NAME = "startDockerSeleniumHub.bat";
+	private static final String DOCKER_START_FILE_NAME = "startDockerSeleniumHub" + (CommonVariables.osName.equalsIgnoreCase("linux")?".sh":".bat");
 //	private static final String DOCKER_STOP_FILE_NAME = "stopDockerSeleniumHub.bat";
-	private static final String DOCKER_STOP_FILE_NAME = "cleanup.bat";
+	private static final String DOCKER_STOP_FILE_NAME = "cleanup" + (CommonVariables.osName.equalsIgnoreCase("linux")?".sh":".bat");
 	private static final Path DOCKER_LOG_PATH = Path.of(CommonVariables.DOCKER_FOLDER_PATH + File.separatorChar + DOCKER_LOG_FILE);
 
 	private static final String NODE_STARTED_MESSAGE = "Node has been added";
