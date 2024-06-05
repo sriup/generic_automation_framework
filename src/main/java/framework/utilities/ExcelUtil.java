@@ -2,6 +2,7 @@ package framework.utilities;
 
 import framework.logs.LogAccess;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -168,12 +169,38 @@ public class ExcelUtil {
 	 *
 	 * @param sheetName  Name of the work sheet
 	 * @param columnName the column name
+	 * @param headersRowIndex 	the index of the row where it contains all the headers
+	 * @return the column header index
+	 */
+	public int getColumnHeaderIndex(String sheetName, String columnName, int headersRowIndex) {
+		return ArrayUtils.indexOf(getColumnHeaders(sheetName, headersRowIndex), columnName);
+	}
+	
+	/**
+	 * Gets the column header index.
+	 *
+	 * @param sheetName  Name of the work sheet
+	 * @param columnName the column name
 	 * @return the column header index
 	 */
 	public int getColumnHeaderIndex(String sheetName, String columnName) {
-		return ArrayUtils.indexOf(getColumnHeaders(sheetName), columnName);
+		return getColumnHeaderIndex(sheetName, columnName, 0);
 	}
 
+	/**
+	 * Gets the column header index.
+	 *
+	 * @param sheetIndex the index of the sheet number (0-based physical and
+	 *                   logical) <br>
+	 *                   sheet index starts with 0.
+	 * @param columnName Name of the column
+	 * @param headersRowIndex 	the index of the row where it contains all the headers
+	 * @return the index of the column (index starts with 0)
+	 */
+	public int getColumnHeaderIndex(int sheetIndex, String columnName, int headersRowIndex) {
+		return ArrayUtils.indexOf(getColumnHeaders(sheetIndex, headersRowIndex), columnName);
+	}
+	
 	/**
 	 * Gets the column header index.
 	 *
@@ -184,7 +211,7 @@ public class ExcelUtil {
 	 * @return the index of the column (index starts with 0)
 	 */
 	public int getColumnHeaderIndex(int sheetIndex, String columnName) {
-		return ArrayUtils.indexOf(getColumnHeaders(sheetIndex), columnName);
+		return getColumnHeaderIndex(sheetIndex, columnName, 0);
 	}
 
 	/**
@@ -404,7 +431,7 @@ public class ExcelUtil {
 
 		for (int columnIndex = 0; columnIndex < columnCount; columnIndex++) {
 
-			headers[columnIndex] = (row.getCell(columnIndex) != null) ? row.getCell(columnIndex).toString() : "";
+			headers[columnIndex] = (row.getCell(columnIndex) != null) ? StringUtils.normalizeSpace(row.getCell(columnIndex).toString()) : "";
 
 		}
 
@@ -522,21 +549,37 @@ public class ExcelUtil {
 	 * @param sheetName  Name of the work sheet
 	 * @param rowNumber  the row number
 	 * @param columnName the column name
+	 * @param headersRowIndex 	the index of the row where it contains all the headers
 	 * @return the cell data
 	 */
 	// get cell value by header
-	public String getCellData(String sheetName, int rowNumber, String columnName) {
+	public String getCellData(String sheetName, int rowNumber, String columnName, int headersRowIndex) {
 		String cellValue;
 		// check if the rowNumber is with in the limit of available rows
 		if (rowNumber <= getRowCount(sheetName)) {
 			// get row based on the sheet name and row index
 			Row row = getRow(sheetName, rowNumber);
-			cellValue = row.getCell(getColumnHeaderIndex(sheetName, columnName)).toString();
+			cellValue = row.getCell(getColumnHeaderIndex(sheetName, columnName, headersRowIndex)).toString();
 		} else {
 			// throw error that rowNumber is > rows count in the sheet
 			throw new ArrayIndexOutOfBoundsException();
 		}
 		return cellValue;
+	}
+	
+	// get cell data based on sheet name and column name
+	/**
+	 * Gets the cell data.
+	 *
+	 * @param sheetName  Name of the work sheet
+	 * @param rowNumber  the row number
+	 * @param columnName the column name
+	 * @return the cell data
+	 */
+	// get cell value by header
+	public String getCellData(String sheetName, int rowNumber, String columnName) {
+		
+		return getCellData(sheetName, rowNumber, columnName, 0);
 	}
 
 	/**
@@ -551,7 +594,45 @@ public class ExcelUtil {
 
 		return getCellData(sheetName, row, columnName, true);
 	}
+	
+	/**
+	 * Gets the cell data
+	 *
+	 * @param sheetName  Name of the work sheet
+	 * @param row        Excel row
+	 * @param columnName the column name
+	 * @param headersRowIndex 	the index of the row where it contains all the headers
+	 * @return the cell data
+	 */
+	public String getCellData(String sheetName, Row row, String columnName,
+							  int headersRowIndex) {
+		
+		return getCellData(sheetName, row, columnName, true, headersRowIndex);
+	}
 
+	/**
+	 * Gets the cell data
+	 *
+	 * @param sheetName  Name of the work sheet
+	 * @param row        Excel row
+	 * @param columnName the column name
+	 * @param  addLogMsg  flag to decide whether the details should be logged to logger or not.
+	 * @param headersRowIndex 	the index of the row where it contains all the headers
+	 * @return the cell data
+	 */
+	public String getCellData(String sheetName, Row row, String columnName,
+							  boolean addLogMsg, int headersRowIndex) {
+
+		int sheetIndex = getSheetIndex(sheetName);
+
+		String cellValue = getCellData(sheetIndex, row, columnName, headersRowIndex);
+
+		if(addLogMsg) {
+			this.logAccess.getLogger().debug("Current cell value is '" + cellValue + "'");
+		}
+		return cellValue;
+	}
+	
 	/**
 	 * Gets the cell data
 	 *
@@ -562,15 +643,8 @@ public class ExcelUtil {
 	 * @return the cell data
 	 */
 	public String getCellData(String sheetName, Row row, String columnName, boolean addLogMsg) {
-
-		int sheetIndex = getSheetIndex(sheetName);
-
-		String cellValue = getCellData(sheetIndex, row, columnName);
-
-		if(addLogMsg) {
-			this.logAccess.getLogger().debug("Current cell value is '" + cellValue + "'");
-		}
-		return cellValue;
+		
+		return getCellData(sheetName, row, columnName, addLogMsg, 0);
 	}
 
 	/**
@@ -579,13 +653,15 @@ public class ExcelUtil {
 	 * @param sheetIndex Sheet Index of the work sheet
 	 * @param row        Excel row
 	 * @param columnName the column name
+	 * @param headersRowIndex 	the index of the row where it contains all the headers
 	 * @return the cell data
 	 */
-	public String getCellData(int sheetIndex, Row row, String columnName) {
+	public String getCellData(int sheetIndex, Row row, String columnName,
+							  int headersRowIndex) {
 		String cellValue = "";
 
 		try {
-			int columnNumber = getColumnHeaderIndex(sheetIndex, columnName);
+			int columnNumber = getColumnHeaderIndex(sheetIndex, columnName, headersRowIndex);
 
 			// get row based on the sheet name and row index
 			Cell cell = row.getCell(columnNumber);
@@ -595,6 +671,19 @@ public class ExcelUtil {
 		}
 
 		return cellValue;
+	}
+	
+	/**
+	 * Gets the cell data
+	 *
+	 * @param sheetIndex Sheet Index of the work sheet
+	 * @param row        Excel row
+	 * @param columnName the column name
+	 * @return the cell data
+	 */
+	public String getCellData(int sheetIndex, Row row, String columnName) {
+		
+		return getCellData(sheetIndex, row, columnName);
 	}
 
 	/**
@@ -637,7 +726,123 @@ public class ExcelUtil {
 		}
 		return map;
 	}
-
+	
+	
+	/**
+	 * Gets the filtered row if it matches all the column values
+	 *
+	 * @param sheetName      Name of the work sheet
+	 * @param filtersDataMap Column values in the Map to filter the row <br>
+	 *                       <font color="blue"><b>Example:</b> Below is the example
+	 *                       for the filtersDataMap to get all the rows which match
+	 *                       the specified k,v in the Map<br>
+	 *
+	 *                       <pre>
+	 *                       Map<String, String> filtersDataMap = new HashMap<>();
+	 *                       filtersDataMap.put("TestMethod", "Test_001");
+	 *                       filtersDataMap.put("ExecutionFlag", "Y");
+	 *                       filtersDataMap.put("Role", "Admin");
+	 *
+	 *                       <pre>
+	 *                       </font>
+	 * @param headersRowIndex the index of the row where it contains all the headers
+	 * @return The filtered row if it matches all the expected column values
+	 */
+	public Row getFilteredRow(String sheetName, Map<String, String> filtersDataMap,
+							  int headersRowIndex) {
+		
+		Sheet sheet = this.wb.getSheet(sheetName);
+		
+		Row filteredRow = null;
+		
+		for (Row currentRow : sheet) {
+			
+			Set<String> filtersDataMapKeys = filtersDataMap.keySet();
+			
+			boolean isFoundAllFilters = true;
+			
+			for (String filterMapKey : filtersDataMapKeys) {
+				
+				String filterMapValue = filtersDataMap.get(filterMapKey);
+				
+				String currentCellValue = getCellData(sheetName, currentRow, filterMapKey,
+						headersRowIndex);
+				
+				if (!currentCellValue.trim().equals(filterMapValue.trim())) {
+					isFoundAllFilters = false;
+					break;
+				}
+			}
+			
+			if (isFoundAllFilters) {
+				filteredRow = currentRow;
+				break;
+			}
+			
+		}
+		
+		return filteredRow;
+		
+	}
+	
+	/**
+	 * Gets the list of filtered rows if it matches all the column values
+	 *
+	 * @param sheetName      Name of the work sheet
+	 * @param filtersDataMap Column values in the Map to filter the row <br>
+	 *                       <font color="blue"><b>Example:</b> Below is the example
+	 *                       for the filtersDataMap to get all the rows which match
+	 *                       the specified k,v in the Map<br>
+	 *
+	 *                       <pre>
+	 *                       Map<String, String> filtersDataMap = new HashMap<>();
+	 *                       filtersDataMap.put("TestMethod", "Test_001");
+	 *                       filtersDataMap.put("ExecutionFlag", "Y");
+	 *                       filtersDataMap.put("Role", "Admin");
+	 *
+	 *                       <pre>
+	 *                       </font>
+	 * @param headersRowIndex 	the index of the row where it contains all the headers
+	 * @return The list of filtered rows if it matches all the expected column
+	 *         values
+	 */
+	public List<Row> getFilteredRows(String sheetName, Map<String, String> filtersDataMap,
+									 int headersRowIndex) {
+		
+		List<Row> filteredRows = new ArrayList<Row>();
+		
+		Sheet sheet = this.wb.getSheet(sheetName);
+		
+		for (Row currentRow : sheet) {
+			
+			Set<String> filtersDataMapKeys = filtersDataMap.keySet();
+			
+			boolean isFoundAllFilters = true;
+			
+			for (String filterMapKey : filtersDataMapKeys) {
+				
+				String filterMapValue = filtersDataMap.get(filterMapKey);
+				
+				String currentCellValue = getCellData(sheetName, currentRow, filterMapKey,
+						headersRowIndex);
+				
+				if (!currentCellValue.trim().equals(filterMapValue.trim())) {
+					isFoundAllFilters = false;
+					break;
+				}
+				
+			}
+			
+			if (isFoundAllFilters) {
+				filteredRows.add(currentRow);
+			}
+			
+		}
+		
+		return filteredRows;
+		
+	}
+	
 	/**
 	 * Gets the filtered row if it matches all the column values
 	 * 
@@ -659,37 +864,7 @@ public class ExcelUtil {
 	 */
 	public Row getFilteredRow(String sheetName, Map<String, String> filtersDataMap) {
 
-		Sheet sheet = this.wb.getSheet(sheetName);
-
-		Row filteredRow = null;
-
-		for (Row currentRow : sheet) {
-
-			Set<String> filtersDataMapKeys = filtersDataMap.keySet();
-
-			boolean isFoundAllFilters = true;
-
-			for (String filterMapKey : filtersDataMapKeys) {
-
-				String filterMapValue = filtersDataMap.get(filterMapKey);
-
-				String currentCellValue = getCellData(sheetName, currentRow, filterMapKey);
-
-				if (!currentCellValue.trim().equals(filterMapValue.trim())) {
-					isFoundAllFilters = false;
-					break;
-				}
-
-			}
-
-			if (isFoundAllFilters) {
-				filteredRow = currentRow;
-				break;
-			}
-
-		}
-
-		return filteredRow;
+		return getFilteredRow(sheetName, filtersDataMap, 0);
 
 	}
 
@@ -714,37 +889,8 @@ public class ExcelUtil {
 	 *         values
 	 */
 	public List<Row> getFilteredRows(String sheetName, Map<String, String> filtersDataMap) {
-
-		List<Row> filteredRows = new ArrayList<Row>();
-
-		Sheet sheet = this.wb.getSheet(sheetName);
-
-		for (Row currentRow : sheet) {
-
-			Set<String> filtersDataMapKeys = filtersDataMap.keySet();
-
-			boolean isFoundAllFilters = true;
-
-			for (String filterMapKey : filtersDataMapKeys) {
-
-				String filterMapValue = filtersDataMap.get(filterMapKey);
-
-				String currentCellValue = getCellData(sheetName, currentRow, filterMapKey);
-
-				if (!currentCellValue.trim().equals(filterMapValue.trim())) {
-					isFoundAllFilters = false;
-					break;
-				}
-
-			}
-
-			if (isFoundAllFilters) {
-				filteredRows.add(currentRow);
-			}
-
-		}
-
-		return filteredRows;
+		
+		return getFilteredRows(sheetName, filtersDataMap, 0);
 
 	}
 
