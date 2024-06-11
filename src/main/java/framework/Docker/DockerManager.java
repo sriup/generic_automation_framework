@@ -19,44 +19,32 @@ public class DockerManager {
 	private static final String NODE_STARTED_MESSAGE = "Node has been added";
 	private static final String HUB_STOPPED_MESSAGE = "stopped: selenium-grid-hub";
 
-	public DockerManager() throws IOException {
-		clearOldLogFile();
-	}
-
 	/**
-	 * Delete docker log file
-	 * @throws IOException IO Exception
+	 * perform the docker operations
+	 * Notes:
+	 * 	START - will run the bat/sh file with docker compose up command
+	 * 	STOP - will run the bat/sh file with docker compose down command
+	 * @param operation the operation to perform START/STOP
+	 * @throws Exception the exception
 	 */
-	private void clearOldLogFile() throws IOException {
-		if (Files.exists(DOCKER_LOG_PATH)) {
-			Files.delete(DOCKER_LOG_PATH);
-			System.out.println("Docker Log file deleted.");
-			Files.createFile(DOCKER_LOG_PATH);
-		}
-	}
-
-	/**
-	 *
-	 * @param operation
-	 */
-	public void dockerOperation(String operation) throws IOException {
+	public void dockerOperation(String operation) throws Exception {
 		ProcessBuilder pb;
 		File dir;
 		Process p;
 
-		// TODO Need to implement logic to leverage the compose and config file from the framework folder rather project level
-		// to have centralized control
-		switch (operation) {
+
+		switch (operation.toUpperCase()) {
 			case "START":
-				pb = new ProcessBuilder("C:\\Windows\\System32\\cmd.exe", "/c", "start", "/b", DOCKER_START_FILE_NAME);
+				pb = new ProcessBuilder("C:\\Windows\\System32\\cmd.exe", "/c", "start", DOCKER_START_FILE_NAME);
 				dir = new File(CommonVariables.DOCKER_FOLDER_PATH);
 				pb.directory(dir);
 				p = pb.start();
 				waitForDockerMessage(NODE_STARTED_MESSAGE);
+				Thread.sleep(15000);
 				System.out.println("Selenium Grid is up");
 				break;
 			case "STOP":
-				pb = new ProcessBuilder("C:\\Windows\\System32\\cmd.exe", "/c", "start", "/b", DOCKER_STOP_FILE_NAME);
+				pb = new ProcessBuilder("C:\\Windows\\System32\\cmd.exe", "/c", "start", DOCKER_STOP_FILE_NAME);
 				dir = new File(CommonVariables.DOCKER_FOLDER_PATH);
 				pb.directory(dir);
 				p = pb.start();
@@ -67,26 +55,42 @@ public class DockerManager {
 				throw new RuntimeException("Please provide either START or STOP for running docker");
 		}
 	}
-	private void waitForDockerMessage(String message) throws IOException {
+
+	/**
+	 * wait for specific docker message displayed in the docker_logs.txt file
+	 * @param message the message to be displayed
+	 * @throws Exception the exception
+	 */
+	private void waitForDockerMessage(String message) throws Exception {
+
+		// the end time to complete the waiting for the message.
 		LocalTime endTime = LocalTime.now().plus(Duration.ofSeconds(300));
+		// initialize the variables
 		String logContent = "";
 		boolean isMessageFound = false;
-		boolean waitForFile = true;
 
-		while(LocalTime.now().compareTo(endTime) < 0 && waitForFile){
+		while(LocalTime.now().isBefore(endTime)){
 			File f = new File(String.valueOf(DOCKER_LOG_PATH));
-			if(f.exists() && !f.isDirectory()) { waitForFile=false; break;}
+			if(f.exists() && !f.isDirectory()) { break;}
 		}
 
-		while (LocalTime.now().compareTo(endTime) < 0) {
+		// wait until the time is passed
+		while (LocalTime.now().isBefore(endTime)) {
+			// read the content from docker_logs.txt file
 			logContent = Files.readString(DOCKER_LOG_PATH);
+			// check if the log contains the specified message
 			if (logContent.contains(message)) {
+				// set the flag to true and exit the loop
 				isMessageFound = true;
 				break;
 			}
 		}
 
-		if (!isMessageFound)
+
+		if (!isMessageFound) {
 			throw new RuntimeException(message + " is not started found, check corresponding action for errors.");
+		} else{
+			System.out.println(message + " displayed in the log file.");
+		}
 	}
 }

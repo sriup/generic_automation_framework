@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>automation.generic</groupId>
     <artifactId>framework</artifactId>
-    <version>beta-0.12.7_ParseToGMT_BearerJiraToken_cache</version>
+    <version>beta-0.12.8_Jira_Token_Docker</version>
     <packaging>jar</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <selenium.version>4.20.0</selenium.version>
+        <selenium.version>4.16.1</selenium.version>
         <wdmanager.version>3.4.0</wdmanager.version>
         <aspectj.version>1.9.5</aspectj.version>
         <java.source-target.version>13</java.source-target.version>

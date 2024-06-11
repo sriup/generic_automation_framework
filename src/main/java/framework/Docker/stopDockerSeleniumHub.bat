@@ -1,1 +1,0 @@
-docker compose -f docker-compose-v3-dynamic-grid.yml down
