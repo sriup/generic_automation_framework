@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalTime;
 
@@ -35,16 +36,17 @@ public class DockerManager {
 
 		switch (operation.toUpperCase()) {
 			case "START":
-				pb = new ProcessBuilder("C:\\Windows\\System32\\cmd.exe", "/c", "start", DOCKER_START_FILE_NAME);
+				pb = new ProcessBuilder("C:\\Windows\\System32\\cmd.exe", "/c", "start", "/b", DOCKER_START_FILE_NAME);
 				dir = new File(CommonVariables.DOCKER_FOLDER_PATH);
 				pb.directory(dir);
 				p = pb.start();
+				CommonVariables.docker_composer_triggered = Files.readString(Paths.get(CommonVariables.DOCKER_FOLDER_PATH + File.separatorChar + "status.txt")).trim().equals("true");
 				waitForDockerMessage(NODE_STARTED_MESSAGE);
 				Thread.sleep(15000);
 				System.out.println("Selenium Grid is up");
 				break;
 			case "STOP":
-				pb = new ProcessBuilder("C:\\Windows\\System32\\cmd.exe", "/c", "start", DOCKER_STOP_FILE_NAME);
+				pb = new ProcessBuilder("C:\\Windows\\System32\\cmd.exe", "/c", "start", "/b", DOCKER_STOP_FILE_NAME);
 				dir = new File(CommonVariables.DOCKER_FOLDER_PATH);
 				pb.directory(dir);
 				p = pb.start();

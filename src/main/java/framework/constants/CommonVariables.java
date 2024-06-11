@@ -130,4 +130,5 @@ public class CommonVariables {
     public static HashMap<String, String> launchedBrowsers = new HashMap<>();
 
     public static boolean captureFullPageOnSoftAssert = true;
+    public static boolean docker_composer_triggered = false;
 }
