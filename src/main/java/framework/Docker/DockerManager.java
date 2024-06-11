@@ -42,7 +42,7 @@ public class DockerManager {
 				dir = new File(CommonVariables.DOCKER_FOLDER_PATH);
 				pb.directory(dir);
 				p = pb.start();
-				CommonVariables.docker_composer_triggered = Files.readString(Paths.get(CommonVariables.DOCKER_FOLDER_PATH + File.separatorChar + "status.txt")).trim().equals("true");
+				CommonVariables.docker_composer_triggered = Files.readString(Paths.get(CommonVariables.DOCKER_FOLDER_PATH + File.separatorChar + "status.txt")).trim().contains("true");
 				waitForDockerMessage(NODE_STARTED_MESSAGE);
 				Thread.sleep(15000);
 				System.out.println("Selenium Grid is up");
