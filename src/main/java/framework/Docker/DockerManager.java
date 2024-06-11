@@ -35,7 +35,9 @@ public class DockerManager {
 
 
 		switch (operation.toUpperCase()) {
+			//TODO Need to clear the cmd windows process once the pb is done.
 			case "START":
+
 				pb = new ProcessBuilder("C:\\Windows\\System32\\cmd.exe", "/c", "start", "/b", DOCKER_START_FILE_NAME);
 				dir = new File(CommonVariables.DOCKER_FOLDER_PATH);
 				pb.directory(dir);
