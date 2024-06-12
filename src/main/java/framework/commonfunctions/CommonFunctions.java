@@ -2512,14 +2512,14 @@ public class CommonFunctions {
 					
 					webDriverWait(driver, maxTimeoutInSeconds).until(ExpectedConditions
 							.elementToBeClickable((WebElement) ((JavascriptExecutor) driver).executeScript(
-									"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('a#show')")));
+									"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('div#content #file-link')")));
 					// get the file name
 					fileName = (String) ((JavascriptExecutor) driver).executeScript(
 							"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('div#content #file-link').text");
 					captureScreenShot(driver, "download_file");
 					Thread.sleep(1000);
 					js.executeScript(
-							"document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('div#content #remove-old').click()");
+							"document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('button#remove').click()");
 				}
 
 				// TODO Need to implement the logic to clear the downloaded file entry from
