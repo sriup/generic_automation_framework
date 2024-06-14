@@ -1,5 +1,6 @@
 package framework.constants;
 
+import java.io.File;
 import java.util.HashMap;
 
 /**
@@ -16,19 +17,24 @@ public class CommonVariables {
      * eg : <b>-Dbrowser="chrome"</b>
      */
 
+    public static final String osName = System.getProperty("os.name");
     public static final String BROWSER_SELECT = System.getProperty("browser");
     public static final String EMAIL_RECIPIENTS="recipients";
     public static final String EMAIL_SUBJECT = "subject";
     public static final String EMAIL_BODY = "body";
     public static final String EMAIL_ATTACHMENT_FILE_PATH = "attachment";
-
-    public static final String HOST_ADDRESS = (System.getenv("SBOX_URL") != null) ? System.getenv("SBOX_URL") : System.getProperty("SBOX_URL");
-
-	public static final boolean IS_RUNNING_ON_SBOX =
-            System.getProperty("sbox") != null && !System.getProperty("sbox").isEmpty() && Boolean.parseBoolean(System.getProperty("sbox"));
+    public static final String PROJECT_FOLDER_PATH = System.getProperty("user.dir");
+    public static final String DOCKER_FOLDER_PATH = new File(PROJECT_FOLDER_PATH).getParentFile().getAbsolutePath() + File.separatorChar + "icits-docker";
 
     // Max SeleniumBox browser instance timeout
-    public static int maxSBoxBrowserTimeOut = 40000;
+    public static int MAX_SBOX_BROWSER_TIMEOUT = 40000;
+    public static final String SBOX_HUB_URL = (System.getenv("SBOX_URL") != null && !System.getenv("SBOX_URL").isEmpty()) ? System.getenv("SBOX_URL") : System.getProperty("SBOX_URL");
+
+    public static final String  SBOX_TOKEN = (System.getenv("SBOX_TOKEN") != null) ? System.getenv("SBOX_TOKEN") : System.getProperty("SBOX_TOKEN");
+    public static final String EXEC_PLATFORM = (System.getProperty("exec_platform") != null && !System.getProperty("exec_platform").isEmpty())? System.getProperty("exec_platform"):"Local";
+    public static final String HOST_ADDRESS = CommonVariables.EXEC_PLATFORM.equals("docker")? "http://localhost:4444": SBOX_HUB_URL;
+
+    public static final boolean IS_RUNNING_ON_SBOX = CommonVariables.EXEC_PLATFORM.equals("sbox");
 
 	/* The implicit wait time */
     //public static int IMPLICIT_WAIT = 15;
@@ -124,4 +130,5 @@ public class CommonVariables {
     public static HashMap<String, String> launchedBrowsers = new HashMap<>();
 
     public static boolean captureFullPageOnSoftAssert = true;
+    public static boolean docker_composer_triggered = false;
 }

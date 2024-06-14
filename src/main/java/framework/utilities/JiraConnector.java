@@ -53,7 +53,8 @@ public class JiraConnector {
 
             try{
                 SecurityUtil securityUtil = new SecurityUtil();
-                jiraBearerAuthToken = securityUtil.decrypt(jiraBearerAuthToken);
+                String decryptedJiraAuthToken = securityUtil.decrypt(jiraBearerAuthToken);
+                jiraBearerAuthToken = decryptedJiraAuthToken != null ? decryptedJiraAuthToken: jiraBearerAuthToken;
             }catch (Exception exception){
                 System.out.println("Suggestion: The JIRA_TOKEN is not encrypted, it's recommended to use Encrypted tokens.");
             }

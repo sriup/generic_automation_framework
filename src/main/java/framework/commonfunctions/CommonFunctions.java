@@ -7,6 +7,7 @@ import framework.logs.LogAccess;
 import framework.utilities.*;
 import io.restassured.response.Response;
 import org.apache.commons.io.FileUtils;
+import org.aspectj.util.FileUtil;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
@@ -24,6 +25,7 @@ import java.io.File;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 import java.util.*;
@@ -2510,14 +2512,14 @@ public class CommonFunctions {
 					
 					webDriverWait(driver, maxTimeoutInSeconds).until(ExpectedConditions
 							.elementToBeClickable((WebElement) ((JavascriptExecutor) driver).executeScript(
-									"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('a#show')")));
+									"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('div#content #file-link')")));
 					// get the file name
 					fileName = (String) ((JavascriptExecutor) driver).executeScript(
 							"return document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('div#content #file-link').text");
 					captureScreenShot(driver, "download_file");
 					Thread.sleep(1000);
 					js.executeScript(
-							"document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('div#content #remove-old').click()");
+							"document.querySelector('downloads-manager').shadowRoot.querySelector('#downloadsList downloads-item').shadowRoot.querySelector('button#remove').click()");
 				}
 
 				// TODO Need to implement the logic to clear the downloaded file entry from
@@ -2564,16 +2566,22 @@ public class CommonFunctions {
 							"aria-label", true, "");
 				}
 			}
-
-			// download the file from seleniumbox
-			downloadSboxFile(sessionId, downloadFolderPath);
-
+			
+			
 			// close the downloads tab2
 			driver.close();
-
+			
 			// switch back to main window
 			driver.switchTo().window(mainWindow);
-
+			
+			if(CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("sbox")){
+				// download the file from SeleniumBox(SBox)
+				downloadSboxFile(sessionId, downloadFolderPath);
+			} else if (CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("docker")) {
+				((RemoteWebDriver) driver).downloadFile(fileName, Path.of(downloadFolderPath));
+				((RemoteWebDriver) driver).deleteDownloadableFiles();
+				
+			}
 
 		} catch (Exception e) {
 			// switch back to main window
@@ -2595,7 +2603,7 @@ public class CommonFunctions {
 	private void downloadSboxFile(SessionId sessionId, String downloadFolderPath) throws Exception {
 
 		// check if selenium box is running
-		if (CommonVariables.IS_RUNNING_ON_SBOX) {
+		if (CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("sbox")) {
 
 			// get all test artifacts for download using SeleniumBox API
 			Response response = apiMethods.sendRequest("get", CommonVariables.HOST_ADDRESS + "/e34/api/downloads?session=" + sessionId.toString());
