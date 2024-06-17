@@ -3363,5 +3363,90 @@ public class CommonFunctions {
 			System.out.println("As of now Cache clearing is supported for Chrome browser only.");
 		}
 	}
+	
+	/**
+	 * Clears the site data in Chrome browser
+	 *
+	 * @param driver the driver
+	 * @param siteName 	the site name for which the data cache has to be deleted
+	 * @param subSiteName 	the sub site name
+	 * @throws Exception the exception
+	 */
+	public void clearChromeSiteData(WebDriver driver, String siteName, String subSiteName) throws Exception {
+		if (CommonVariables.BROWSER_SELECT.equalsIgnoreCase("chrome")) {
+			String mainWindow = driver.getWindowHandle();
+			JavascriptExecutor js = (JavascriptExecutor)driver;
+			js.executeScript("window.open()");
+			
+			for (String winHandle : driver.getWindowHandles()) {
+				driver.switchTo().window(winHandle);
+				System.out.println(driver.getCurrentUrl());
+				if(driver.getCurrentUrl().equals("about:blank")){
+					break;
+				}
+			}
+			
+			driver.get("chrome://settings/content/all");
+			Thread.sleep(2000);
+			
+			ArrayList<WebElement> siteEntryElements = (ArrayList<WebElement>)js .executeScript("return document.querySelector('body > settings-ui').shadowRoot.querySelector(\"div#container > #main\").shadowRoot.querySelector(\".cr-centered-card-container\").shadowRoot.querySelector(\"[page-title='Privacy and security'] settings-privacy-page\").shadowRoot.querySelector(\"[section='privacy'] [page-title='All sites'] all-sites\").shadowRoot.querySelectorAll(\"#allSitesList > .no-outline\")");
+			
+			for(WebElement currentSiteEntryElement : siteEntryElements){
+				
+				WebElement currentExpandIconElement = (WebElement) js.executeScript("return arguments[0].shadowRoot.querySelector(\"#toggleButton > #expandIcon\")", currentSiteEntryElement);
+				
+				String expandIconSiteName = (String) js.executeScript("return arguments[0].getAttribute('aria-label');", currentExpandIconElement);
+				
+				String expandIconSiteNameHiddenStatus = (String) js.executeScript("return arguments[0].getAttribute('hidden');", currentExpandIconElement);
+				
+				boolean isClickedOnSiteDataRemoveButton = false;
+				
+				boolean isSiteNameMatched = siteName.equalsIgnoreCase(expandIconSiteName);
+				
+				if(isSiteNameMatched && expandIconSiteNameHiddenStatus != null){
+					
+					WebElement siteDeleteButton = (WebElement) js.executeScript("return arguments[0].shadowRoot.querySelector(\"#removeSiteButton\")", currentSiteEntryElement);
+					
+					js.executeScript("arguments[0].click();", siteDeleteButton);
+					
+					isClickedOnSiteDataRemoveButton = true;
+					
+				} else if (isSiteNameMatched) {
+					
+					
+					WebElement expandIconElement = (WebElement) js.executeScript("return arguments[0].shadowRoot.querySelector(\"#toggleButton > #expandIcon [aria-label='" + siteName + "']\")", currentSiteEntryElement);
+					
+					js.executeScript("arguments[0].click();", expandIconElement);
+					
+					WebElement subSiteDeleteButton = (WebElement) js.executeScript("return arguments[0].shadowRoot.querySelector(\"#collapseChild > .list-frame > .row-aligned > [data-origin='" + subSiteName + "'\")", currentSiteEntryElement);
+					
+					js.executeScript("arguments[0].click();", subSiteDeleteButton);
+					
+					isClickedOnSiteDataRemoveButton = true;
+					
+				}
+				
+				Thread.sleep(2000);
+				
+				WebElement deleteConfirmationButton = (WebElement) js.executeScript("return document.querySelector('body > settings-ui').shadowRoot.querySelector(\"div#container > #main\").shadowRoot.querySelector(\".cr-centered-card-container\").shadowRoot.querySelector(\"[page-title='Privacy and security'] settings-privacy-page\").shadowRoot.querySelector(\"[section='privacy'] [page-title='All sites'] all-sites\").shadowRoot.querySelector(\"[close-text='Close'] .action-button\")");
+				
+				if(isClickedOnSiteDataRemoveButton) {
+					js.executeScript("arguments[0].click();", deleteConfirmationButton);
+					
+					System.out.println("Site data deleted!!");
+				}
+				
+				// If Site name matches then we have to come out of this loop.
+				if(isSiteNameMatched)
+					break;
+			
+			}
+			
+			driver.close();
+			driver.switchTo().window(mainWindow);
+		}else{
+			System.out.println("As of now site data clearing is supported for Chrome browser only.");
+		}
+	}
 
 }
