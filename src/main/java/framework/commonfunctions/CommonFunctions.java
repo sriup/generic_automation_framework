@@ -3368,11 +3368,11 @@ public class CommonFunctions {
 	 * Clears the site data in Chrome browser
 	 *
 	 * @param driver the driver
-	 * @param siteName 	the site name for which the data cache has to be deleted
-	 * @param subSiteName 	the sub site name
+	 * @param domainName 	the domain name for which the data cache has to be deleted
+	 * @param siteName 	the site name
 	 * @throws Exception the exception
 	 */
-	public void clearChromeSiteData(WebDriver driver, String siteName, String subSiteName) throws Exception {
+	public void clearChromeSiteData(WebDriver driver, String domainName, String siteName) throws Exception {
 		if (CommonVariables.BROWSER_SELECT.equalsIgnoreCase("chrome")) {
 			String mainWindow = driver.getWindowHandle();
 			JavascriptExecutor js = (JavascriptExecutor)driver;
@@ -3401,7 +3401,7 @@ public class CommonFunctions {
 				
 				boolean isClickedOnSiteDataRemoveButton = false;
 				
-				boolean isSiteNameMatched = siteName.equalsIgnoreCase(expandIconSiteName);
+				boolean isSiteNameMatched = domainName.equalsIgnoreCase(expandIconSiteName);
 				
 				if(isSiteNameMatched && expandIconSiteNameHiddenStatus != null){
 					
@@ -3414,11 +3414,11 @@ public class CommonFunctions {
 				} else if (isSiteNameMatched) {
 					
 					
-					WebElement expandIconElement = (WebElement) js.executeScript("return arguments[0].shadowRoot.querySelector(\"#toggleButton > #expandIcon [aria-label='" + siteName + "']\")", currentSiteEntryElement);
+					WebElement expandIconElement = (WebElement) js.executeScript("return arguments[0].shadowRoot.querySelector(\"#toggleButton > #expandIcon [aria-label='" + domainName + "']\")", currentSiteEntryElement);
 					
 					js.executeScript("arguments[0].click();", expandIconElement);
 					
-					WebElement subSiteDeleteButton = (WebElement) js.executeScript("return arguments[0].shadowRoot.querySelector(\"#collapseChild > .list-frame > .row-aligned > [data-origin='" + subSiteName + "'\")", currentSiteEntryElement);
+					WebElement subSiteDeleteButton = (WebElement) js.executeScript("return arguments[0].shadowRoot.querySelector(\"#collapseChild > .list-frame > .row-aligned > [data-origin='" + siteName + "'\")", currentSiteEntryElement);
 					
 					js.executeScript("arguments[0].click();", subSiteDeleteButton);
 					
@@ -3433,7 +3433,7 @@ public class CommonFunctions {
 				if(isClickedOnSiteDataRemoveButton) {
 					js.executeScript("arguments[0].click();", deleteConfirmationButton);
 					
-					System.out.println("Site data deleted!!");
+					System.out.println(((siteName != null && !siteName.isEmpty()) ? "'" + siteName + "' Site under the " : "") + "'" + domainName + "' Domain data is deleted!!");
 				}
 				
 				// If Site name matches then we have to come out of this loop.

@@ -27,8 +27,14 @@ public class OutlookEmailUtil {
 		
 		SecurityUtil secUtil = new SecurityUtil();
 		
-		username = secUtil.decrypt(System.getenv("OUTLOOK_ID"));
-		password = secUtil.decrypt(System.getenv("OUTLOOK_PWD"));
+		String outlookId = System.getenv("OUTLOOK_ID");
+		outlookId = (outlookId != null && !outlookId.isEmpty()) ? outlookId : System.getProperty("OUTLOOK_ID");
+		
+		String outlookPassword = System.getenv("OUTLOOK_PWD");
+		outlookPassword = (outlookPassword != null && !outlookPassword.isEmpty()) ? outlookPassword : System.getProperty("OUTLOOK_PWD");
+		
+		username = (secUtil.decrypt(outlookId) != null) ? secUtil.decrypt(outlookId) : outlookId;
+		password = (secUtil.decrypt(outlookPassword) != null)? secUtil.decrypt(outlookPassword) : outlookPassword;
 		
 		Properties props = new Properties();
 		
@@ -66,22 +72,28 @@ public class OutlookEmailUtil {
 		message.setSubject(subject);
 		message.setText(emailContent);
 		
+		MimeBodyPart mimeBodyPart = new MimeBodyPart();
+		mimeBodyPart.setText((emailContent != null) ? emailContent : "");
+		
+		Multipart multipart = new MimeMultipart();
+		
+		multipart.addBodyPart(mimeBodyPart);
+		
 		if(fileAttachmentPath != null && !fileAttachmentPath.isEmpty()){
 			
-			MimeBodyPart messageBodyPart = new MimeBodyPart();
-			
-			Multipart multipart = new MimeMultipart();
+			mimeBodyPart = new MimeBodyPart();
 			
 			String file = fileAttachmentPath + File.separatorChar + fileName;
 			
 			DataSource source = new FileDataSource(file);
-			messageBodyPart.setDataHandler(new DataHandler(source));
-			messageBodyPart.setFileName(fileName);
-			multipart.addBodyPart(messageBodyPart);
+			mimeBodyPart.setDataHandler(new DataHandler(source));
+			mimeBodyPart.setFileName(fileName);
 			
-			message.setContent(multipart);
+			multipart.addBodyPart(mimeBodyPart);
 			
 		}
+		
+		message.setContent(multipart, "text/html");
 		
 		Transport.send(message);
 		
