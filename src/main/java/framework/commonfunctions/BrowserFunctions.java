@@ -25,6 +25,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * All the methods related to the browser operations will be handled in this
@@ -237,7 +238,6 @@ public class BrowserFunctions {
 	 *					 <li>Chrome</li>
 	 *					 <li>Firefox</li>
 	 *					 <li>Edge</li>
-	 *					 <li>IE</li>
 	 *					 </ul>
 	 *					 </font>
 	 * @param downloadPath the download path
@@ -490,7 +490,10 @@ public class BrowserFunctions {
 		EdgeOptions options = new EdgeOptions();
 		options.setEnableDownloads(true);
 		if (CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("local")) {
-			options.setCapability("download.default_directory", this.getDownloadFolderPath());
+			Map<String, Object> prefs = new HashMap<>();
+			prefs.put("download.default_directory", this.getDownloadFolderPath());
+			options.setExperimentalOption("prefs", prefs);
+			DownloadWebDrivers.downloadDriver(BrowserEnums.Edge);
 			System.setProperty("webdriver.edge.driver",
 					System.getProperty("user.dir") + File.separatorChar + "drivers" + File.separatorChar
 							+ BrowserEnums.Edge + File.separatorChar

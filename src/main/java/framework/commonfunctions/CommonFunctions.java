@@ -2354,7 +2354,7 @@ public class CommonFunctions {
 	}
 
 	/**
-	 * Capture full page screen shot.
+	 * Capture full page screenshot.
 	 *
 	 * @param driver         the {@link org.openqa.selenium.WebDriver WebDriver}
 	 * @param screenShotName the screenshot name <br>
