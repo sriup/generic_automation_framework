@@ -482,4 +482,28 @@ public class DateTimeUtil {
         
         return gmtFormat.format(dateTime);
     }
+    
+    /**
+     * Increase the no.of days based on the input date which it is provided
+     *
+     * @param inputDate	the input date
+     * @param actualDateTimeFormat 	the actual date time format
+     * @param dateFormat	the date format
+     * @param noOfDays	the number of days to be incremented
+     * @return	the increased date
+     * @throws Exception	the exception
+     */
+    public String increaseNoOfDays(String inputDate, String actualDateTimeFormat, String dateFormat,
+                                   int noOfDays) throws Exception {
+        
+        Date dateTime = DateUtils.parseDate(inputDate, new String[]{actualDateTimeFormat});
+        
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dateTime);
+        cal.add(Calendar.DATE, noOfDays);
+        
+        return simpleDateFormat.format(cal.getTime());
+    }
+    
 }
