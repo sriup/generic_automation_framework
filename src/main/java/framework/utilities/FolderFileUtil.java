@@ -237,7 +237,7 @@ public class FolderFileUtil {
 
 		File file = createFile(filePath, filename);
 
-		// Write Content
+		// Write Content.
 		FileWriter writer = new FileWriter(file);
 		
 		int counter = 1;
