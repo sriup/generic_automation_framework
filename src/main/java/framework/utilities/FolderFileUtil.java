@@ -237,14 +237,22 @@ public class FolderFileUtil {
 
 		File file = createFile(filePath, filename);
 
-		// Write Content
+		// Write Content.
 		FileWriter writer = new FileWriter(file);
-
+		
+		int counter = 1;
+		
 		for (String currentInputLine : inputLinesList) {
 
 			this.logAccess.getLogger().debug("Writing Current input line :- " + inputLinesList);
 
 			writer.write(currentInputLine);
+			
+			if(counter < inputLinesList.size()){
+				writer.write("\r\n");
+			}
+			
+			counter++;
 		}
 
 		writer.close();
