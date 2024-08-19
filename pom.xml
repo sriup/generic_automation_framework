@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>automation.generic</groupId>
     <artifactId>framework</artifactId>
-    <version>beta-0.12.10_Chrome_SiteClearData</version>
+    <version>beta-0.12.11_Excel_GetData_SOF_Fix</version>
     <packaging>jar</packaging>
 
     <properties>

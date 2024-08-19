@@ -683,7 +683,7 @@ public class ExcelUtil {
 	 */
 	public String getCellData(int sheetIndex, Row row, String columnName) {
 		
-		return getCellData(sheetIndex, row, columnName);
+		return getCellData(sheetIndex, row, columnName, 0);
 	}
 
 	/**
