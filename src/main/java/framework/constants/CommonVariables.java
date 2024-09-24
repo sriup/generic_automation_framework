@@ -117,7 +117,7 @@ public class CommonVariables {
      */
     public static final String[] TIME_FORMATS = {"yyyy:MM:dd_hh_mm_ss", "mm:dd:yy", "MM/dd/yyyy", "MM/dd/yyyy hh:mm",
             "hh:mm", "MM/dd/yyyy h:mma", "MM/dd/yyyy mm:ss a", "MM_dd_yyyy_hh_mm_ss", "MM_dd_yyyy_hh_mm_ss_SS",
-            "MM/dd/yyyy HH:mm:ss"};
+            "MM/dd/yyyy HH:mm:ss", "MM/dd/yyyy h:mm a", "MM/dd/yyyy hh:mm:ss a"};
 
     /**
      * store navigated urls
