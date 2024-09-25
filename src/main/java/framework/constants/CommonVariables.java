@@ -113,6 +113,14 @@ public class CommonVariables {
      *     <td>9</td>
      *     <td>MM/dd/yyyy HH:mm:ss</td>
      * </tr>
+     * <tr>
+     *     <td>10</td>
+     *     <td>MM/dd/yyyy h:mm a</td>
+     * </tr>
+     * <tr>
+     *     <td>11</td>
+     *     <td>MM/dd/yyyy hh:mm:ss a</td>
+     * </tr>
      * </table>
      */
     public static final String[] TIME_FORMATS = {"yyyy:MM:dd_hh_mm_ss", "mm:dd:yy", "MM/dd/yyyy", "MM/dd/yyyy hh:mm",
