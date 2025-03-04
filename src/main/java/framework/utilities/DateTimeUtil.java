@@ -472,7 +472,7 @@ public class DateTimeUtil {
      * @return parsedDateTime DateTime in the String format
      * @throws ParseException The ParseException
      */
-    public static String parseDateTimeToGMT(String dateTimeToParse, String actualDateTimeFormat)
+    public String parseDateTimeToGMT(String dateTimeToParse, String actualDateTimeFormat)
             throws ParseException {
         
         Date dateTime = DateUtils.parseDate(dateTimeToParse, new String[]{actualDateTimeFormat});

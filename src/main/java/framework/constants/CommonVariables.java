@@ -36,6 +36,17 @@ public class CommonVariables {
 
     public static final boolean IS_RUNNING_ON_SBOX = CommonVariables.EXEC_PLATFORM.equals("sbox");
 
+
+    // <<<< TESTRAIL DETAILS >>>> //
+
+    public static final String TESTRAIL_URL = (System.getenv("TESTRAIL_URL") != null && !System.getenv("TESTRAIL_URL").isEmpty()) ? System.getenv("TESTRAIL_URL") : System.getProperty("TESTRAIL_URL");
+    public static final String TESTRAIL_USER = (System.getenv("TESTRAIL_USER_EMAIL") != null && !System.getenv("TESTRAIL_USER_EMAIL").isEmpty()) ? System.getenv("TESTRAIL_USER_EMAIL") : System.getProperty("TESTRAIL_USER_EMAIL");
+    public static final String TESTRAIL_TOKEN = (System.getenv("TESTRAIL_API_KEY") != null && !System.getenv("TESTRAIL_API_KEY").isEmpty()) ? System.getenv("TESTRAIL_API_KEY") : System.getProperty("TESTRAIL_API_KEY");
+    public static final int TESTRAIL_PROJECT_ID = 23;//Integer.parseInt(System.getProperty("TESTRAIL_PROJECT_ID"));
+    public static final int TESTRAIL_PLAN_ID = 33079; //Integer.parseInt(System.getProperty("TESTRAIL_PLAN_ID"));
+    public static final int TESTRAIL_RUN_ID = 33525; //Integer.parseInt(System.getProperty("TESTRAIL_RUN_ID"));
+
+
 	/* The implicit wait time */
     //public static int IMPLICIT_WAIT = 15;
 
