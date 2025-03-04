@@ -44,7 +44,7 @@ public class CommonVariables {
     public static final String TESTRAIL_TOKEN = (System.getenv("TESTRAIL_API_KEY") != null && !System.getenv("TESTRAIL_API_KEY").isEmpty()) ? System.getenv("TESTRAIL_API_KEY") : System.getProperty("TESTRAIL_API_KEY");
     public static final int TESTRAIL_PROJECT_ID = 23;//Integer.parseInt(System.getProperty("TESTRAIL_PROJECT_ID"));
     public static final int TESTRAIL_PLAN_ID = 33079; //Integer.parseInt(System.getProperty("TESTRAIL_PLAN_ID"));
-    public static final int TESTRAIL_RUN_ID = 33525; //Integer.parseInt(System.getProperty("TESTRAIL_RUN_ID"));
+    public static int TESTRAIL_RUN_ID = 0; //Integer.parseInt(System.getProperty("TESTRAIL_RUN_ID"));
 
 
 	/* The implicit wait time */

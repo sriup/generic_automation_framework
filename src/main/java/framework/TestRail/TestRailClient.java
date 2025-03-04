@@ -35,21 +35,12 @@ public class TestRailClient {
         String base64EncodedAuthHeader = Base64.getEncoder().encodeToString(authHeader.getBytes());
         this.defaultHeaders.put("Authorization", "Basic " + base64EncodedAuthHeader);
 
-//
-//        // Set up the RestAssured request specification so that the client can make requests to the TestRail API
-//        // using the provided credentials and content type header by reusing the same request specification
-//        this.requestSpecification = RestAssured.given()
-//                .auth().preemptive().basic(testRailUsername, testRailPassword)
-//                .header("Content-Type", "application/json");
-        // get the project IDs from TestRail
         fetchProjectIds();
 
         // get the test case status codes
         fetchStatusCodes();
     }
 
-
-    // <<<<<<<< Test Case Run Status >>>>>>>>
 
 
     /**
@@ -129,14 +120,16 @@ public class TestRailClient {
      * and stores them in the `testPlanIds` map with the test plan name as the key.
      *
      * @param projectId the ID of the project to fetch test plan IDs for.
+     * @return
      */
-    public void fetchTestPlanIds(int projectId) {
+    public List<LinkedHashMap<String, Object>> fetchTestPlanIds(int projectId) {
 
         Response response = apiMethods.sendRequest("get", testrailBaseEndPoint +
                 "/get_plans/" + projectId + "&is_completed=0", this.defaultHeaders);
 
         testPlanIds = response.getBody().jsonPath().getList("");
 
+        return testPlanIds;
     }
 
 
@@ -174,8 +167,9 @@ public class TestRailClient {
      * and stores them in the `testRunIds` map with the test run name as the key.
      *
      * @param testPlanId the ID of the test plan to fetch test run IDs for.
+     * @return
      */
-    public void fetchTestRunIds(int testPlanId) {
+    public List<LinkedHashMap<String, Object>> fetchTestRunIds(int testPlanId) {
 
         // Fetch the test run IDs for the given test plan ID
         Response response = apiMethods.sendRequest("get",
@@ -183,6 +177,8 @@ public class TestRailClient {
 
         // Store the test run IDs in the testRunIds map
         testRunIds = response.getBody().jsonPath().getList("");
+
+        return testRunIds;
     }
 
     /**
@@ -237,6 +233,22 @@ public class TestRailClient {
         }else {
             System.out.println("Test statuses updated successfully.");
         }
+        return response;
+
+    }
+
+    public Response fetchTestPlan(Integer testPlanId) {
+
+        String requestUrl = testrailBaseEndPoint + "/get_plan/" + testPlanId;
+
+        Response response = apiMethods.sendRequest("get", requestUrl, this.defaultHeaders);
+
+        if(response.getStatusCode() != 200) {
+            throw new RuntimeException("Failed to fetch test plan. Response code: " + response.asString());
+        }else{
+            System.out.println("Test plan fetched successfully for test plan id: " + testPlanId + ".");
+        }
+
         return response;
 
     }
