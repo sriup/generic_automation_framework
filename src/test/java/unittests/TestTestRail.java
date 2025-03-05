@@ -14,12 +14,16 @@ public class TestTestRail {
     public void testTestRail() throws Exception {
         System.out.println("Test TestRail");
 
-        LogAccess logAccess = new LogAccess("TestRailTest", LogVerboseEnums.ALL);
+        LogAccess logAccess = new LogAccess("TestRailTest", LogVerboseEnums.INFO);
         TestRailUtil testRailUtil = new TestRailUtil(logAccess);
 
         String usersDataJsonFilePath = new File("").getAbsolutePath() + File.separatorChar + "Output" + File.separatorChar + "TestCaseDetails.json";
+        String evidencesFolderPath = new File("").getAbsolutePath() + File.separatorChar + "Output";
 
-        Response response = testRailUtil.updateTestStatus(usersDataJsonFilePath);
-        System.out.println(response.asString());
+        // update the test cases status
+        Response response = testRailUtil.updateMultipleTestStatuses(usersDataJsonFilePath);
+
+        // add attachments to the tests
+        testRailUtil.addAttachmentsToTests(response, evidencesFolderPath);
     }
 }
