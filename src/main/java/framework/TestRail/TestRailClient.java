@@ -7,11 +7,6 @@ import io.restassured.response.Response;
 import org.json.simple.JSONObject;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 public class TestRailClient {
@@ -175,7 +170,7 @@ public class TestRailClient {
      * Fetches the project IDs from TestRail.
      * This method makes a GET request to the TestRail API to retrieve the list of project IDs
      * and stores them in the `projectIds` list.
-     *
+     * <p>
      * The TestRail API endpoint for fetching projects is GET /get_projects.
      * The response is a JSON object containing an array of project details.
      * The project details include the project ID, name, and suite ID.
@@ -203,15 +198,6 @@ public class TestRailClient {
             throw new RuntimeException("Error fetching project IDs", e);
         }
 
-    }
-
-    /**
-     * Returns the list of project IDs fetched from TestRail.
-     * The list contains maps where each map contains the project ID and name.
-     * @return the list of project IDs
-     */
-    public List<LinkedHashMap<String, Object>> getProjectIds() {
-        return this.projectIds;
     }
 
     // <<<<<<<< Test Plan >>>>>>>>
@@ -257,28 +243,34 @@ public class TestRailClient {
      * Fetches the test cases for a given test run ID and stores them in a map.
      * The map contains the test case ID as the key and a map of the test case details as the value.
      * The test case details include the test case ID, name, and ID.
+     *
      * @param testRunId the ID of the test run for which to fetch the test cases
      * @return the map of test case IDs to test case details
      */
     @SuppressWarnings("unchecked")
     public HashMap<Integer, HashMap<String, Object>> fetchTestCases(int testRunId) {
 
-       String requestUrl = testrailBaseEndPoint +
-               TestRailApiEndPoints.GET_TESTS_BY_TEST_RUN_ID.replace("{test_run_id}", String.valueOf(testRunId));
+        // Construct the URL for the TestRail API endpoint to get test cases
+        String requestUrl = testrailBaseEndPoint +
+                TestRailApiEndPoints.GET_TESTS_BY_TEST_RUN_ID.replace("{test_run_id}", String.valueOf(testRunId));
 
-       Response response = apiMethods.sendRequest("get",
-               requestUrl, this.defaultHeaders);
+        // Make a GET request to the TestRail API to fetch test cases
+        Response response = apiMethods.sendRequest("get",
+                requestUrl, this.defaultHeaders);
 
-       HashMap<Integer, HashMap<String, Object>> testCaseIds = new HashMap<>(); // <testCaseId, testCaseName>
+        // Create a map to store the test case IDs and details
+        HashMap<Integer, HashMap<String, Object>> testCaseIds = new HashMap<>();
 
+        // Get the list of test cases from the response body
         List<Object> testCasesDetails = response.getBody().jsonPath().getList("");
 
-       for(Object item : response.getBody().jsonPath().getList("")){
+        // Iterate over the list of test cases
+        for (Object item : testCasesDetails) {
 
-            // Test case details
+            // Get the test case details
             LinkedHashMap<String, Object> testCaseDetailsObj = (LinkedHashMap<String, Object>) item;
 
-            // Test case ID
+            // Get the test case ID, name, and ID
             int testCaseId = (int) testCaseDetailsObj.get("case_id");
             String testCaseName = testCaseDetailsObj.get("title").toString();
             int testId = (int) testCaseDetailsObj.get("id");
@@ -291,9 +283,10 @@ public class TestRailClient {
 
             // Add the test case ID and details to the map
             testCaseIds.put(testCaseId, testCaseDetails);
-       }
+        }
 
-       return testCaseIds;
+        // Return the map of test case IDs to test case details
+        return testCaseIds;
     }
 
     @SuppressWarnings("unchecked")
