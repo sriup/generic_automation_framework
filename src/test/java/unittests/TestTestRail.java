@@ -24,6 +24,6 @@ public class TestTestRail {
         Response response = testRailUtil.updateMultipleTestStatuses(usersDataJsonFilePath);
 
         // add attachments to the tests
-        testRailUtil.addAttachmentsToTests(response, evidencesFolderPath);
+        //testRailUtil.addAttachmentsToTests(response, evidencesFolderPath);
     }
 }
