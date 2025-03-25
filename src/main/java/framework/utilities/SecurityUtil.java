@@ -19,7 +19,7 @@ public class SecurityUtil {
      *
      * @param encryptedSecretKey Secret Key <br>
      *                           <font color='orange'><i>Note : Make sure you the
-     *                           secretKey is encrypted. Did not provided the sample
+     *                           secretKey is encrypted. Did not provide the sample
      *                           encrypted keys as the encrypted text will be based
      *                           on the AES_KEY. Please look into
      *                           {@link #getToken(String, boolean)} method if you
