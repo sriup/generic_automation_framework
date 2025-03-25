@@ -2600,7 +2600,7 @@ public class CommonFunctions {
 	 * @param downloadFolderPath the download folder path
 	 * @throws Exception the exception
 	 */
-	private void downloadSboxFile(SessionId sessionId, String downloadFolderPath) throws Exception {
+	public void downloadSboxFile(SessionId sessionId, String downloadFolderPath) throws Exception {
 
 		// check if selenium box is running
 		if (CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("sbox")) {
