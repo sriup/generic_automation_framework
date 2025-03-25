@@ -297,6 +297,7 @@ public class BrowserFunctions {
 	}
 
 	private WebDriver launchRemoteDriver(String browserName, MutableCapabilities driverCaps) throws Exception {
+		
 		RemoteWebDriver remoteDriver = new RemoteWebDriver(new URL(CommonVariables.HOST_ADDRESS + "/wd/hub"), driverCaps);
 		// set the file detector to handle the file upload to the remote driver
 		remoteDriver.setFileDetector(new LocalFileDetector());
@@ -487,11 +488,15 @@ public class BrowserFunctions {
 	 * @throws IOException the IO Exception
 	 */
 	private EdgeOptions setEdgeOptions() throws IOException {
+		
 		EdgeOptions options = new EdgeOptions();
+		options.setBrowserVersion("132.0.2957.171");
 		options.setEnableDownloads(true);
 		if (CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("local")) {
 			Map<String, Object> prefs = new HashMap<>();
+			prefs.put("browser.show_hub_popup_on_download_start", false);
 			prefs.put("download.default_directory", this.getDownloadFolderPath());
+			
 			options.setExperimentalOption("prefs", prefs);
 			DownloadWebDrivers.downloadDriver(BrowserEnums.Edge);
 			System.setProperty("webdriver.edge.driver",
