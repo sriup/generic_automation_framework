@@ -5,9 +5,7 @@ import framework.enums.BrowserEnums;
 import framework.enums.ExpectedConditionsEnums;
 import framework.logs.LogAccess;
 import framework.utilities.*;
-import io.restassured.response.Response;
 import org.apache.commons.io.FileUtils;
-import org.aspectj.util.FileUtil;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
@@ -22,9 +20,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.RasterFormatException;
 import java.io.File;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
@@ -70,6 +65,11 @@ public class CommonFunctions {
 	private final ZipUtil zipUtil;
 
 	private final ApiMethods apiMethods;
+
+	public ApiMethods getApiMethods() {
+		return apiMethods;
+	}
+
 	/**
 	 * Folder path where the captured screenshots should be stored.
 	 */

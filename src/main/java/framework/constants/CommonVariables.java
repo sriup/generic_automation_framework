@@ -26,16 +26,37 @@ public class CommonVariables {
     public static final String PROJECT_FOLDER_PATH = System.getProperty("user.dir");
     public static final String DOCKER_FOLDER_PATH = new File(PROJECT_FOLDER_PATH).getParentFile().getAbsolutePath() + File.separatorChar + "icits-docker";
 
+
+    private static String executionPlatform = "";
+
+    public static String getExecutionPlatform() {
+        return CommonVariables.executionPlatform;
+    }
+
+    public static void setExecutionPlatform(String executionPlatform) {
+        CommonVariables.executionPlatform = executionPlatform;
+        CommonVariables.EXEC_PLATFORM = getExecutionPlatform();
+    }
+
+
+    public static String EXEC_PLATFORM = getExecutionPlatform();
+
     private static String remoteWdHubUrl;
 
+
+    public static String HOST_ADDRESS = CommonVariables.EXEC_PLATFORM.equals("docker")? "http://localhost:4444": getRemoteWdHubUrl();
 
     public static String getRemoteWdHubUrl() {
         return remoteWdHubUrl;
     }
 
     public static void setRemoteWdHubUrl(String remoteWdHubUrl) {
+
         CommonVariables.remoteWdHubUrl = remoteWdHubUrl;
+        HOST_ADDRESS = CommonVariables.EXEC_PLATFORM.equals("docker")? "http://localhost:4444": getRemoteWdHubUrl();
+
     }
+
 
     private static String remoteWdHubToken;
 
@@ -45,24 +66,13 @@ public class CommonVariables {
 
     public static void setRemoteWdHubToken(String remoteWdHubToken) {
         CommonVariables.remoteWdHubToken = remoteWdHubToken;
+
+
     }
 
 
 
-    private static String executionPlatform;
 
-    public static String getExecutionPlatform() {
-        return executionPlatform;
-    }
-
-    public static void setExecutionPlatform(String executionPlatform) {
-        CommonVariables.executionPlatform = executionPlatform;
-    }
-
-
-    public static final String EXEC_PLATFORM = getExecutionPlatform();
-
-    public static final String HOST_ADDRESS = CommonVariables.EXEC_PLATFORM.equals("docker")? "http://localhost:4444": getRemoteWdHubUrl();
 
 
 	/* The implicit wait time */
