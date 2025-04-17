@@ -26,15 +26,44 @@ public class CommonVariables {
     public static final String PROJECT_FOLDER_PATH = System.getProperty("user.dir");
     public static final String DOCKER_FOLDER_PATH = new File(PROJECT_FOLDER_PATH).getParentFile().getAbsolutePath() + File.separatorChar + "icits-docker";
 
-    // Max SeleniumBox browser instance timeout
-    public static int MAX_SBOX_BROWSER_TIMEOUT = 40000;
-    public static final String SBOX_HUB_URL = (System.getenv("SBOX_URL") != null && !System.getenv("SBOX_URL").isEmpty()) ? System.getenv("SBOX_URL") : System.getProperty("SBOX_URL");
+    private static String remoteWdHubUrl;
 
-    public static final String  SBOX_TOKEN = (System.getenv("SBOX_TOKEN") != null) ? System.getenv("SBOX_TOKEN") : System.getProperty("SBOX_TOKEN");
-    public static final String EXEC_PLATFORM = (System.getProperty("exec_platform") != null && !System.getProperty("exec_platform").isEmpty())? System.getProperty("exec_platform"):"Local";
-    public static final String HOST_ADDRESS = CommonVariables.EXEC_PLATFORM.equals("docker")? "http://localhost:4444": SBOX_HUB_URL;
 
-    public static final boolean IS_RUNNING_ON_SBOX = CommonVariables.EXEC_PLATFORM.equals("sbox");
+    public static String getRemoteWdHubUrl() {
+        return remoteWdHubUrl;
+    }
+
+    public static void setRemoteWdHubUrl(String remoteWdHubUrl) {
+        CommonVariables.remoteWdHubUrl = remoteWdHubUrl;
+    }
+
+    private static String remoteWdHubToken;
+
+    public static String getRemoteWdHubToken() {
+        return remoteWdHubToken;
+    }
+
+    public static void setRemoteWdHubToken(String remoteWdHubToken) {
+        CommonVariables.remoteWdHubToken = remoteWdHubToken;
+    }
+
+
+
+    private static String executionPlatform;
+
+    public static String getExecutionPlatform() {
+        return executionPlatform;
+    }
+
+    public static void setExecutionPlatform(String executionPlatform) {
+        CommonVariables.executionPlatform = executionPlatform;
+    }
+
+
+    public static final String EXEC_PLATFORM = getExecutionPlatform();
+
+    public static final String HOST_ADDRESS = CommonVariables.EXEC_PLATFORM.equals("docker")? "http://localhost:4444": getRemoteWdHubUrl();
+
 
 	/* The implicit wait time */
     //public static int IMPLICIT_WAIT = 15;

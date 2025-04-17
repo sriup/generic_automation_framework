@@ -2574,10 +2574,7 @@ public class CommonFunctions {
 			// switch back to main window
 			driver.switchTo().window(mainWindow);
 			
-			if(CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("sbox")){
-				// download the file from SeleniumBox(SBox)
-				downloadSboxFile(sessionId, downloadFolderPath);
-			} else if (CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("docker")) {
+			if (CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("docker")) {
 				((RemoteWebDriver) driver).downloadFile(fileName, Path.of(downloadFolderPath));
 				((RemoteWebDriver) driver).deleteDownloadableFiles();
 				
@@ -2593,50 +2590,6 @@ public class CommonFunctions {
 
 	}
 
-	/**
-	 * downloads the file(s) all the files in the current browser session from SeleniumBox to the local machine
-	 *
-	 * @param sessionId          the session id
-	 * @param downloadFolderPath the download folder path
-	 * @throws Exception the exception
-	 */
-	private void downloadSboxFile(SessionId sessionId, String downloadFolderPath) throws Exception {
-
-		// check if selenium box is running
-		if (CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("sbox")) {
-
-			// get all test artifacts for download using SeleniumBox API
-			Response response = apiMethods.sendRequest("get", CommonVariables.HOST_ADDRESS + "/e34/api/downloads?session=" + sessionId.toString());
-
-			// get list of artifacts from SeleniumBox
-			List<Map> artifacts = response.jsonPath().getList("");
-
-			// iterate through all the artifacts
-			for (Map artifact : artifacts) {
-
-				// create the download location path
-				String downloadFilePath = downloadFolderPath + File.separatorChar + artifact.get("name");
-
-
-				// download the file only if it's not exists
-				if (!new File(downloadFilePath).exists()) {
-
-					String encodedUrl = CommonVariables.HOST_ADDRESS +
-							"/downloads/" + artifact.get("internalSessionId") +
-							"/" +
-							URLEncoder.encode((String) artifact.get("name"), StandardCharsets.UTF_8)
-									.replaceAll("\\+", "%20");
-
-
-					this.logAccess.getLogger().info("Downloading the file from sbox using encoded url: " + encodedUrl);
-
-					// download the file to local
-					FileUtils.copyURLToFile(new URL(encodedUrl), new File(downloadFilePath));
-				}
-
-			}
-		}
-	}
 
 	/**
 	 * gets the element based on the by locator

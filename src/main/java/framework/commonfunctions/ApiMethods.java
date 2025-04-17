@@ -30,7 +30,7 @@ public class ApiMethods {
 	 */
 	public ApiMethods(LogAccess logAccess) {
 		this.logAccess = logAccess;
-		defaultHeadersMap = new HashMap<String, Object>();
+		defaultHeadersMap = new HashMap<>();
 		defaultHeadersMap.put("Content-Type", "application/json");
 		defaultHeadersMap.put("Accept", "application/json");
 
@@ -51,15 +51,15 @@ public class ApiMethods {
 		defaultHeadersMap.forEach((k, v) -> httpRequest.header(k, v));
 		Response response;
 		// send request
-		if (requestType.toLowerCase().equalsIgnoreCase("get")) {
+		if (requestType.equalsIgnoreCase("get")) {
 			response = httpRequest.get(uri);
-		} else if (requestType.toLowerCase().equalsIgnoreCase("post")) {
+		} else if (requestType.equalsIgnoreCase("post")) {
 			response = httpRequest.post(uri);
-		} else if (requestType.toLowerCase().equalsIgnoreCase("put")) {
+		} else if (requestType.equalsIgnoreCase("put")) {
 			response = httpRequest.put(uri);
-		} else if (requestType.toLowerCase().equalsIgnoreCase("patch")) {
+		} else if (requestType.equalsIgnoreCase("patch")) {
 			response = httpRequest.patch(uri);
-		} else if (requestType.toLowerCase().equalsIgnoreCase("delete")) {
+		} else if (requestType.equalsIgnoreCase("delete")) {
 			response = httpRequest.delete(uri);
 		} else {
 			this.logAccess.getLogger().debug("Unexpected value : " + requestType
@@ -93,15 +93,15 @@ public class ApiMethods {
 
 		Response response;
 		// send request
-		if (requestType.toLowerCase().equalsIgnoreCase("get")) {
+		if (requestType.equalsIgnoreCase("get")) {
 			response = httpRequest.get(uri);
-		} else if (requestType.toLowerCase().equalsIgnoreCase("post")) {
+		} else if (requestType.equalsIgnoreCase("post")) {
 			response = httpRequest.post(uri);
-		} else if (requestType.toLowerCase().equalsIgnoreCase("put")) {
+		} else if (requestType.equalsIgnoreCase("put")) {
 			response = httpRequest.put(uri);
-		} else if (requestType.toLowerCase().equalsIgnoreCase("patch")) {
+		} else if (requestType.equalsIgnoreCase("patch")) {
 			response = httpRequest.patch(uri);
-		} else if (requestType.toLowerCase().equalsIgnoreCase("delete")) {
+		} else if (requestType.equalsIgnoreCase("delete")) {
 			response = httpRequest.delete(uri);
 		} else {
 			this.logAccess.getLogger().debug("Unexpected value : " + requestType
@@ -134,15 +134,15 @@ public class ApiMethods {
 		this.logAccess.getLogger().debug("data \n " + data.toString());
 		Response response;
 		// send request
-		if (requestType.toLowerCase().equalsIgnoreCase("get")) {
+		if (requestType.equalsIgnoreCase("get")) {
 			response = httpRequest.get(uri);
-		} else if (requestType.toLowerCase().equalsIgnoreCase("post")) {
+		} else if (requestType.equalsIgnoreCase("post")) {
 			response = httpRequest.post(uri);
-		} else if (requestType.toLowerCase().equalsIgnoreCase("put")) {
+		} else if (requestType.equalsIgnoreCase("put")) {
 			response = httpRequest.put(uri);
-		} else if (requestType.toLowerCase().equalsIgnoreCase("patch")) {
+		} else if (requestType.equalsIgnoreCase("patch")) {
 			response = httpRequest.patch(uri);
-		} else if (requestType.toLowerCase().equalsIgnoreCase("delete")) {
+		} else if (requestType.equalsIgnoreCase("delete")) {
 			response = httpRequest.delete(uri);
 		} else {
 			this.logAccess.getLogger().debug("Unexpected value : " + requestType
@@ -175,15 +175,15 @@ public class ApiMethods {
 		this.logAccess.getLogger().debug("data \n " + bodyPayload.toString());
 		Response response;
 		// send request
-		if (requestType.toLowerCase().equalsIgnoreCase("get")) {
+		if (requestType.equalsIgnoreCase("get")) {
 			response = httpRequest.get(uri);
-		} else if (requestType.toLowerCase().equalsIgnoreCase("post")) {
+		} else if (requestType.equalsIgnoreCase("post")) {
 			response = httpRequest.post(uri);
-		} else if (requestType.toLowerCase().equalsIgnoreCase("put")) {
+		} else if (requestType.equalsIgnoreCase("put")) {
 			response = httpRequest.put(uri);
-		} else if (requestType.toLowerCase().equalsIgnoreCase("patch")) {
+		} else if (requestType.equalsIgnoreCase("patch")) {
 			response = httpRequest.patch(uri);
-		} else if (requestType.toLowerCase().equalsIgnoreCase("delete")) {
+		} else if (requestType.equalsIgnoreCase("delete")) {
 			response = httpRequest.delete(uri);
 		} else {
 			this.logAccess.getLogger().debug("Unexpected value : " + requestType
@@ -226,15 +226,15 @@ public class ApiMethods {
 		this.logAccess.getLogger().debug("data \n " + data.toString());
 		Response response;
 		// send request
-		if (requestType.toLowerCase().equalsIgnoreCase("get")) {
+		if (requestType.equalsIgnoreCase("get")) {
 			response = httpRequest.get(uri);
-		} else if (requestType.toLowerCase().equalsIgnoreCase("post")) {
+		} else if (requestType.equalsIgnoreCase("post")) {
 			response = httpRequest.post(uri);
-		} else if (requestType.toLowerCase().equalsIgnoreCase("put")) {
+		} else if (requestType.equalsIgnoreCase("put")) {
 			response = httpRequest.put(uri);
-		} else if (requestType.toLowerCase().equalsIgnoreCase("patch")) {
+		} else if (requestType.equalsIgnoreCase("patch")) {
 			response = httpRequest.patch(uri);
-		} else if (requestType.toLowerCase().equalsIgnoreCase("delete")) {
+		} else if (requestType.equalsIgnoreCase("delete")) {
 			response = httpRequest.delete(uri);
 		} else {
 			this.logAccess.getLogger().debug("Unexpected value : " + requestType
