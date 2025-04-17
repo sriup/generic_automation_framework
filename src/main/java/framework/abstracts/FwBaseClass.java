@@ -14,6 +14,7 @@ import framework.logs.LogAccess;
 import framework.utilities.AllureUtil;
 import framework.utilities.DateTimeUtil;
 import framework.utilities.FolderFileUtil;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
 import java.util.HashMap;
@@ -108,6 +109,56 @@ public abstract class FwBaseClass {
 		// initializing the AllureUtil
 		this.allureUtil = new AllureUtil();
 
+	}
+	
+	/**
+	 * This method will launch the browser.<br>
+	 * <font color="blue"><b>Note : </b> browser will be decided based on the value
+	 * provided in the maven command.<br>
+	 * If browser is provided in the maven command it will be updated in the
+	 * {@link CommonVariables#BROWSER_SELECT} and same will be used while launching
+	 * the browser.<br>
+	 * <br>
+	 * browser will be picked from the test case, if "browser" is not specified or
+	 * empty in the maven command. <br>
+	 * This gives the flexibility to run the tests from maven command, test or
+	 * TestNg.xml<br>
+	 * </font> <br>
+	 * <font color="red">browser specified in the maven command will
+	 * <b>supersedes</b> the browser specified from test.</font>
+	 *
+	 * @param browserEnum  Select the browser name from the <b>BrowserEnums</b>
+	 *                     class
+	 * @param downloadPath The download path
+	 * @throws Exception the exception
+	 */
+	public void init(BrowserEnums browserEnum, String downloadPath, String methodName, DesiredCapabilities desiredCapabilities) throws Exception {
+		
+		String browserName = "";
+		
+		if (CommonVariables.BROWSER_SELECT == null || CommonVariables.BROWSER_SELECT.isEmpty()) {
+			browserName = browserEnum.toString();
+			this.getLogAccess().getLogger()
+					.warn("maven command is having empty value for Browser selection.\nSo, we are using local browser '"
+							+ browserName + "' from test case.\nIf you want to specify the browser in the maven command"
+							+ "please use \"browser\" property to specify the browser name.");
+		} else {
+			browserName = CommonVariables.BROWSER_SELECT;
+			this.getLogAccess().getLogger()
+					.info("Using Browser selection from maven command '" + CommonVariables.BROWSER_SELECT + "'");
+		}
+		
+		this.browserFunctions = new BrowserFunctions(this.logAccess);
+		
+		browserFunctions.setRemoteWdDesiredCaps(desiredCapabilities);
+		
+		browserFunctions.launch(browserName, downloadPath, methodName);
+		
+		setSoftAssert();
+		
+		// initializing the AllureUtil
+		this.allureUtil = new AllureUtil();
+		
 	}
 
 	public void setSoftAssert() {
