@@ -1,6 +1,6 @@
 package unittests.encryption;
 
-import framework.utilities.SecurityUtil;
+import genericframework.utilities.SecurityUtil;
 
 import java.util.Scanner;
 public class EncryptTest {

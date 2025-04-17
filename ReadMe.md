@@ -14,14 +14,14 @@
 
 ## Introduction ##
 
-This is a generic framework for Automation Testing using Selenium WebDriver, Java and TestNG.
-This framework is based on Page Object Model (POM) and TestNG. The framework will help in automating web based 
-UI applications and API testing. This plug-and-play framework can be used for both API and UI testing.
+This is a generic genericframework for Automation Testing using Selenium WebDriver, Java and TestNG.
+This genericframework is based on Page Object Model (POM) and TestNG. The genericframework will help in automating web based 
+UI applications and API testing. This plug-and-play genericframework can be used for both API and UI testing.
 ## Requirements ##
 
 <details>
     <summary>Mandatory requirements</summary>
-The minimum configuration that is required to use this framework is
+The minimum configuration that is required to use this genericframework is
 
 * Java 13
 * 8+ gb RAM (Windows)
@@ -48,7 +48,7 @@ The minimum configuration that is required to use this framework is
 <details>
     <summary>Encryption</summary>
     <p> 
-Data security is a priority for any organization in the modern world. Hence, this framework provides the option of
+Data security is a priority for any organization in the modern world. Hence, this genericframework provides the option of
 encrypting the data using AES algorithm. This will help in keeping the data safe. Please use the below steps
 to enable this feature.
 
@@ -61,29 +61,29 @@ to enable this feature.
 
 <details>
     <summary>Multi-Factor Authentication (MFA)</summary>
-This framework provides the option of handling Multi-Factor Authentication (MFA) using Google Authenticator.
+This genericframework provides the option of handling Multi-Factor Authentication (MFA) using Google Authenticator.
 Please use the below steps to enable this feature.
 
 1. Generate Secret Key - Generate the secret key in your UAT
 2. Encrypt the secret key - Run the [Encrypt](src/test/java/unittests/encryption/Encrypt.java) to encrypt the secret key
 3. Get the Google authentication token - Run the [GAuthToken](src/test/java/unittests/encryption/GAuthToken.java) file to get the Google authentication token
-Note: The framework provides the option to get the Google authentication token using the secret key. 
+Note: The genericframework provides the option to get the Google authentication token using the secret key. 
 However, this is not recommended as the secret key is not secure.
 </details>
 
 <details>
     <summary>Generate Fake Data</summary>
-This framework provides the option of generating fake data. This will help in automating the test cases.
+This genericframework provides the option of generating fake data. This will help in automating the test cases.
 The fake data will be generated using the Faker library.
 
 </details>
 
 <details>
 <summary>Dynamic WebDriver Downloading</summary>
-This framework will download the latest version of the WebDriver, if the latest version of the WebDriver is not
-available in the local machine. The framework doesn't rely on the WebDriverManager as there are few instances either
+This genericframework will download the latest version of the WebDriver, if the latest version of the WebDriver is not
+available in the local machine. The genericframework doesn't rely on the WebDriverManager as there are few instances either
 the versions of the WebDriver are not available or the WebDriverManager is down.
-Note: The framework will be updated to leverage the Selenium 4 features in future to deal with the WebDrivers.
+Note: The genericframework will be updated to leverage the Selenium 4 features in future to deal with the WebDrivers.
 </details>
 
 ## Folder Structure ##
@@ -98,7 +98,7 @@ Note: The framework will be updated to leverage the Selenium 4 features in futur
       └───src
           ├───main
           │   ├───java
-          │   │   └───framework
+          │   │   └───genericframework
           │   │       ├───abstracts
           │   │       ├───commonfunctions
           │   │       ├───constants
@@ -125,32 +125,32 @@ Note: The framework will be updated to leverage the Selenium 4 features in futur
 | .gitignore                              | Git ignore file                    |
 | src                                     | Source code folder                 |
 | test                                    | Place holder for the unit tests    |
-| src/main/java/framework/abstracts       | Abstract classes for the framework |
-| src/main/java/framework/commonfunctions | Common functions for the framework |
-| src/main/java/framework/constants       | Constants for the framework        |
-| src/main/java/framework/Docker          | Docker classes for the framework   |
-| src/main/java/framework/enums           | Enum classes for the framework     |
-| src/main/java/framework/helper          | Helper classes for the framework   |
-| src/main/java/framework/logs            | Log classes for the framework      |
-| src/main/java/framework/TestRail        | TestRail classes for the framework |
-| src/main/java/framework/utilities       | Utility classes for the framework  |   
+| src/main/java/genericframework/abstracts       | Abstract classes for the genericframework |
+| src/main/java/genericframework/commonfunctions | Common functions for the genericframework |
+| src/main/java/genericframework/constants       | Constants for the genericframework        |
+| src/main/java/genericframework/Docker          | Docker classes for the genericframework   |
+| src/main/java/genericframework/enums           | Enum classes for the genericframework     |
+| src/main/java/genericframework/helper          | Helper classes for the genericframework   |
+| src/main/java/genericframework/logs            | Log classes for the genericframework      |
+| src/main/java/genericframework/TestRail        | TestRail classes for the genericframework |
+| src/main/java/genericframework/utilities       | Utility classes for the genericframework  |   
 </details>
 
-### How to use the framework ###
-This is plug and play framework. The user can use this framework as per their requirement. However, there are few 
-things that the user has to do to use this framework in their project(s)
-- Add the framework as a dependency in the pom.xml file. There are multiple options to add the framework, please
+### How to use the genericframework ###
+This is plug and play genericframework. The user can use this genericframework as per their requirement. However, there are few 
+things that the user has to do to use this genericframework in their project(s)
+- Add the genericframework as a dependency in the pom.xml file. There are multiple options to add the genericframework, please
 pick that option that best fits your needs.
   - Add a jar to the project and add it as a dependency in the pom.xml file.
-  - Install the framework in your local maven repository and add it as a dependency in the pom.xml file.
+  - Install the genericframework in your local maven repository and add it as a dependency in the pom.xml file.
   - Generate the jar file and push to the artifact repository and add it as a dependency in the pom.xml file.
-  - Create a docker image of the framework and add leverage it in your project.
-- Implement the abstract methods in the [FWBaseClass](src/main/java/framework/abstracts/FwBaseClass.java)
+  - Create a docker image of the genericframework and add leverage it in your project.
+- Implement the abstract methods in the [FWBaseClass](src/main/java/genericframework/abstracts/FwBaseClass.java)
 
-## How to update the framework ##
+## How to update the genericframework ##
 
 <details>
-<summary>Steps to update the framework</summary>
+<summary>Steps to update the genericframework</summary>
 
 ### Step 1: Fork ###
 
@@ -236,9 +236,9 @@ git push origin your_branch_name
 </details>
 
 <details>
-  <summary>Sharing updated framework for local usage</summary>
+  <summary>Sharing updated genericframework for local usage</summary>
     
-### Deploying the framework to local maven repository ###
+### Deploying the genericframework to local maven repository ###
   - Run `mvn clean install`
 
   - The above command will create a folder in local maven repository under specified `groupId` and `artifactId`
