@@ -84,6 +84,27 @@ public class BrowserFunctions {
 
 	private String testCaseName;
 
+	private DesiredCapabilities remoteWdDesiredCaps;
+
+	/**
+	 * Gets the remote web driver desired capabilities.
+	 *
+	 * @return the remote web driver desired capabilities
+	 */
+	public DesiredCapabilities getRemoteWdDesiredCaps() {
+		return remoteWdDesiredCaps;
+	}
+
+	/**
+	 * Sets the remote web driver desired capabilities.
+	 *
+	 * @param remoteWdDesiredCaps the remote web driver desired capabilities
+	 */
+	public void setRemoteWdDesiredCaps(DesiredCapabilities remoteWdDesiredCaps) {
+		this.remoteWdDesiredCaps = remoteWdDesiredCaps;
+	}
+
+
 
 	/**
 	 * Gets the browser name
@@ -99,7 +120,7 @@ public class BrowserFunctions {
 	 * <font color="blue"><b>Note : </b></font> This will set the download folder
 	 * path as part of driver capabilities.
 	 *
-	 * @param downloadPath the path where the files should be download when download
+	 * @param downloadPath the path where the files should be downloaded when download
 	 *					 from browser
 	 */
 	private void setDownloadFolderPath(String downloadPath){
@@ -257,7 +278,7 @@ public class BrowserFunctions {
 		MutableCapabilities driverCaps = getCapabilities(browserName);
 
 		switch (CommonVariables.EXEC_PLATFORM.toLowerCase()) {
-			case "sbox":
+			case "remote":
 			case "docker":
 				launchRemoteDriver(browserName.toLowerCase(), driverCaps);
 				break;
@@ -309,7 +330,7 @@ public class BrowserFunctions {
 
 
 	/**
-	 * get's the browser capabilities based on the browser name
+	 * get the browser capabilities based on the browser name
 	 * @return the browser capabilities
 	 * @throws IOException the IO Exception
 	 */
@@ -329,8 +350,8 @@ public class BrowserFunctions {
 				break;
 		}
 		switch (CommonVariables.EXEC_PLATFORM.toLowerCase()) {
-			case "sbox":
-				setSboxOptions().asMap().forEach(capabilities::setCapability);
+			case "remote":
+				getRemoteWdDesiredCaps().asMap().forEach(capabilities::setCapability);
 				break;
 			case "docker":
 				setDockerBrowserOptions().asMap().forEach(capabilities::setCapability);
@@ -339,20 +360,7 @@ public class BrowserFunctions {
 		return capabilities;
 	}
 
-	/**
-	 * sets SeleniumBox capabilities
-	 * @return the SeleniumBox capabilities
-	 */
-	private DesiredCapabilities setSboxOptions() {
 
-		DesiredCapabilities sboxCaps = new DesiredCapabilities();
-		sboxCaps.setCapability("e34:token", CommonVariables.SBOX_TOKEN);
-		sboxCaps.setCapability("e34:video", true);
-		sboxCaps.setCapability("e34:timezone", "US/Eastern");
-		sboxCaps.setCapability("e34:per_test_timeout_ms", CommonVariables.MAX_SBOX_BROWSER_TIMEOUT);
-		sboxCaps.setCapability("e34:l_testName", this.getTestCaseName());
-		return sboxCaps;
-	}
 
 	/**
 	 * sets Docker browser capabilities
@@ -482,7 +490,7 @@ public class BrowserFunctions {
 	}
 
 	/**
-	 * set's Edge browser capabiities
+	 * set's Edge browser capabilities
 	 * @return the Edge browser capabilities
 	 * @throws IOException the IO Exception
 	 */
@@ -491,6 +499,7 @@ public class BrowserFunctions {
 		options.setEnableDownloads(true);
 		if (CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("local")) {
 			Map<String, Object> prefs = new HashMap<>();
+			prefs.put("browser.show_hub_popup_on_download_start", false);
 			prefs.put("download.default_directory", this.getDownloadFolderPath());
 			options.setExperimentalOption("prefs", prefs);
 			DownloadWebDrivers.downloadDriver(BrowserEnums.Edge);

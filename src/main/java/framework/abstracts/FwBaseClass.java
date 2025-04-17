@@ -14,6 +14,7 @@ import framework.logs.LogAccess;
 import framework.utilities.AllureUtil;
 import framework.utilities.DateTimeUtil;
 import framework.utilities.FolderFileUtil;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
 import java.util.HashMap;
@@ -59,6 +60,18 @@ public abstract class FwBaseClass {
 	protected CommonFunctions commonFunctions;
 
 	private HashMap<String, Object> setBrowserOptions = null;
+	
+	public DesiredCapabilities getRemoteDesiredCapabilities() {
+		return remoteDesiredCapabilities;
+	}
+	
+	public void setRemoteDesiredCapabilities(DesiredCapabilities remoteDesiredCapabilities) {
+		this.remoteDesiredCapabilities = remoteDesiredCapabilities;
+	}
+	
+	private DesiredCapabilities remoteDesiredCapabilities = null;
+	
+	
 
 	/**
 	 * This method will launch the browser.<br>
@@ -100,7 +113,9 @@ public abstract class FwBaseClass {
 		}
 
 		this.browserFunctions = new BrowserFunctions(this.logAccess);
-
+		
+		browserFunctions.setRemoteWdDesiredCaps(getRemoteDesiredCapabilities());
+		
 		browserFunctions.launch(browserName, downloadPath, methodName);
 
 		setSoftAssert();
@@ -109,6 +124,8 @@ public abstract class FwBaseClass {
 		this.allureUtil = new AllureUtil();
 
 	}
+	
+	
 
 	public void setSoftAssert() {
 		// initializing the SoftAssert

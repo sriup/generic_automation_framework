@@ -142,14 +142,7 @@ things that the user has to do to use this framework in their project(s)
 - Add the framework as a dependency in the pom.xml file. There are multiple options to add the framework, please
 pick that option that best fits your needs.
   - Add a jar to the project and add it as a dependency in the pom.xml file.
-  ```shell
-    mvn clean package
-  ```
-  
   - Install the framework in your local maven repository and add it as a dependency in the pom.xml file.
-  ```shell
-  mvn clean install
-  ```
   - Generate the jar file and push to the artifact repository and add it as a dependency in the pom.xml file.
   - Create a docker image of the framework and add leverage it in your project.
 - Implement the abstract methods in the [FWBaseClass](src/main/java/framework/abstracts/FwBaseClass.java)
@@ -244,7 +237,8 @@ git push origin your_branch_name
 
 <details>
   <summary>Sharing updated framework for local usage</summary>
-  <p>
+    
+### Deploying the framework to local maven repository ###
   - Run `mvn clean install`
 
   - The above command will create a folder in local maven repository under specified `groupId` and `artifactId`
@@ -260,4 +254,9 @@ git push origin your_branch_name
 
   - If there is no folder exists with the `groupId` then they can simply place the entire folder under their
     local maven repository in the specified path.
+    
+### Creating a jar file ###
+  - Run `mvn clean package`
+  - The above command will create a jar file in the `target` folder.
+  - Share the jar file with the team.
 </details>
