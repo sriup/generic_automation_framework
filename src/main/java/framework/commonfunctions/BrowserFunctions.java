@@ -499,6 +499,7 @@ public class BrowserFunctions {
 		options.setEnableDownloads(true);
 		if (CommonVariables.EXEC_PLATFORM.equalsIgnoreCase("local")) {
 			Map<String, Object> prefs = new HashMap<>();
+			prefs.put("browser.show_hub_popup_on_download_start", false);
 			prefs.put("download.default_directory", this.getDownloadFolderPath());
 			options.setExperimentalOption("prefs", prefs);
 			DownloadWebDrivers.downloadDriver(BrowserEnums.Edge);
