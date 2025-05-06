@@ -1,0 +1,12 @@
+.classpath
+.settings
+.allure
+.idea
+*.iml
+/doc/
+/allure-results/*
+/test-output/*
+/Output/*
+/site/*
+/drivers/
+/target/
